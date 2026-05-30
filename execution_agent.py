@@ -1,0 +1,396 @@
+import sqlite3
+import pandas as pd
+import random
+from datetime import datetime
+
+from telegram_test import send_alert
+
+# =========================
+# DATABASE
+# =========================
+
+conn = sqlite3.connect(
+    "trading_system.db"
+)
+
+cycle_query = """
+
+SELECT value
+
+FROM system_state
+
+WHERE key='current_cycle_id'
+
+"""
+
+cycle_df = pd.read_sql_query(
+    cycle_query,
+    conn
+)
+
+cycle_id = cycle_df[
+    "value"
+].iloc[0]
+
+# =========================
+# LOAD SIGNALS
+# =========================
+
+signals_query = """
+
+SELECT *
+
+FROM signal_memory
+
+ORDER BY ROWID DESC
+
+LIMIT 30
+
+"""
+
+signals_df = pd.read_sql_query(
+
+    signals_query,
+
+    conn
+)
+
+# =========================
+# LOAD AI REASONING
+# =========================
+
+ai_query = """
+
+SELECT *
+
+FROM ai_reasoning
+
+ORDER BY ROWID DESC
+
+LIMIT 1
+
+"""
+
+try:
+
+    ai_df = pd.read_sql_query(
+
+        ai_query,
+
+        conn
+    )
+
+except:
+
+    ai_df = pd.DataFrame()
+
+# =========================
+# AI CONTEXT
+# =========================
+
+market_bias = "NEUTRAL"
+
+risk_level = "NORMAL"
+
+if len(ai_df) > 0:
+
+    market_bias = ai_df[
+        "market_bias"
+    ].iloc[-1]
+
+    risk_level = ai_df[
+        "risk_level"
+    ].iloc[-1]
+
+# =========================
+# CREATE TABLE
+# =========================
+
+create_query = """
+
+CREATE TABLE IF NOT EXISTS
+executions (
+
+    timestamp TEXT,
+
+    asset TEXT,
+
+    direction TEXT,
+
+    score REAL,
+
+    confidence REAL,
+
+    signal_strength REAL,
+
+    regime TEXT,
+
+    governance_status TEXT,
+
+    rationale TEXT,
+
+    execution_decision TEXT,
+
+    rejection_reason TEXT,
+
+    status TEXT
+)
+
+"""
+
+conn.execute(
+    create_query
+)
+
+# =========================
+# GOVERNANCE THRESHOLDS
+# =========================
+
+MIN_CONFIDENCE = 70
+
+MIN_SIGNAL_STRENGTH = 0.65
+
+# =========================
+# AI ADAPTATION
+# =========================
+
+if risk_level == "DEFENSIVE":
+
+    MIN_CONFIDENCE = 80
+
+    MIN_SIGNAL_STRENGTH = 0.75
+
+elif risk_level == "HIGH_RISK":
+
+    MIN_CONFIDENCE = 85
+
+    MIN_SIGNAL_STRENGTH = 0.85
+
+# =========================
+# EXECUTION LOOP
+# =========================
+
+executions = []
+
+approved = 0
+
+rejected = 0
+
+for _, row in signals_df.iterrows():
+
+    confidence = round(
+
+        random.uniform(60, 95),
+
+        2
+    )
+
+    signal_strength = round(
+
+        random.uniform(0.5, 1.0),
+
+        2
+    )
+
+    rationale = random.choice(
+
+        [
+            "momentum breakout",
+            "funding imbalance",
+            "trend continuation",
+            "volatility expansion",
+            "adaptive score confirmation"
+        ]
+    )
+
+    execution_decision = "APPROVED"
+
+    rejection_reason = "NONE"
+
+    # =========================
+    # AI MARKET BIAS FILTER
+    # =========================
+
+    if (
+
+        market_bias == "SHORT_BIAS"
+
+        and
+
+        row["direction"] == "LONG"
+    ):
+
+        confidence -= 10
+
+    elif (
+
+        market_bias == "LONG_BIAS"
+
+        and
+
+        row["direction"] == "SHORT"
+    ):
+
+        confidence -= 10
+
+    # =========================
+    # GOVERNANCE FILTERS
+    # =========================
+
+    if confidence < MIN_CONFIDENCE:
+
+        execution_decision = "REJECTED"
+
+        rejection_reason = "LOW_CONFIDENCE"
+
+    elif signal_strength < MIN_SIGNAL_STRENGTH:
+
+        execution_decision = "REJECTED"
+
+        rejection_reason = "WEAK_SIGNAL"
+
+    # =========================
+    # STATUS
+    # =========================
+
+    if execution_decision == "APPROVED":
+
+        status = "EXECUTED"
+
+        approved += 1
+
+        print(
+            f"\n✅ EXECUTED: "
+            f"{row['asset']}"
+        )
+
+        telegram_message = (
+
+            f"✅ EXECUTED {row['asset']}\n\n"
+
+            f"Confidence: {confidence}\n"
+
+            f"Signal Strength: {signal_strength}\n"
+
+            f"AI Bias: {market_bias}\n"
+
+            f"Risk Level: {risk_level}\n"
+
+            f"Rationale: {rationale}"
+        )
+
+        send_alert(
+            telegram_message
+        )
+
+    else:
+
+        status = "BLOCKED"
+
+        rejected += 1
+
+        print(
+            f"\n❌ REJECTED: "
+            f"{row['asset']}"
+        )
+
+    # =========================
+    # BUILD EXECUTION
+    # =========================
+
+    execution = {
+
+        "timestamp": str(
+            datetime.now()
+        ),
+
+        "asset": row["asset"],
+
+        "direction": row["direction"],
+
+        "score": row["pnl"],
+
+        "confidence": confidence,
+
+        "signal_strength": signal_strength,
+
+        "regime": market_bias,
+
+        "governance_status": risk_level,
+
+        "rationale": rationale,
+
+        "execution_decision": execution_decision,
+
+        "rejection_reason": rejection_reason,
+        "cycle_id": cycle_id,
+
+        "status": status
+    }
+
+    executions.append(
+        execution
+    )
+
+# =========================
+# SAVE
+# =========================
+
+executions_df = pd.DataFrame(
+    executions
+)
+
+executions_df.to_sql(
+
+    "executions",
+
+    conn,
+
+    if_exists="append",
+
+    index=False
+)
+
+conn.close()
+
+# =========================
+# SUMMARY
+# =========================
+
+print("\n")
+print("=" * 60)
+
+print(
+    "🧠 AI GOVERNED EXECUTION ENGINE"
+)
+
+print("=" * 60)
+
+print("\n")
+
+print(
+    f"AI Market Bias: "
+    f"{market_bias}"
+)
+
+print(
+    f"Risk Level: "
+    f"{risk_level}"
+)
+
+print("\n")
+
+print(
+    f"Approved Executions: "
+    f"{approved}"
+)
+
+print(
+    f"Rejected Executions: "
+    f"{rejected}"
+)
+
+print("\n")
+print(
+    "🚀 Execution agent completed"
+)

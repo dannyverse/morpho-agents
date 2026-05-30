@@ -1,0 +1,348 @@
+import sqlite3
+import pandas as pd
+import os
+
+from datetime import datetime
+
+from telegram_test import send_alert
+
+# =========================
+# DATABASE
+# =========================
+
+conn = sqlite3.connect(
+    "trading_system.db"
+)
+
+# =========================
+# LOAD EXECUTIONS
+# =========================
+
+executions_query = """
+
+SELECT *
+
+FROM executions
+
+ORDER BY ROWID DESC
+
+LIMIT 20
+
+"""
+
+executions_df = pd.read_sql_query(
+
+    executions_query,
+
+    conn
+)
+
+# =========================
+# LOAD MARKET MAKER SIGNALS
+# =========================
+
+mm_query = """
+
+SELECT *
+
+FROM market_maker_signals
+
+ORDER BY ROWID DESC
+
+LIMIT 20
+
+"""
+
+try:
+
+    mm_df = pd.read_sql_query(
+
+        mm_query,
+
+        conn
+    )
+
+except:
+
+    mm_df = pd.DataFrame()
+
+# =========================
+# AI ANALYSIS
+# =========================
+
+market_bias = "NEUTRAL"
+
+risk_level = "NORMAL"
+
+ai_commentary = []
+
+# =========================
+# MARKET MAKER ANALYSIS
+# =========================
+
+if len(mm_df) > 0:
+
+    crowded_longs = len(
+
+        mm_df[
+            mm_df["rationale"]
+
+            ==
+
+            "crowded_longs"
+        ]
+    )
+
+    crowded_shorts = len(
+
+        mm_df[
+            mm_df["rationale"]
+
+            ==
+
+            "crowded_shorts"
+        ]
+    )
+
+    if crowded_longs > crowded_shorts:
+
+        market_bias = "SHORT_BIAS"
+
+        ai_commentary.append(
+
+            "Long positioning overcrowded."
+        )
+
+    elif crowded_shorts > crowded_longs:
+
+        market_bias = "LONG_BIAS"
+
+        ai_commentary.append(
+
+            "Short positioning overcrowded."
+        )
+
+# =========================
+# EXECUTION ANALYSIS
+# =========================
+
+approval_rate = 1
+
+avg_confidence = 100
+
+if len(executions_df) > 0:
+
+    avg_confidence = round(
+
+        executions_df[
+            "confidence"
+        ].mean(),
+
+        2
+    )
+
+    approval_rate = round(
+
+        len(
+
+            executions_df[
+                executions_df[
+                    "execution_decision"
+                ]
+
+                ==
+
+                "APPROVED"
+            ]
+        )
+
+        /
+
+        len(executions_df),
+
+        2
+    )
+
+    if avg_confidence < 75:
+
+        risk_level = "DEFENSIVE"
+
+        ai_commentary.append(
+
+            "Execution confidence weakening."
+        )
+
+    if approval_rate < 0.4:
+
+        risk_level = "HIGH_RISK"
+
+        ai_commentary.append(
+
+            "Governance rejecting most signals."
+        )
+
+# =========================
+# HALT LOGIC
+# =========================
+
+halt_active = False
+
+if risk_level == "HIGH_RISK":
+
+    halt_active = True
+
+    with open(
+        "HALT_TRADING.txt",
+        "w"
+    ) as f:
+
+        f.write(
+            "AI HALT ACTIVATED"
+        )
+
+    ai_commentary.append(
+
+        "Autonomous halt activated."
+    )
+
+else:
+
+    if os.path.exists(
+        "HALT_TRADING.txt"
+    ):
+
+        os.remove(
+            "HALT_TRADING.txt"
+        )
+
+# =========================
+# FINAL SUMMARY
+# =========================
+
+summary = " ".join(
+    ai_commentary
+)
+
+# =========================
+# BUILD RESULT
+# =========================
+
+result = {
+
+    "timestamp": str(
+        datetime.now()
+    ),
+
+    "market_bias": market_bias,
+
+    "risk_level": risk_level,
+
+    "ai_summary": summary
+}
+
+result_df = pd.DataFrame(
+    [result]
+)
+
+# =========================
+# CREATE TABLE
+# =========================
+
+create_query = """
+
+CREATE TABLE IF NOT EXISTS
+ai_reasoning (
+
+    timestamp TEXT,
+
+    market_bias TEXT,
+
+    risk_level TEXT,
+
+    ai_summary TEXT
+)
+
+"""
+
+conn.execute(
+    create_query
+)
+
+# =========================
+# SAVE
+# =========================
+
+result_df.to_sql(
+
+    "ai_reasoning",
+
+    conn,
+
+    if_exists="append",
+
+    index=False
+)
+
+conn.close()
+
+# =========================
+# TELEGRAM
+# =========================
+
+telegram_message = (
+
+    f"🧠 AI MARKET REASONING\n\n"
+
+    f"Market Bias: {market_bias}\n"
+
+    f"Risk Level: {risk_level}\n"
+
+    f"Halt Active: {halt_active}\n\n"
+
+    f"{summary}"
+)
+
+send_alert(
+    telegram_message
+)
+
+# =========================
+# OUTPUT
+# =========================
+
+print("\n")
+print("=" * 60)
+
+print(
+    "🧠 AI REASONING LAYER"
+)
+
+print("=" * 60)
+
+print("\n")
+
+print(
+    f"Market Bias: "
+    f"{market_bias}"
+)
+
+print(
+    f"Risk Level: "
+    f"{risk_level}"
+)
+
+print(
+    f"Halt Active: "
+    f"{halt_active}"
+)
+
+print("\n")
+
+print(
+    summary
+)
+
+print("\n")
+print(
+    "🚀 AI reasoning completed"
+)

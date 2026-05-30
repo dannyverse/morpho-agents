@@ -1,135 +1,173 @@
-import requests
 import pandas as pd
-from dotenv import load_dotenv
+import requests
 import os
 
 # =========================
-# LOAD ENV
+# TELEGRAM
 # =========================
 
-load_dotenv(dotenv_path=".env")
-
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-# =========================
-# TELEGRAM FUNCTION
-# =========================
 
 def send_telegram(message):
 
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
     payload = {
         "chat_id": CHAT_ID,
         "text": message
     }
 
-    requests.post(url, data=payload)
+    requests.post(url, json=payload)
+
 
 # =========================
-# LOAD LIVE DATA
+# CONFIG
+# =========================
+
+TRUSTED_PROTOCOLS = [
+    "aave",
+    "morpho",
+    "spark",
+    "compound"
+]
+
+STABLES = [
+    "USDC",
+    "USDT",
+    "DAI",
+    "USDS",
+    "SUSDS",
+    "USR",
+    "RLUSD"
+]
+
+HISTORY_FILE = "yield_history.csv"
+
+
+# =========================
+# FETCH DATA
 # =========================
 
 url = "https://yields.llama.fi/pools"
 
-response = requests.get(url)
+data = requests.get(url).json()
 
-data = response.json()["data"]
+df = pd.DataFrame(data["data"])
 
-df = pd.DataFrame(data)
 
 # =========================
-# FILTER GOOD STABLES
+# FILTERS
 # =========================
 
-stable = df[
-    (df["stablecoin"] == True) &
-    (df["apy"] > 3) &
-    (df["tvlUsd"] > 1_000_000)
-]
+filtered_rows = []
 
-stable = stable[
-    [
-        "project",
-        "symbol",
-        "chain",
-        "apy",
-        "tvlUsd"
-    ]
-]
+for _, row in df.iterrows():
 
-stable = stable.sort_values(
-    by=["apy", "tvlUsd"],
-    ascending=[False, False]
-)
+    project = str(row.get("project", "")).lower()
+
+    if project not in TRUSTED_PROTOCOLS:
+        continue
+
+    chain = str(row.get("chain", "")).lower()
+
+    if chain != "ethereum":
+        continue
+
+    symbol = str(row.get("symbol", "")).upper()
+
+    if symbol not in STABLES:
+        continue
+
+    apy = row.get("apy")
+
+    if apy is None:
+        continue
+
+    # Ignorar APYs absurdos
+    if apy < 3 or apy > 20:
+        continue
+
+    filtered_rows.append({
+        "project": project,
+        "symbol": symbol,
+        "apy": apy
+    })
+
+new_df = pd.DataFrame(filtered_rows)
+
+
+# =========================
+# FIRST RUN
+# =========================
+
+if not os.path.exists(HISTORY_FILE):
+
+    new_df.to_csv(HISTORY_FILE, index=False)
+
+    send_telegram("🚀 Yield agent initialized successfully")
+
+    print("First snapshot created")
+
+    exit()
+
 
 # =========================
 # LOAD OLD SNAPSHOT
 # =========================
 
-snapshot_file = "yield_history.csv"
+old_df = pd.read_csv(HISTORY_FILE)
 
-if os.path.exists(snapshot_file):
-
-    old = pd.read_csv(snapshot_file)
-
-else:
-
-    old = pd.DataFrame()
 
 # =========================
-# COMPARE DATA
+# COMPARE
 # =========================
 
-alerts = []
+for _, row in new_df.iterrows():
 
-if not old.empty:
+    project = row["project"]
+    symbol = row["symbol"]
+    new_apy = row["apy"]
 
-    for _, row in stable.iterrows():
+    match = old_df[
+        (old_df["project"] == project) &
+        (old_df["symbol"] == symbol)
+    ]
 
-        same = old[
-            (old["project"] == row["project"]) &
-            (old["symbol"] == row["symbol"]) &
-            (old["chain"] == row["chain"])
-        ]
+    if match.empty:
+        continue
 
-        if not same.empty:
+    old_apy = match.iloc[0]["apy"]
 
-            old_apy = same.iloc[0]["apy"]
+    change = abs(new_apy - old_apy)
 
-            diff = row["apy"] - old_apy
+    # Ignorar cambios pequeños
+    if change < 1.0:
+        continue
 
-            if diff > 1:
+    # Ignorar APYs bajos
+    if new_apy < 6:
+        continue
 
-                alerts.append(
-                    f"🚀 {row['project']} {row['symbol']} APY increased from {round(old_apy,2)}% to {round(row['apy'],2)}%"
-                )
+    direction = "increased" if new_apy > old_apy else "dropped"
 
-            if diff < -1:
+    message = (
+        f"⚠️ {project.upper()} {symbol} APY "
+        f"{direction} from "
+        f"{round(old_apy,2)}% "
+        f"to {round(new_apy,2)}%"
+    )
 
-                alerts.append(
-                    f"⚠️ {row['project']} {row['symbol']} APY dropped from {round(old_apy,2)}% to {round(row['apy'],2)}%"
-                )
+    send_telegram(message)
 
-# =========================
-# SEND ALERTS
-# =========================
+    print(message)
 
-if len(alerts) == 0:
-
-    send_telegram("✅ No major APY changes detected")
-
-else:
-
-    for alert in alerts:
-
-        send_telegram(alert)
 
 # =========================
 # SAVE NEW SNAPSHOT
 # =========================
 
-stable.to_csv(snapshot_file, index=False)
+new_df.to_csv(HISTORY_FILE, index=False)
 
 print("Smart alerts completed")

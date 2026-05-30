@@ -1,4 +1,15 @@
 .env
 venv/
 __pycache__/
+*.pyc
+
+*.db
+*.db.backup*
+*_backup.db
+*_clean.db
+*_pre_cycleid.db
+
+logs/
 *.csv
+
+.DS_Store
