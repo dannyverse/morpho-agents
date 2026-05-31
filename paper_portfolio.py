@@ -1,6 +1,5 @@
 import sqlite3
 import pandas as pd
-import random
 from datetime import datetime
 
 # =========================
@@ -32,8 +31,10 @@ tables_df = pd.read_sql_query(
 
 required_tables = [
 
-    "executions"
+    "portfolio_state"
 ]
+
+    
 
 missing_tables = [
 
@@ -72,13 +73,13 @@ query = """
 
 SELECT *
 
-FROM executions
+FROM portfolio_state
 
-WHERE execution_decision='APPROVED'
+
 
 """
 
-df = pd.read_sql_query(
+portfolio_df = pd.read_sql_query(
     query,
     conn
 )
@@ -87,7 +88,7 @@ df = pd.read_sql_query(
 # EMPTY CHECK
 # =========================
 
-if len(df) == 0:
+if len(portfolio_df) == 0:
 
     print("\n")
 
@@ -103,19 +104,17 @@ if len(df) == 0:
 # CREATE PNL
 # =========================
 
-df[
-    "unrealized_pnl"
-] = [
+total_pnl = round(
 
-    round(
+    portfolio_df[
+        "unrealized_pnl"
+    ].sum(),
 
-        random.uniform(-3, 5),
+    2
+)
 
-        2
-    )
 
-    for _ in range(len(df))
-]
+
 
 # =========================
 # PORTFOLIO METRICS
@@ -125,7 +124,7 @@ starting_equity = 10000
 
 total_pnl = round(
 
-    df[
+portfolio_df[
         "unrealized_pnl"
     ].sum(),
 
@@ -141,12 +140,12 @@ equity = round(
     2
 )
 
-open_positions = len(df)
-
+open_positions = len(portfolio_df)
 exposure = round(
 
-    open_positions * 6.5,
-
+portfolio_df[
+    "position_size"
+].sum() / 100,
     2
 )
 

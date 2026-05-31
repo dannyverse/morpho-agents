@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-import random
+
 
 # =========================
 # DATABASE
@@ -31,7 +31,7 @@ tables_df = pd.read_sql_query(
 
 required_tables = [
 
-    "executions"
+     "portfolio_state"
 ]
 
 missing_tables = [
@@ -90,18 +90,17 @@ query = """
 
 SELECT *
 
-FROM executions
+FROM portfolio_state
 
-WHERE execution_decision='APPROVED'
+WHERE status='OPEN'
 
-AND cycle_id = ?
+
 
 """
 
 df = pd.read_sql_query(
     query,
-    conn,
-    params=[current_cycle_id]
+    conn
 )
 
 
@@ -135,94 +134,43 @@ if len(df) == 0:
 # =========================
 # CREATE POSITION DATA
 # =========================
+positions = pd.DataFrame({
+    "asset": df["asset"],
+    "entry_price": df["entry_price"],
+    "current_price": df["current_price"],
+    "position_size": df["position_size"],
+    "position_pnl": df["unrealized_pnl"]
+})
 
-df[
-    "entry_price"
-] = [
 
-    round(
 
-        random.uniform(10, 200),
 
-        2
-    )
 
-    for _ in range(len(df))
-]
 
-df[
-    "current_price"
-] = [
 
-    round(
 
-        entry *
 
-        random.uniform(0.95, 1.08),
 
-        2
-    )
 
-    for entry in df[
-        "entry_price"
-    ]
-]
 
-df[
-    "position_size"
-] = [
 
-    round(
 
-        random.uniform(100, 1000),
 
-        2
-    )
 
-    for _ in range(len(df))
-]
 
-# =========================
-# POSITION PNL
-# =========================
 
-df[
-    "position_pnl"
-] = round(
-
-    (
-
-        (
-            df[
-                "current_price"
-            ]
-
-            -
-
-            df[
-                "entry_price"
-            ]
-        )
-
-        /
-
-        df[
-            "entry_price"
-        ]
-
-    ) * 100,
-
-    2
-)
 
 # =========================
 # CREATE TABLE
 # =========================
 
+conn.execute(
+    "DROP TABLE IF EXISTS position_state"
+)
+
 create_query = """
 
-CREATE TABLE IF NOT EXISTS
-position_state (
+CREATE TABLE position_state (
 
     asset TEXT,
 
@@ -241,6 +189,13 @@ conn.execute(
     create_query
 )
 
+
+
+
+
+
+
+
 # =========================
 # RESET TABLE
 # =========================
@@ -253,19 +208,13 @@ conn.execute(
 # SAVE POSITIONS
 # =========================
 
-positions = df.groupby(
-    "asset",
-    as_index=False
-).agg(
-    {
-        "entry_price": "mean",
-        "current_price": "mean",
-        "position_size": "sum",
-        "position_pnl": "mean"
-    }
-)
-    
-        
+positions = pd.DataFrame({
+    "asset": df["asset"],
+    "entry_price": df["entry_price"],
+    "current_price": df["current_price"],
+    "position_size": df["position_size"],
+    "position_pnl": df["unrealized_pnl"]
+})        
         
         
        
