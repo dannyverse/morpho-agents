@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-import random
+
 
 from datetime import datetime
 
@@ -33,7 +33,7 @@ tables_df = pd.read_sql_query(
     conn
 )
 
-if "executions" not in tables_df["name"].values:
+if "position_state" not in tables_df["name"].values:
 
     print("\n")
     print(
@@ -52,11 +52,14 @@ query = """
 
 SELECT *
 
-FROM executions
+FROM position_state
 
-ORDER BY ROWID DESC
 
-LIMIT 20
+
+
+
+
+
 
 """
 
@@ -123,62 +126,17 @@ conn.execute(
 # =========================
 
 positions = []
-
 for _, row in df.iterrows():
 
-    entry_price = round(
+    entry_price = row["entry_price"]
 
-        random.uniform(10, 200),
+    current_price = row["current_price"]
 
-        2
-    )
+    leverage = 1
 
-    current_price = round(
+    position_size = row["position_size"]
 
-        entry_price *
-
-        random.uniform(0.95, 1.05),
-
-        2
-    )
-
-    leverage = random.choice(
-        [1, 2, 3]
-    )
-
-    position_size = round(
-
-        random.uniform(100, 1000),
-
-        2
-    )
-
-    # =========================
-    # PNL
-    # =========================
-
-    raw_return = (
-
-        current_price -
-
-        entry_price
-
-    ) / entry_price
-
-    if row["direction"] == "SHORT":
-
-        raw_return *= -1
-
-    unrealized_pnl = round(
-
-        raw_return *
-
-        position_size *
-
-        leverage,
-
-        2
-    )
+    unrealized_pnl = row["position_pnl"]
 
     position = {
 
@@ -188,7 +146,7 @@ for _, row in df.iterrows():
 
         "asset": row["asset"],
 
-        "direction": row["direction"],
+        "direction": "LONG",
 
         "entry_price": entry_price,
 
@@ -209,6 +167,43 @@ for _, row in df.iterrows():
         position
     )
 
+
+
+
+
+
+
+
+
+
+
+
+
+       
+
+       
+
+        
+    
+
+    
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    
+
+    
+        
+    
+
 # =========================
 # SAVE
 # =========================
@@ -216,7 +211,9 @@ for _, row in df.iterrows():
 positions_df = pd.DataFrame(
     positions
 )
-
+conn.execute(
+    "DELETE FROM portfolio_state"
+)
 positions_df.to_sql(
 
     "portfolio_state",

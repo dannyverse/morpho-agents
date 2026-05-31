@@ -253,15 +253,25 @@ conn.execute(
 # SAVE POSITIONS
 # =========================
 
-positions = df[
-    [
-        "asset",
-        "entry_price",
-        "current_price",
-        "position_size",
-        "position_pnl"
-    ]
-]
+positions = df.groupby(
+    "asset",
+    as_index=False
+).agg(
+    {
+        "entry_price": "mean",
+        "current_price": "mean",
+        "position_size": "sum",
+        "position_pnl": "mean"
+    }
+)
+    
+        
+        
+        
+       
+        
+    
+
 
 positions.to_sql(
 
