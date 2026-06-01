@@ -1,156 +1,158 @@
-# NEXT SESSION — PRIORITIES
+# MORPHO AGENTS — REFINED ROADMAP
 
-## PRIORITY 1 — Residual Duplicate Resolution
+## CURRENT ARCHITECTURE STATUS
 
-Investigate remaining duplicate assets in `position_state`.
+### COMPLETED
 
-Diagnostic queries:
+✅ cycle-aware architecture
+✅ system_state table
+✅ portfolio_state as source of truth
+✅ position_state stabilized
+✅ paper_portfolio migrated to state-driven pipeline
+✅ synthetic/random portfolio generation removed
+✅ execution inflation bug eliminated
 
-```sql
-SELECT asset, direction, COUNT(*)
-FROM position_state
-GROUP BY asset, direction
-HAVING COUNT(*) > 1;
-```
+---
 
-and:
+# ARCHITECTURAL PRINCIPLE
 
-```sql
-SELECT *
-FROM position_state
-WHERE asset='ASTER';
-```
+The system is transitioning from:
 
-Goal:
-Determine whether duplicates are caused by:
+execution-history-driven architecture
 
-* multiple APPROVED executions,
-* LONG + SHORT coexistence,
-* or missing aggregation/netting logic.
+to:
 
-Likely implementation:
-Introduce proper position merge/netting behavior.
+state-driven architecture
 
-Target architecture:
+This separation is critical.
+
+## executions
+
+Purpose:
+
+* immutable historical log
+* analytics
+* audit trail
+* learning datasets
+
+## portfolio_state / position_state
+
+Purpose:
+
+* current operational truth
+* live decision-making
+* risk calculations
+* agent coordination
+
+---
+
+# NEXT SESSION PRIORITY
+
+## CREATE:
+
+core/state_manager.py
+
+Recommended structure:
 
 ```python
-if same_direction:
-    merge_position_size()
-
-if opposite_direction:
-    reduce_or_close_position()
+class StateManager:
 ```
 
-Long-term goal:
-Maintain only ONE live position per asset + direction.
+Core functions:
 
-Estimated time:
-30 min – 2h.
+* get_current_cycle_id()
+* set_current_cycle_id()
+* get_open_positions()
+* get_position_state()
+* get_portfolio_metrics()
 
----
+Meta-intelligence placeholders:
 
-## PRIORITY 2 — System-Wide Consistency Audit
-
-Audit these modules:
-
-* risk_manager.py
-* paper_portfolio.py
-* portfolio_state.py
-* portfolio_manager.py
-
-Goal:
-Ensure they DO NOT read historical `executions`.
-
-Target architecture:
-
-```text
-executions      = immutable audit/history
-position_state  = live portfolio truth
-system_state    = runtime control plane
-```
-
-All risk/exposure calculations should originate from:
-
-* `position_state`
-* `system_state`
-
-NOT historical executions.
+* get_regime_state()
+* get_agent_performance()
 
 ---
 
-## PRIORITY 3 — system_state Expansion
+# IMPORTANT DESIGN DECISIONS
 
-Extend `system_state` with:
+## Keep historical analytics separate
 
-* current_cycle_id
-* current_regime
-* last_cycle_timestamp
-* daily_pnl
-* daily_drawdown
-* kill_switch_reason
-* system_health_score
+historical_analytics.py may continue using executions.
 
-This becomes the foundation for:
+Do NOT force all modules into state-driven access.
 
-* Meta-Intelligence Layer
-* adaptive orchestration
-* autonomous governance
-* regime-aware execution
+Historical systems and operational systems have different responsibilities.
 
 ---
 
-# STRATEGIC STATUS
+# RECOMMENDED MIGRATION ORDER
 
-## BEFORE THIS SESSION
-
-* Historical contamination
-* Infinite exposure inflation
-* Corrupted position state
-* Invalid risk metrics
-* Permanent Kill Switch triggering
-
-## AFTER THIS SESSION
-
-* Stateful cycle-aware architecture
-* Stable position reconstruction
-* Global runtime state persistence
-* Deterministic execution tracking
-* Exposure inflation structurally resolved
-
-The system has transitioned from:
-“accumulating scripts”
-to
-“state-aware autonomous architecture”.
+1. dashboard.py
+2. strategy_analytics.py
+3. ai_reasoning_agent.py
+4. risk-related modules
+5. Leave historical_analytics.py for later review
 
 ---
 
-# IMPORTANT NEXT MILESTONE
+# FUTURE ARCHITECTURE TARGET
 
-Once residual duplicates and module consistency are resolved:
+state_manager.py becomes:
 
-Risk metrics become trustworthy for the first time.
-
-At that point:
-
-* exposure,
-* drawdown,
-* open positions,
-* and governance flags
-
-can begin serving as real operational signals.
+* single operational access layer
+* coordination layer for agents
+* future bridge to Redis/Postgres
+* foundation for Meta-Intelligence Layer
 
 ---
 
-# ESTIMATED NEXT PHASE
+# IMPORTANT LESSON FROM TODAY
 
-After stabilization:
+Small, verifiable migrations are safer than massive rewrites.
 
-1. Structured logging
-2. Health monitoring + heartbeat
-3. Intelligent Kill Switch
-4. Snapshotting + telemetry
-5. DB-first migration
-6. Adaptive strategy infrastructure
+Future sessions should prioritize:
 
-The project is now entering infrastructure-hardening phase rather than structural debugging phase.
+* incremental changes
+* validation after each migration
+* architecture stability over feature velocity
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
