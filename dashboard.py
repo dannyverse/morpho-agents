@@ -2,7 +2,7 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 import time
-
+from core.state_manager import StateManager
 # =========================
 # PAGE CONFIG
 # =========================
@@ -24,10 +24,11 @@ time.sleep(1)
 # DATABASE
 # =========================
 
+state_manager = StateManager()
+
 conn = sqlite3.connect(
     "trading_system.db"
 )
-
 # =========================
 # LOAD DATA
 # =========================
@@ -75,19 +76,11 @@ executions = pd.read_sql_query(
     conn
 )
 
-portfolio = pd.read_sql_query(
+latest_portfolio = state_manager.get_latest_portfolio_state()
+portfolio = state_manager.get_portfolio_history()
 
-    portfolio_query,
+positions = state_manager.get_position_state()
 
-    conn
-)
-
-positions = pd.read_sql_query(
-
-    positions_query,
-
-    conn
-)
 
 conn.close()
 
@@ -105,9 +98,7 @@ st.markdown("---")
 # PORTFOLIO METRICS
 # =========================
 
-if len(portfolio) > 0:
-
-    latest = portfolio.iloc[0]
+if latest_portfolio is not None:
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -115,28 +106,27 @@ if len(portfolio) > 0:
 
         "💼 Equity",
 
-        f"${latest['equity']:.2f}"
+        f"${latest_portfolio['equity']:.2f}"
     )
 
     col2.metric(
 
         "📈 Exposure",
 
-        f"{latest['exposure']}%"
-    )
+f"{latest_portfolio['exposure']}%"    )
 
     col3.metric(
 
         "⚔️ Open Positions",
 
-        int(latest['open_positions'])
+        int(latest_portfolio['open_positions'])
     )
 
     col4.metric(
 
         "🧠 Unrealized PnL",
 
-        f"{latest['unrealized_pnl']:.2f}%"
+        f"{latest_portfolio['unrealized_pnl']:.2f}%"
     )
 
 # =========================
