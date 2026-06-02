@@ -1,685 +1,618 @@
 # MORPHO AGENTS — PROJECT STATUS
 
-## Última actualización
+## VERSION
 
-Junio 2026
-
----
-
-# VISIÓN DEL PROYECTO
-
-Morpho Agents NO es un sistema de trading.
-
-Morpho Agents es una plataforma multiagente de inteligencia cuantitativa diseñada para identificar, evaluar y explotar oportunidades en mercados crypto, DeFi y mercados digitales.
-
-El trading es únicamente una de las posibles formas de monetizar oportunidades.
+June 2026
 
 ---
 
-# PRINCIPIO FUNDAMENTAL
+# PROJECT IDENTITY
 
-La arquitectura NO gira alrededor de órdenes.
+Morpho Agents is NOT a trading system.
 
-La arquitectura NO gira alrededor de posiciones.
+Morpho Agents is an opportunity intelligence platform.
 
-La arquitectura gira alrededor de oportunidades.
+Its purpose is to discover, evaluate, validate, allocate capital to, monitor and exploit opportunities across digital markets.
 
-Cadena de valor objetivo:
+Trading is only one possible execution mechanism.
 
-Mercados
+The project is not being built around a strategy.
+
+The project is being built around the capability to continuously discover future sources of edge.
+
+---
+
+# CORE THESIS
+
+Digital markets are increasingly optimized for machines rather than humans.
+
+Reasons:
+
+* 24/7 operation
+* API-native infrastructure
+* Global liquidity
+* Massive information density
+* Rapid opportunity decay
+* Increasing complexity
+
+As market complexity increases:
+
+Human advantage decreases.
+
+Machine advantage increases.
+
+Morpho is being built around this thesis.
+
+---
+
+# LONG TERM VISION
+
+The objective is not to build a profitable strategy.
+
+The objective is not to build a better trading bot.
+
+The objective is to build a machine capable of continuously improving its ability to discover, evaluate and exploit opportunities.
+
+The strategic asset is not a strategy.
+
+The strategic asset is the discovery engine itself.
+
+---
+
+# MENTAL MODEL
+
+Traditional Model:
+
+Markets
 ↓
-Información
+Signals
 ↓
-Oportunidades
+Trades
 ↓
-Evaluación
+Profit
+
+Morpho Model:
+
+Markets
 ↓
-Riesgo
+Information
 ↓
-Asignación de Capital
+Opportunities
 ↓
-Ejecución
+Evaluation
 ↓
-Retorno
-
----
-
-# OBJETIVO FINAL
-
-Construir un sistema capaz de:
-
-- Observar múltiples mercados simultáneamente
-- Detectar oportunidades con ventaja estadística
-- Evaluar riesgo y liquidez
-- Asignar capital dinámicamente
-- Ejecutar estrategias
-- Aprender qué estrategias funcionan mejor
-- Adaptarse a cambios de régimen
-- Preservar capital a largo plazo
-
----
-
-# TIPOS DE OPORTUNIDADES OBJETIVO
-
-## Arbitrage
-
-- Cross Exchange Arbitrage
-- Cross Chain Arbitrage
-- Funding Arbitrage
-- Spot vs Perpetual Arbitrage
-- Basis Trading
-
-## Yield
-
-- Lending
-- Borrowing
-- Staking
-- Restaking
-- Liquidity Provision
-
-## Market Inefficiencies
-
-- Momentum
-- Mean Reversion
-- Trend Following
-- Regime Shifts
-- Liquidity Dislocations
-- Volatility Events
-
-## DeFi
-
-- Incentive Programs
-- Liquidity Mining
-- Governance Opportunities
-- Protocol Launches
-
----
-
-# FILOSOFÍA DE RIESGO
-
-Prioridad absoluta:
-
-Supervivencia > Beneficio
-
-El sistema debe:
-
-- evitar pérdidas catastróficas
-- limitar exposición
-- adaptarse a condiciones adversas
-- preservar capital
-
-antes de intentar maximizar retornos.
-
----
-
-# PRINCIPIOS ARQUITECTÓNICOS
-
-- State Driven Architecture
-- Cycle Aware Architecture
-- Single Source of Truth
-- Exchange Agnostic
-- Strategy Agnostic
-- Opportunity Agnostic
-- Modular
-- Extensible
-- Incremental Evolution
-
-Prioridad:
-
-Estabilidad Arquitectónica
->
-Velocidad de Desarrollo
-
----
-
-# INFRAESTRUCTURA ACTUAL
-
-Estado:
-
-OPERATIVA
-
-## Entorno
-
-- VPS Vultr
-- Ubuntu 24
-- Python 3.12
-- SQLite
-- tmux persistente
-- Git
-- Backup local + VPS
-
----
-
-## Orquestación
-
-### master_runner.py
-
-Responsabilidades:
-
-- generar cycle_id
-- coordinar ciclos
-- iniciar safe_runner
-- mantener runtime activo
-
-Estado:
-
-OPERATIVO
-
----
-
-### safe_runner.py
-
-Responsabilidades:
-
-- ejecutar módulos
-- aislar fallos
-- registrar salud del sistema
-
-Estado:
-
-OPERATIVO
-
----
-
-# MODELO DE ESTADO ACTUAL
-
-## Runtime State
-
-### system_state
-
-Responsabilidad:
-
-Estado global del runtime.
-
-Contiene:
-
-- current_cycle_id
-- flags globales
-- coordinación del sistema
-
-Estado:
-
-ACTIVO
-
----
-
-## Operational State
-
-### position_state
-
-Responsabilidad:
-
-Single Source of Truth operacional.
-
-Representa capital desplegado actualmente por el sistema.
-
-Estado:
-
-SOURCE OF TRUTH CONFIRMADO
-
-Resultado de auditoría:
-
-- No depende de executions
-- Consumido por StateManager
-- Consumido por Dashboard
-- Consumido por portfolio_state
-
-Ownership técnico actual:
-
-position_manager.py
-
-Ownership arquitectónico futuro:
-
-Position Engine
-
----
-
-## Derived State
-
-### portfolio_state
-
-Responsabilidad:
-
-Estado derivado enriquecido.
-
-Contiene:
-
-- direction
-- leverage
-- unrealized_pnl
-- realized_pnl
-- status
-
-Estado:
-
-DERIVED STATE
-
-Observación:
-
-Existe circularidad con position_state.
-
-Pendiente resolución.
-
----
-
-## Historical Snapshot
-
-### paper_portfolio
-
-Responsabilidad:
-
-Snapshot histórico agregado.
-
-Contiene:
-
-- equity
-- exposure
-- open_positions
-- pnl agregado
-
-Estado:
-
-ACTIVO
-
----
-
-## Immutable History
-
-### executions
-
-Responsabilidad:
-
-Histórico inmutable.
-
-Uso actual:
-
-- auditoría
-- reporting
-- analytics
-- datasets
-
-Resultado de auditoría:
-
-YA NO ES DEPENDENCIA OPERACIONAL
-
----
-
-# ACLARACIÓN DE DOMINIO
-
-Las oportunidades son la entidad principal del sistema.
-
-Las posiciones son mecanismos operativos utilizados para explotar oportunidades.
-
-Modelo conceptual:
-
-Opportunity
+Validation
 ↓
-Risk Evaluation
+Risk
 ↓
 Capital Allocation
 ↓
-Position
-↓
 Execution
 ↓
-Return
-
-Por tanto:
-
-- Opportunity es un concepto estratégico
-- Position es un concepto operacional
-- position_state sigue siendo válido como Source of Truth operacional
-- En el futuro podrá existir un Opportunity Engine por encima del Position Engine
+Monitoring
+↓
+Learning
+↓
+Improved Opportunity Discovery
 
 ---
 
-# AUDITORÍAS COMPLETADAS
+# WHAT MORPHO IS
+
+Morpho is:
+
+* Opportunity Centric
+* Research Driven
+* State Driven
+* Cycle Aware
+* Exchange Agnostic
+* Strategy Agnostic
+* Modular
+* Extensible
+
+---
+
+# WHAT MORPHO IS NOT
+
+Morpho is not:
+
+* A single trading strategy
+* A funding arbitrage bot
+* A Hyperliquid bot
+* A DeFi yield bot
+* A market making bot
+
+Those are potential opportunity sources.
+
+Not the system itself.
+
+---
+
+# OPPORTUNITY TYPES
+
+Current and future opportunity categories include:
+
+## Trading Opportunities
+
+* Momentum
+* Mean Reversion
+* Trend Following
+* Volatility Events
+* Liquidity Dislocations
+
+## Arbitrage Opportunities
+
+* Cross Exchange Arbitrage
+* Funding Arbitrage
+* Spot / Perp Arbitrage
+* Cross Chain Arbitrage
+
+## DeFi Opportunities
+
+* Lending
+* Borrowing
+* Yield Farming
+* Liquidity Provision
+* Restaking
+* Incentive Programs
+
+## Future Categories
+
+Any opportunity source that can be:
+
+* observed
+* evaluated
+* risk adjusted
+* capital allocated
+
+can become part of Morpho.
+
+---
+
+# DEVELOPMENT PHILOSOPHY
+
+Priority Order:
+
+Architectural Stability
+
+>
+
+Observability
+
+>
+
+Risk Management
+
+>
+
+Execution
+
+>
+
+Optimization
+
+Rules:
+
+* One primary objective per session
+* Audit before refactor
+* Incremental migrations
+* No large simultaneous changes
+* Document decisions
+* Maintain continuity documents
+
+---
+
+# CURRENT ARCHITECTURE
+
+## Runtime Layer
+
+system_state
+
+Purpose:
+
+* cycle_id
+* runtime coordination
+* system flags
+
+Status:
+
+ACTIVE
+
+---
+
+## Operational State Layer
+
+position_state
+
+Purpose:
+
+Single Source of Truth for deployed capital.
+
+Current Technical Owner:
+
+position_manager.py
+
+Future Architectural Owner:
+
+Position Engine
+
+Status:
+
+CONFIRMED
+
+---
+
+## Derived State Layer
+
+portfolio_state
+
+Purpose:
+
+Derived operational representation.
+
+Status:
+
+ACTIVE
+
+Known Issue:
+
+Circular dependency exists.
+
+Requires future resolution.
+
+---
+
+## Historical Layer
+
+paper_portfolio
+
+Purpose:
+
+Historical snapshots.
+
+Status:
+
+ACTIVE
+
+---
+
+## Immutable History Layer
+
+executions
+
+Purpose:
+
+Audit trail.
+
+Historical analysis.
+
+Research dataset.
+
+Status:
+
+IMMUTABLE
+
+No longer operationally required.
+
+---
+
+# AUDITS COMPLETED
 
 ## Source Of Truth Audit
 
-Resultado:
+Result:
 
-position_state
-=
-Single Source of Truth operacional
+position_state confirmed as operational source of truth.
 
-Estado:
+Status:
 
-COMPLETADO
+COMPLETE
 
 ---
 
 ## Executions Dependency Audit
 
-Resultado:
+Result:
 
-executions ya no participa en:
+Operational dependency removed.
 
-- reconstrucción de estado
-- cálculo de posiciones
-- decisiones operativas
+Status:
 
-Estado:
-
-COMPLETADO
+COMPLETE
 
 ---
 
 ## Flow Of State Audit
 
-Capas identificadas:
+Result:
 
-- system_state
-- position_state
-- portfolio_state
-- paper_portfolio
-- executions
+State hierarchy identified.
 
-Estado:
+Status:
 
-COMPLETADO
+COMPLETE
 
 ---
 
 ## Position Ownership Audit
 
-Resultado:
+Result:
 
-Propietario técnico actual:
+Current technical owner:
 
 position_manager.py
 
-Evidencia:
-
-- CREATE TABLE position_state
-- DROP TABLE position_state
-- DELETE FROM position_state
-- escritura completa de position_state
-
-Conclusión:
-
-position_manager.py es el propietario técnico actual.
-
-Ownership arquitectónico futuro:
+Future owner:
 
 Position Engine
 
-Estado:
+Status:
 
-COMPLETADO
-
----
-
-# OBSERVABILIDAD
-
-Estado:
-
-PARCIAL
-
-Hallazgos:
-
-logger.py y system_logger.py escriben sobre system_log.
-
-Actualmente no existe una única fuente de verdad para observabilidad.
-
-Necesidad futura:
-
-System Status Layer
+COMPLETE
 
 ---
 
-# CONECTIVIDAD DE MERCADO
+# ARCHITECTURAL GAPS
 
-## Hyperliquid
+## Circularity
 
-Utilizado por:
+Current:
 
-- funding_agent.py
-- market_data_agent.py
-- market_maker_agent.py
-- liquidation_hunter.py
-
-## Binance
-
-Utilizado por:
-
-- technical_agent.py
-- opportunity_agent.py
-
-Resultado de auditoría:
-
-No existe todavía Exchange Abstraction Layer.
-
-Modelo actual:
-
-Acceso directo a APIs.
-
----
-
-# DEUDA TÉCNICA IDENTIFICADA
-
-## Circularidad
-
-Actualmente existe:
-
-position_manager.py
-↓
+position_state
+↔
 portfolio_state
 
-portfolio_state.py
-↓
-position_state
+Status:
 
-Estado:
+PENDING
 
-PENDIENTE
+Priority:
 
----
-
-## DROP TABLE
-
-position_manager.py ejecuta:
-
-DROP TABLE IF EXISTS position_state
-
-Riesgo:
-
-- pérdida temporal de estado
-- inconsistencia ante fallo durante escritura
-
-Solución futura:
-
-DELETE + TRANSACTION
-
-Estado:
-
-PENDIENTE
+HIGH
 
 ---
 
-## Observabilidad
+## Exchange Abstraction
 
-Ownership ambiguo de:
+Current:
 
-system_log
+Direct integrations remain embedded inside agents.
 
-Estado:
+Examples:
 
-PENDIENTE
+* Hyperliquid
+* Binance
 
----
+Status:
 
-# ARQUITECTURA FUTURA OBJETIVO
+VISION DEFINED
 
-Market Data
-↓
-Opportunity Detection Agents
-↓
-Strategy Evaluation Agents
-↓
-Risk Layer
-↓
-Capital Allocation Layer
-↓
-Execution Layer
-↓
-Position Engine
-↓
-position_state
-↓
-Portfolio Engine
-↓
-portfolio_state
-↓
-Meta Intelligence Layer
+IMPLEMENTATION PENDING
+
+Future Requirement:
+
+Exchange Layer abstraction.
+
+Must exist before large-scale opportunity expansion.
 
 ---
 
-# ROADMAP PRIORITARIO
+## Observability Ownership
 
-## Corto Plazo
+Current:
 
-- Observability Foundation
-- Consolidación de system_log
-- System Status Layer
-- Circularity Resolution
-- Position Engine Design
+system_log ownership remains ambiguous.
 
-## Medio Plazo
+Status:
 
-- Exchange Abstraction Layer
-- Agent Registry
-- Capital Allocation Layer
+PENDING
 
-## Largo Plazo
+Next Audit:
 
-- Meta Intelligence Layer
-- Adaptive Strategy Engine
-- Autonomous Capital Allocation
-- Cross Exchange Opportunity Network
+Observability Foundation.
 
 ---
 
-# COMANDOS OPERATIVOS CRÍTICOS
+## Risk Foundation
 
-## Entrar VPS
+Current:
 
-ssh root@IP
+Partial implementation.
 
-## Reattach tmux
+Future Requirement:
 
-tmux attach
+Unified risk layer.
 
-## Activar entorno
+Status:
 
-source venv/bin/activate
-
-## Lanzar sistema
-
-python master_runner.py
-
-## Leer continuidad
-
-cat NEXT_SESSION.md
-
-cat PROJECT_STATUS.md
-
-## Estado Git
-
-git status
-
-## Commit
-
-git add .
-git commit -m "descripcion"
-git push
+PENDING
 
 ---
 
-# PROTOCOLO DE TRABAJO
+# CURRENT PROJECT PHASE
 
-## Sesiones
+PHASE 0
 
-- Sesiones de 2-3 horas
-- Un único objetivo principal
-- Cambios incrementales
-- Evitar refactors masivos
-- Auditoría antes de refactor
+FOUNDATION
 
-## Inicio de sesión
+Goal:
 
-1. Leer NEXT_SESSION.md
-2. Leer PROJECT_STATUS.md
-3. Definir un objetivo único
-4. Ejecutar cambios incrementales
+Create a stable machine.
 
-## Cierre de sesión
+Focus:
 
-1. Validar código
+* State Architecture
+* Ownership
+* Observability
+* Risk Foundation
+* Infrastructure
 
-python3 -m py_compile archivo.py
+Estimated Completion:
 
-2. Commit
+~70%
+PHASE 0 COMPLETE WHEN
 
-git add .
-git commit -m "descripcion"
-git push
+✅ Source of Truth formalized
 
-3. Backup
+✅ Ownership model formalized
 
-cd ..
-cp -R morpho-agents morpho-agents_backup_$(date +%Y%m%d_%H%M)
+✅ Circularity resolved
 
-4. Actualizar NEXT_SESSION.md
+✅ Observability Layer operational
 
-nano NEXT_SESSION.md
+✅ Risk Foundation implemented
 
-5. Actualizar PROJECT_STATUS.md si hubo cambios arquitectónicos
+✅ Exchange Abstraction initiated
+
+✅ No critical technical debt remains
+---
+
+# ROADMAP
+
+## PHASE 0
+
+FOUNDATION
+
+Objective:
+
+Build a stable and observable system.
+
+Includes:
+
+* State ownership
+* Source of truth
+* Observability
+* Risk foundations
+* Infrastructure
+
+Current Phase
 
 ---
 
-# ESTADO GENERAL
+## PHASE 1
 
-Infraestructura:
-MUY AVANZADA
+OPPORTUNITY PLATFORM
 
-Arquitectura de Estado:
-SÓLIDA
+Objective:
 
-Source of Truth:
-DEFINIDO
+Enable the system to understand opportunities.
 
-Ownership:
-DEFINIDO
+Includes:
 
-Observabilidad:
-PARCIAL
+* Opportunity Model
+* Opportunity Lifecycle
+* Opportunity Registry
+* Opportunity Scoring
 
-Exchange Abstraction:
-NO IMPLEMENTADA
+---
+
+## PHASE 2
+
+CAPITAL ALLOCATION PLATFORM
+
+Objective:
+
+Deploy capital intelligently.
+
+Includes:
+
+* Capital Allocation Engine
+* Portfolio Construction
+* Risk Allocation
+* Opportunity Prioritization
+
+---
+
+## PHASE 3
+
+DISCOVERY PLATFORM
+
+Objective:
+
+Learn what works.
+
+Includes:
+
+* Opportunity Memory
+* Experimentation Framework
+* Performance Attribution
+* Edge Tracking
+* Opportunity Validation
+
+---
+
+## PHASE 4
+
+META QUANT ENGINE
+
+Objective:
+
+Improve the system's ability to discover new opportunities.
+
+Includes:
+
+* Strategy Discovery
+* Strategy Generation
+* Strategy Mutation
+* Strategy Retirement
+* Autonomous Research Loops
+* Meta Intelligence Layer
+
+---
+
+# SUCCESS METRICS
+
+Success is NOT measured primarily by short-term PnL.
+
+Success is measured by the system's ability to:
+
+* detect opportunities
+* model opportunities
+* evaluate opportunities
+* validate opportunities
+* allocate capital
+* monitor opportunities
+* retire opportunities
+* improve future opportunity discovery
+
+---
+
+# CURRENT ASSESSMENT
+
+Vision:
+Strong
+
+Architecture:
+Strong
+
+State Management:
+Strong
+
+Ownership Model:
+Strong
+
+Observability:
+Partial
+
+Risk Layer:
+Partial
+
+Opportunity Framework:
+Early
+
+Discovery Capability:
+Minimal
 
 Meta Intelligence:
-PENDIENTE
+Not Implemented
 
 ---
 
-# RESUMEN EJECUTIVO
+# NORTH STAR
 
-Morpho Agents ha superado la fase de scripts aislados.
+Morpho Agents is a machine designed to continuously improve its ability to discover, evaluate and exploit opportunities across digital markets.
 
-Actualmente dispone de:
+The long-term goal is not to build a strategy.
 
-- arquitectura state-driven
-- runtime coordinado por ciclos
-- ownership de estado definido
-- Source of Truth identificado
-- dependencia operacional de executions eliminada
+The long-term goal is to build a machine capable of finding the next strategy.
 
-Las principales áreas pendientes son:
-
-- resolver circularidad
-- formalizar Position Engine
-- consolidar observabilidad
-- construir Exchange Abstraction Layer
-
-El proyecto se encuentra en fase de consolidación de infraestructura y arquitectura antes de abordar capas avanzadas de inteligencia, asignación de capital y explotación autónoma de oportunidades.
