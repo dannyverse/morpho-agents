@@ -1,158 +1,207 @@
-# MORPHO AGENTS — REFINED ROADMAP
+# NEXT SESSION — MORPHO AGENTS
 
-## CURRENT ARCHITECTURE STATUS
+## FECHA DE CORTE
 
-### COMPLETED
-
-✅ cycle-aware architecture
-✅ system_state table
-✅ portfolio_state as source of truth
-✅ position_state stabilized
-✅ paper_portfolio migrated to state-driven pipeline
-✅ synthetic/random portfolio generation removed
-✅ execution inflation bug eliminated
+Junio 2026
 
 ---
 
-# ARCHITECTURAL PRINCIPLE
+# ESTADO ACTUAL
 
-The system is transitioning from:
+Durante la sesión anterior se completaron:
 
-execution-history-driven architecture
+* Source Of Truth Audit
+* Executions Dependency Audit
+* Flow Of State Audit
+* Position Ownership Audit
 
-to:
+Conclusiones confirmadas:
 
-state-driven architecture
-
-This separation is critical.
-
-## executions
-
-Purpose:
-
-* immutable historical log
-* analytics
-* audit trail
-* learning datasets
-
-## portfolio_state / position_state
-
-Purpose:
-
-* current operational truth
-* live decision-making
-* risk calculations
-* agent coordination
-
----
-
-# NEXT SESSION PRIORITY
-
-## CREATE:
-
-core/state_manager.py
-
-Recommended structure:
-
-```python
-class StateManager:
+```text
+position_state
+=
+Single Source of Truth operacional
 ```
 
-Core functions:
+```text
+executions
+=
+histórico inmutable
+```
 
-* get_current_cycle_id()
-* set_current_cycle_id()
-* get_open_positions()
-* get_position_state()
-* get_portfolio_metrics()
+```text
+position_manager.py
+=
+propietario técnico actual de position_state
+```
 
-Meta-intelligence placeholders:
+```text
+Position Engine
+=
+propietario arquitectónico futuro
+```
 
-* get_regime_state()
-* get_agent_performance()
+También se confirmó:
 
----
+```text
+portfolio_state
+=
+Derived State
+```
 
-# IMPORTANT DESIGN DECISIONS
+y se identificó una circularidad pendiente entre:
 
-## Keep historical analytics separate
-
-historical_analytics.py may continue using executions.
-
-Do NOT force all modules into state-driven access.
-
-Historical systems and operational systems have different responsibilities.
-
----
-
-# RECOMMENDED MIGRATION ORDER
-
-1. dashboard.py
-2. strategy_analytics.py
-3. ai_reasoning_agent.py
-4. risk-related modules
-5. Leave historical_analytics.py for later review
-
----
-
-# FUTURE ARCHITECTURE TARGET
-
-state_manager.py becomes:
-
-* single operational access layer
-* coordination layer for agents
-* future bridge to Redis/Postgres
-* foundation for Meta-Intelligence Layer
+```text
+position_state
+↔
+portfolio_state
+```
 
 ---
 
-# IMPORTANT LESSON FROM TODAY
+# ACLARACIÓN ESTRATÉGICA
 
-Small, verifiable migrations are safer than massive rewrites.
+Morpho Agents NO es un sistema de trading.
 
-Future sessions should prioritize:
+Morpho Agents es un sistema de búsqueda, evaluación y explotación de oportunidades.
 
-* incremental changes
-* validation after each migration
-* architecture stability over feature velocity
+El trading es únicamente uno de los mecanismos posibles de ejecución.
 
+La arquitectura futura debe mantenerse:
 
+* Exchange Agnostic
+* Strategy Agnostic
+* Opportunity Agnostic
 
+---
 
+# OBJETIVO PRINCIPAL
 
+## OBSERVABILITY FOUNDATION AUDIT
 
+Formalizar la capa de observabilidad del sistema.
 
+---
 
+# PREGUNTAS A RESPONDER
 
+¿Quién es el propietario actual de system_log?
 
+¿Quién escribe system_log?
 
+¿Quién consume system_log?
 
+¿Existe duplicación entre:
 
+* logger.py
+* system_logger.py
 
+?
 
+¿Debe existir una entidad formal:
 
+```text
+system_status
+```
 
+como Source of Truth de observabilidad?
 
+---
 
+# ARCHIVOS A AUDITAR
 
+* logger.py
+* system_logger.py
+* portfolio_dashboard.py
+* historical_analytics.py
+* safe_runner.py
 
+---
 
+# HALLAZGOS PREVIOS
 
+Actualmente:
 
+```text
+logger.py
+```
 
+escribe:
 
+* equity
+* exposure
+* open_positions
+* health_score
+* system_status
 
+---
 
+```text
+system_logger.py
+```
 
+escribe:
 
+* market_regime
+* winrate
+* avg_pnl
+* risk_status
+* system_status
 
+---
 
+Resultado preliminar:
 
+```text
+system_log
+```
 
+tiene ownership ambiguo.
 
+---
 
+# NO HACER
 
+Durante esta sesión NO modificar:
 
+* position_state
+* portfolio_state
+* paper_portfolio
+* StateManager
 
+No realizar refactors masivos.
 
+No resolver todavía la circularidad.
+
+Primero completar diseño de observabilidad.
+
+---
+
+# CRITERIO DE ÉXITO
+
+Responder con evidencia:
+
+```text
+¿Quién es el dueño de system_log?
+```
+
+y documentar oficialmente:
+
+```text
+System Status Layer
+```
+
+como futura fuente de verdad para observabilidad.
+
+---
+
+# SIGUIENTE PASO ESPERADO
+
+Tras cerrar Observability Foundation:
+
+1. Circularity Resolution
+2. Position Engine Design
+3. Exchange Abstraction Layer
+4. Agent Registry
+5. Meta Intelligence Layer
 
