@@ -2,6 +2,9 @@ import sqlite3
 import pandas as pd
 import os
 
+from state_manager import (
+    StateManager
+)
 # =========================
 # DATABASE
 # =========================
@@ -118,7 +121,24 @@ memory_df = pd.read_sql_query(
     memory_query,
     conn
 )
+# =========================
+# RUNTIME STATE
+# =========================
 
+runtime_state = (
+    StateManager.get_runtime_state()
+)
+
+runtime_status = "UNKNOWN"
+
+if runtime_state:
+
+    runtime_status = (
+        runtime_state.get(
+            "system_status",
+            "UNKNOWN"
+        )
+    )
 # =========================
 # GOVERNANCE LIMITS
 # =========================
@@ -365,7 +385,12 @@ print("🚨 GOVERNANCE FLAGS")
 
 print("\n")
 print(governance_flags)
+print(
+    f"Runtime Status: "
+    f"{runtime_status}"
+)
 
+print("\n")
 print("\n")
 print("🚀 Risk manager completed")
 

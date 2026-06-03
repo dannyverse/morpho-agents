@@ -3,6 +3,13 @@ import pandas as pd
 import sqlite3
 from datetime import datetime
 
+from runtime_monitor import (
+    write_runtime_state
+)
+
+from kill_switch_manager import (
+    get_kill_switch_state
+)
 # =========================
 # SYSTEM MODULES
 # =========================
@@ -44,6 +51,61 @@ failed = 0
 
 results = []
 
+failed_modules = []
+
+active_modules = []
+
+cycle_id = int(
+    datetime.now().timestamp()
+)
+# =========================
+# KILL SWITCH CHECK
+# =========================
+
+kill_switch_state = (
+    get_kill_switch_state()
+)
+
+if kill_switch_state.get(
+    "kill_switch_active",
+    False
+):
+
+    print("\n")
+    print("🚨 KILL SWITCH ACTIVE")
+    print("=" * 50)
+
+    print("\n")
+    print(
+        f"Reason: "
+        f"{kill_switch_state.get('reason')}"
+    )
+
+    print("\n")
+    print(
+        "🛑 Safe runner aborted"
+    )
+
+    exit()
+# =========================
+# INITIAL RUNTIME STATE
+# =========================
+
+write_runtime_state(
+
+    cycle_id=cycle_id,
+
+    system_status="INITIALIZING",
+
+    runtime_mode="NORMAL",
+
+    active_modules=[],
+
+    failed_modules=[],
+
+    heartbeat_ok=True
+)
+
 # =========================
 # SAFE EXECUTION
 # =========================
@@ -73,11 +135,19 @@ for module in modules:
 
             success += 1
 
+            active_modules.append(
+                module
+            )
+
         else:
 
             status = "FAILED"
 
             failed += 1
+
+            failed_modules.append(
+                module
+            )
 
         results.append({
 
@@ -93,6 +163,10 @@ for module in modules:
     except Exception as e:
 
         failed += 1
+
+        failed_modules.append(
+            module
+        )
 
         results.append({
 
@@ -114,6 +188,43 @@ for module in modules:
         print(
             str(e)
         )
+
+# =========================
+# FINAL RUNTIME STATUS
+# =========================
+
+if failed == 0:
+
+    system_status = "HEALTHY"
+
+    heartbeat_ok = True
+
+else:
+
+    system_status = "DEGRADED"
+
+    heartbeat_ok = False
+
+# =========================
+# UPDATE RUNTIME STATE
+# =========================
+
+write_runtime_state(
+
+    cycle_id=cycle_id,
+
+    system_status=system_status,
+
+    runtime_mode="NORMAL",
+
+    active_modules=active_modules,
+
+    failed_modules=failed_modules,
+
+    heartbeat_ok=heartbeat_ok,
+
+    last_successful_cycle=cycle_id
+)
 
 # =========================
 # HEALTH TABLE
@@ -178,7 +289,14 @@ print(
 )
 
 print("\n")
+print(
+    f"🩺 Runtime Status: "
+    f"{system_status}"
+)
+
+print("\n")
 print("💾 Health log updated")
 
 print("\n")
 print("🚀 Safe runner completed")
+

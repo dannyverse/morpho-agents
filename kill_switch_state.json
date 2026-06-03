@@ -1,0 +1,6 @@
+{
+    "kill_switch_active": true,
+    "activation_timestamp": "2026-06-03 08:13:36.563155",
+    "reason": "TEST_EXPOSURE_LIMIT",
+    "activated_by": "risk_manager"
+}
