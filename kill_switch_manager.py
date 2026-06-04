@@ -21,38 +21,22 @@ DEFAULT_KILL_SWITCH_STATE = {
 
     "activation_timestamp": None,
 
+    "deactivation_timestamp": None,
+
     "reason": None,
 
-    "activated_by": None
+    "activated_by": None,
+
+    "deactivated_by": None,
+
+    "deactivation_reason": None
 }
 
 # =========================
 # WRITE STATE
 # =========================
 
-def write_kill_switch_state(
-
-    kill_switch_active=False,
-
-    reason=None,
-
-    activated_by=None
-):
-
-    state = {
-
-        "kill_switch_active": (
-            kill_switch_active
-        ),
-
-        "activation_timestamp": str(
-            datetime.now()
-        ),
-
-        "reason": reason,
-
-        "activated_by": activated_by
-    }
+def write_kill_switch_state(state):
 
     with tempfile.NamedTemporaryFile(
 
@@ -91,13 +75,64 @@ def activate_kill_switch(
     activated_by="risk_manager"
 ):
 
+    state = {
+
+        "kill_switch_active": True,
+
+        "activation_timestamp": str(
+            datetime.now()
+        ),
+
+        "deactivation_timestamp": None,
+
+        "reason": reason,
+
+        "activated_by": activated_by,
+
+        "deactivated_by": None,
+
+        "deactivation_reason": None
+    }
+
     write_kill_switch_state(
+        state
+    )
 
-        kill_switch_active=True,
+# =========================
+# DEACTIVATE
+# =========================
 
-        reason=reason,
+def deactivate_kill_switch(
 
-        activated_by=activated_by
+    deactivation_reason,
+
+    deactivated_by="operator"
+):
+
+    current_state = (
+        get_kill_switch_state()
+    )
+
+    current_state[
+        "kill_switch_active"
+    ] = False
+
+    current_state[
+        "deactivation_timestamp"
+    ] = str(
+        datetime.now()
+    )
+
+    current_state[
+        "deactivated_by"
+    ] = deactivated_by
+
+    current_state[
+        "deactivation_reason"
+    ] = deactivation_reason
+
+    write_kill_switch_state(
+        current_state
     )
 
 # =========================
@@ -110,7 +145,9 @@ def get_kill_switch_state():
         KILL_SWITCH_FILE
     ):
 
-        write_kill_switch_state()
+        write_kill_switch_state(
+            DEFAULT_KILL_SWITCH_STATE
+        )
 
     with open(
 
@@ -128,9 +165,13 @@ def get_kill_switch_state():
 
 if __name__ == "__main__":
 
-    activate_kill_switch(
+    deactivate_kill_switch(
 
-        reason="TEST_EXPOSURE_LIMIT"
+        deactivation_reason=
+        "Manual reset after testing",
+
+        deactivated_by=
+        "operator"
     )
 
     state = (
@@ -138,7 +179,7 @@ if __name__ == "__main__":
     )
 
     print("\n")
-    print("🚨 KILL SWITCH STATE")
+    print("✅ KILL SWITCH RESET")
     print("=" * 40)
 
     print("\n")
@@ -146,3 +187,4 @@ if __name__ == "__main__":
         state,
         indent=4
     ))
+

@@ -1,6 +1,9 @@
 {
-    "kill_switch_active": true,
-    "activation_timestamp": "2026-06-03 08:13:36.563155",
+    "kill_switch_active": false,
+    "activation_timestamp": "2026-06-04 22:25:18.349153",
+    "deactivation_timestamp": "2026-06-04 22:29:40.395599",
     "reason": "TEST_EXPOSURE_LIMIT",
-    "activated_by": "risk_manager"
+    "activated_by": "risk_manager",
+    "deactivated_by": "operator",
+    "deactivation_reason": "Manual reset after testing"
 }

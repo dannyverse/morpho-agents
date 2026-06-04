@@ -5,6 +5,12 @@ import os
 from state_manager import (
     StateManager
 )
+
+from kill_switch_manager import (
+    activate_kill_switch
+)
+
+    
 # =========================
 # DATABASE
 # =========================
@@ -298,6 +304,13 @@ if risk_status == "CRITICAL":
 
     kill_switch = True
 
+    activate_kill_switch(
+
+        reason="CRITICAL_RISK_STATUS",
+
+        activated_by="risk_manager"
+    )
+
     with open(
         "HALT_TRADING.txt",
         "w"
@@ -306,7 +319,6 @@ if risk_status == "CRITICAL":
         f.write(
             "AUTO KILL SWITCH"
         )
-
 # =========================
 # REMOVE KILL SWITCH
 # =========================
