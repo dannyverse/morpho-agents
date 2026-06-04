@@ -198,11 +198,129 @@ La arquitectura futura debe mantenerse:
 
 ---
 
-# OBJETIVO PRINCIPAL
 
 ## OBSERVABILITY FOUNDATION AUDIT
 
-Formalizar la capa de observabilidad del sistema.
+# OBJETIVO PRINCIPAL
+
+## FOUNDATION CONSOLIDATION
+
+La Foundation ha avanzado significativamente durante las últimas sesiones.
+
+Componentes completados recientemente:
+
+* Runtime Observability Architecture
+* runtime_monitor.py
+* runtime_state.json
+* StateManager
+* kill_switch_manager.py
+* Governance Persistence
+* Governance Enforcement
+* Governance Recovery Flow
+* DECISION_LOG.md
+* CHANGELOG.md
+* RUNBOOK.md
+* INCIDENT_LOG.md
+
+---
+
+## REMAINING FOUNDATION GAPS
+
+### 1. Circularity Resolution
+
+Current:
+
+position_state
+↔
+portfolio_state
+
+Status:
+
+PENDING
+
+Priority:
+
+HIGH
+
+---
+
+### 2. Portfolio Health State
+
+Future Owner:
+
+portfolio_health_manager.py
+
+Status:
+
+NOT IMPLEMENTED
+
+Purpose:
+
+Separate portfolio health from runtime and risk state.
+
+---
+
+### 3. Risk State Decomposition
+
+Future Owner:
+
+risk_state_manager.py
+
+Status:
+
+PARTIAL
+
+Purpose:
+
+Separate risk state from risk calculations and reporting.
+
+---
+
+### 4. Exchange Abstraction Layer
+
+Status:
+
+PENDING
+
+Purpose:
+
+Move toward exchange-agnostic opportunity execution.
+
+---
+
+## RECOMMENDED NEXT SESSION
+
+Primary Objective:
+
+Portfolio Health Architecture Design
+
+Questions:
+
+* What is portfolio health?
+* Who owns portfolio health?
+* What belongs in portfolio_health_state?
+* How does portfolio health differ from runtime state and risk state?
+* What happens when portfolio_health = CRITICAL?
+
+Design Constraint:
+
+portfolio_health_manager.py should not directly manipulate runtime behavior.
+
+If portfolio health needs to trigger system protection, it should do so through:
+
+portfolio_health_manager.py
+↓
+kill_switch_manager.activate_kill_switch()
+↓
+governance persistence
+↓
+safe_runner enforcement
+
+Governance ownership must remain centralized.
+
+Goal:
+
+Continue state decomposition while preserving ownership boundaries.
 
 ---
 
