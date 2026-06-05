@@ -30,6 +30,8 @@ modules = [
 
     "risk_manager.py",
 
+    "portfolio_health_manager.py",
+
     "portfolio_state.py",
 
     "paper_portfolio.py",

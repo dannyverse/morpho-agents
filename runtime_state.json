@@ -1,6 +1,6 @@
 {
-    "cycle_id": 1780605048,
-    "heartbeat_timestamp": "2026-06-04 22:30:55.708419",
+    "cycle_id": 1780692541,
+    "heartbeat_timestamp": "2026-06-05 22:49:08.223086",
     "system_status": "HEALTHY",
     "runtime_mode": "NORMAL",
     "active_modules": [
@@ -11,6 +11,7 @@
         "execution_agent.py",
         "meta_intelligence.py",
         "risk_manager.py",
+        "portfolio_health_manager.py",
         "portfolio_state.py",
         "paper_portfolio.py",
         "position_manager.py",
@@ -21,5 +22,5 @@
     "last_error": null,
     "heartbeat_ok": true,
     "cycle_duration_seconds": 0,
-    "last_successful_cycle": 1780605048
+    "last_successful_cycle": 1780692541
 }

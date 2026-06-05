@@ -511,3 +511,70 @@ toward:
 
 live operational intelligence infrastructure
 
+# SESSION CLOSURE — PORTFOLIO HEALTH OPERATIONAL INTEGRATION
+
+### Major Completion
+
+Portfolio Health is now fully integrated into the live operational pipeline.
+
+Operational flow validated:
+
+position_state
+↓
+portfolio_health_manager.py
+↓
+portfolio_health_state.json
+↓
+safe_runner.py orchestration
+
+portfolio_health_manager.py now executes automatically during real runtime cycles.
+
+### Important Architectural Discovery
+
+Live runtime execution revealed significant schema inconsistencies across operational modules.
+
+Examples discovered:
+
+* position_state uses:
+
+  * asset
+  * position_pnl
+
+* portfolio_state.py exposes:
+
+  * direction
+  * status
+  * unrealized_pnl
+
+* risk_manager.py assumes:
+
+  * long_positions
+  * short_positions
+  * side
+
+This strongly suggests operational modules currently rely on partially inconsistent position schemas.
+
+### Next Major Priority
+
+POSITION STATE DEPENDENCY AUDIT
+
+Goal:
+
+Map all real field dependencies across operational modules before attempting any position_state normalization or migration.
+
+### Important Principle Reinforced
+
+Do NOT expand Source Of Truth prematurely to satisfy derived states.
+
+Derived operational states must adapt to Source Of Truth maturity.
+
+### Current Direction
+
+Morpho is transitioning from:
+
+loosely connected operational scripts
+
+toward:
+
+coordinated state-driven operational infrastructure.
+
