@@ -293,3 +293,149 @@ Ask the user for:
 
 Read them completely before making architectural recommendations.
 
+# DOCUMENT HIERARCHY & WORKFLOW
+
+Morpho documentation is intentionally separated into layers.
+
+The objective is operational clarity, not documentation overload.
+
+---
+
+# TIER 1 — CORE OPERATIONAL DOCUMENTS
+
+These are the primary documents that should be read during almost every session.
+
+## NEXT_SESSION.md
+
+Purpose:
+
+Current operational focus and immediate priorities.
+
+Answers:
+
+"What are we doing now?"
+
+---
+
+## PROJECT_STATUS.md
+
+Purpose:
+
+Current operational architecture status.
+
+Answers:
+
+"What is the real state of the system?"
+
+---
+
+## MORPHO_BOOTSTRAP.md
+
+Purpose:
+
+Project identity, philosophy and operational workflow.
+
+Answers:
+
+"What is Morpho and how should we approach it?"
+
+---
+
+# TIER 2 — ARCHITECTURAL DOCUMENTS
+
+Read only when working on architecture or operational design.
+
+---
+
+## MORPHO_OPERATIONAL_MODEL.md
+
+Purpose:
+
+High-level operational architecture map.
+
+Defines:
+
+* operational domains
+* state hierarchy
+* governance flow
+* operational coordination
+
+---
+
+## ARCHITECTURE_PRINCIPLES.md
+
+Purpose:
+
+Architectural doctrine.
+
+Defines:
+
+* ownership philosophy
+* migration philosophy
+* governance philosophy
+* state separation rules
+
+---
+
+## DOMAIN ARCHITECTURE DOCUMENTS
+
+Examples:
+
+* PORTFOLIO_HEALTH_ARCHITECTURE.md
+* PORTFOLIO_HEALTH_STATE_SCHEMA.md
+* RISK_STATE_ARCHITECTURE.md
+
+Read only when working on those domains.
+
+---
+
+# TIER 3 — OPERATIONAL MEMORY
+
+Historical and operational reference documents.
+
+These are NOT required reading during normal sessions.
+
+---
+
+## CHANGELOG.md
+
+Tracks major changes.
+
+---
+
+## DECISION_LOG.md
+
+Tracks important architectural decisions.
+
+---
+
+## INCIDENT_LOG.md
+
+Tracks operational failures and lessons learned.
+
+---
+
+## RUNBOOK.md
+
+Operational procedures and recovery instructions.
+
+---
+
+# RECOMMENDED SESSION WORKFLOW
+
+Normal implementation session:
+
+1. Read NEXT_SESSION.md
+2. Read PROJECT_STATUS.md
+3. Read MORPHO_BOOTSTRAP.md
+
+Only read additional architecture documents if working on:
+
+* architecture
+* migrations
+* domain design
+* governance
+* operational flows
+
+The objective is to minimize cognitive overload while preserving architectural continuity.
+

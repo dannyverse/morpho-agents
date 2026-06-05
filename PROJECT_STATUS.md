@@ -616,3 +616,18 @@ The long-term goal is not to build a strategy.
 
 The long-term goal is to build a machine capable of finding the next strategy.
 
+# ARCHITECTURAL PRINCIPLES
+
+Morpho architectural doctrine is progressively being consolidated in:
+
+ARCHITECTURE_PRINCIPLES.md
+
+This includes:
+
+* ownership philosophy
+* governance philosophy
+* migration philosophy
+* live state vs historical state principles
+* StateManager direction
+* operational architecture principles
+
