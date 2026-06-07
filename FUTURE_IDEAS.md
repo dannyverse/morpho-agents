@@ -810,3 +810,37 @@ position_state should remain:
 
 without introducing opportunity orchestration complexity prematurely.
 
+# FUTURE MIGRATION SAFETY IMPROVEMENTS
+
+Current Foundation implementation uses:
+
+* transactional DROP + CREATE
+* acceptable for current SQLite Foundation stage
+
+Potential future improvement:
+
+Replace destructive table recreation with:
+
+* table renaming
+* backup preservation
+* data migration strategy
+* atomic schema evolution workflow
+
+Possible future pattern:
+
+* RENAME existing table
+* CREATE new schema
+* migrate data incrementally
+* validate migration
+* drop backup table only after success
+
+Benefits:
+
+* safer schema evolution
+* rollback capability
+* operational auditability
+* future production compatibility
+
+Important:
+This belongs to future operational maturity phases, not current Foundation stabilization.
+
