@@ -631,3 +631,48 @@ This includes:
 * StateManager direction
 * operational architecture principles
 
+# POSITION STATE DEPENDENCY AUDIT — INITIAL FINDINGS
+
+## Critical Discovery
+
+portfolio_state.py currently assumes a directional trading schema:
+
+* portfolio_df["direction"]
+* LONG / SHORT position logic
+* directional imbalance calculations
+
+However, the actual position_state table currently only contains:
+
+* asset
+* entry_price
+* current_price
+* position_size
+* position_pnl
+
+Missing fields:
+
+* direction
+* side
+* status
+
+This confirms a canonical schema inconsistency between:
+
+* runtime operational assumptions
+* actual Source Of Truth structure
+
+## Architectural Implication
+
+There are currently two partially conflicting operational models inside Morpho:
+
+1. Minimal position tracking model
+2. Directional trading/exposure model
+
+This is now identified as a major Foundation debt.
+
+## Important Decision
+
+No migration or refactor will occur yet.
+
+Next step:
+Continue full dependency audit before designing canonical schema normalization.
+
