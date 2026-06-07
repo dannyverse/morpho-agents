@@ -154,40 +154,46 @@ positions = pd.DataFrame({
 
 
 
-
-
-
-
-
-
 # =========================
+
 # CREATE TABLE
-# =========================
 
-conn.execute(
-    "DROP TABLE IF EXISTS position_state"
-)
+# =========================
 
 create_query = """
 
 CREATE TABLE position_state (
 
-    asset TEXT,
+asset TEXT,
 
-    entry_price REAL,
+entry_price REAL,
 
-    current_price REAL,
+current_price REAL,
 
-    position_size REAL,
+position_size REAL,
 
-    position_pnl REAL
+position_pnl REAL
+
 )
 
 """
 
-conn.execute(
-    create_query
+
+with conn:
+
+    conn.execute(
+    "DROP TABLE IF EXISTS position_state"
 )
+
+    conn.execute(
+        create_query
+    )
+
+
+
+
+
+
 
 
 
