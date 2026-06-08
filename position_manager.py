@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-
+from datetime import datetime
 
 # =========================
 # DATABASE
@@ -172,8 +172,10 @@ current_price REAL,
 
 position_size REAL,
 
-position_pnl REAL
-
+position_pnl REAL,
+position_type TEXT,
+status TEXT,
+opened_at TEXT
 )
 
 """
@@ -219,14 +221,15 @@ positions = pd.DataFrame({
     "entry_price": df["entry_price"],
     "current_price": df["current_price"],
     "position_size": df["position_size"],
-    "position_pnl": df["unrealized_pnl"]
-})        
+    "position_pnl": df["unrealized_pnl"],
         
-        
-       
         
     
 
+"position_type": "LONG",
+"status": "OPEN",
+"opened_at": datetime.now().isoformat()
+})
 
 positions.to_sql(
 
