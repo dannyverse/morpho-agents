@@ -311,3 +311,113 @@ For now, this change is considered:
 
 ---
 
+---
+
+## June 2026 — Direction vs Position Type Clarification
+
+### Context
+
+Initial schema migration work suggested that:
+
+```text id="a8m2qp"
+direction
+```
+
+was a legacy field that should be fully replaced by:
+
+```text id="b4n7zk"
+position_type
+```
+
+However, a grep-based architectural audit revealed that:
+
+* `direction`
+* `LONG`
+* `SHORT`
+
+remain operationally active across multiple upstream layers:
+
+* `execution_agent.py`
+* `portfolio_state.py`
+* `signal_memory.py`
+* `paper_trading_engine.py`
+* `portfolio_dashboard.py`
+
+---
+
+### Important Discovery
+
+The issue was NOT that:
+
+```text id="c9x5rv"
+direction
+```
+
+was obsolete.
+
+The real issue was:
+
+```text id="d3m8ld"
+position_state
+```
+
+was introduced with a partially transitional schema
+that is not yet fully integrated with the upstream directional flow.
+
+---
+
+### Current Interpretation
+
+At the current Foundation stage:
+
+| Concept         | Status                                           |
+| --------------- | ------------------------------------------------ |
+| `direction`     | operationally active upstream                    |
+| `position_type` | transitional placeholder inside `position_state` |
+| migration       | incomplete by design                             |
+| ownership       | still evolving                                   |
+
+---
+
+### Important Principle
+
+Future migrations should avoid assuming that:
+
+* schema divergence
+  automatically means:
+* legacy obsolescence.
+
+Operational grep audits and runtime validation are required before performing semantic migrations.
+
+---
+
+### Temporary Foundation-State Decision
+
+`position_type` remains temporarily hardcoded as:
+
+```python id="f7v1nm"
+"LONG"
+```
+
+inside:
+
+```text id="g2k4pr"
+position_manager.py
+```
+
+until:
+
+* execution semantics
+* opportunity taxonomy
+* strategy ownership
+
+become more formally defined.
+
+This is considered:
+
+* explicit
+* controlled
+* non-dangerous technical debt.
+
+---
+

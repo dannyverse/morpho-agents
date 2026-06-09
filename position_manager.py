@@ -224,7 +224,9 @@ positions = pd.DataFrame({
     "position_pnl": df["unrealized_pnl"],
         
         
-    
+# Temporary Foundation-stage placeholder.
+# Future versions should derive position_type
+# from execution strategy / opportunity source.    
 
 "position_type": "LONG",
 "status": "OPEN",

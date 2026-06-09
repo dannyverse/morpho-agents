@@ -213,3 +213,212 @@ Morpho is attempting to build an adaptive machine capable of:
 * governing risk responsibly
 * and evolving alongside changing market structures.
 
+---
+
+# GOVERNABLE INTELLIGENCE PRINCIPLE
+
+Morpho does not pursue autonomy for its own sake.
+
+The objective is NOT to maximize:
+
+* complexity
+* sophistication
+* intelligence depth
+* autonomous behavior
+
+at the expense of governance.
+
+The true objective is:
+
+> to evolve intelligence while preserving human governability.
+
+---
+
+# THE CENTRAL PROBLEM
+
+As autonomous systems evolve:
+
+```text id="a1n7qp"
+more intelligence
+→ more operational capability
+→ more complexity
+→ harder to audit
+→ lower human governability
+```
+
+The danger is not intelligence itself.
+
+The danger is:
+
+* opaque reasoning
+* invisible decision paths
+* uncontrollable autonomy
+
+An intelligent system that cannot be:
+
+* inspected
+* explained
+* interrupted
+* governed
+
+eventually becomes operationally dangerous.
+
+---
+
+# THE FOUR GOVERNABILITY PRINCIPLES
+
+## 1. Observable Decisions
+
+Every autonomous decision should leave a visible artifact.
+
+Example:
+
+```json id="r4z8mh"
+{
+    "decision": "REDUCE_EXPOSURE",
+    "reason": "directional_concentration > 80%",
+    "confidence": 0.87,
+    "triggered_by": "portfolio_health_manager",
+    "timestamp": "2026-06-09T..."
+}
+```
+
+A correct decision is not sufficient.
+
+The operator must also be able to:
+
+* see the decision
+* trace the trigger
+* inspect the reasoning path
+
+---
+
+## 2. Explainable Intelligence
+
+Every layer of intelligence must remain understandable.
+
+If the operator cannot explain:
+
+* why the system acted
+* what conditions triggered it
+* what logic produced the outcome
+
+then autonomy has exceeded governability.
+
+Morpho values:
+
+* understandable reasoning
+  over:
+* opaque optimization.
+
+---
+
+## 3. Reversible & Interruptible Autonomy
+
+Every important autonomous action should remain:
+
+* interruptible
+* reversible
+* containable
+
+The operator must always retain:
+
+* emergency authority
+* override capability
+* defensive control
+
+Kill switches, defensive modes, and governance escalation are NOT temporary safety features.
+
+They are foundational architectural principles.
+
+---
+
+## 4. Auditable Evolution
+
+All meaningful autonomous behavior should produce:
+
+* persistent records
+* operational traces
+* incident history
+* governance context
+
+The system must remain auditable across time.
+
+A system that cannot reconstruct:
+
+* what happened
+* why it happened
+* how it evolved
+
+cannot safely evolve further.
+
+---
+
+# AUTONOMY ESCALATION MODEL
+
+Not all decisions should receive equal autonomy.
+
+Morpho evolves autonomy gradually:
+
+| Decision Type                   | Autonomy Level          |
+| ------------------------------- | ----------------------- |
+| routine operational adjustments | full autonomy           |
+| defensive posture changes       | autonomy + notification |
+| significant capital allocation  | human confirmation      |
+| governance overrides            | human authority only    |
+
+Governability evolves together with autonomy.
+
+It must never disappear.
+
+---
+
+# COMPLEXITY BUDGET PRINCIPLE
+
+Every new layer of intelligence consumes part of the operator’s cognitive budget.
+
+Before adding a new autonomous layer, the operator should be able to fully explain:
+
+* the previous layer
+* its reasoning
+* its failure modes
+* its operational boundaries
+
+If understanding falls behind complexity,
+the system becomes fragile.
+
+Morpho Academy exists partially to preserve this complexity budget over time.
+
+---
+
+# GOVERNANCE CHECKPOINTS
+
+Before increasing system autonomy, Morpho should periodically verify:
+
+1. Can the operator explain every major decision made by the system in the last 24 hours?
+
+2. Can the operator detect failures before they affect capital?
+
+3. Can the operator manually intervene within minutes if necessary?
+
+If the answer to any of these becomes "no",
+the system is not ready for additional autonomy.
+
+---
+
+# FINAL PRINCIPLE
+
+Autonomous intelligence remains governable only while every meaningful decision is:
+
+* observable
+* explainable
+* reversible
+* auditable
+
+When those properties disappear,
+the problem is no longer technological.
+
+It becomes a governance failure.
+
+---
+
