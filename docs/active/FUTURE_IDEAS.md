@@ -844,3 +844,393 @@ Benefits:
 Important:
 This belongs to future operational maturity phases, not current Foundation stabilization.
 
+# POSITION_TYPE OWNERSHIP
+
+Current implementation uses:
+
+```python
+"position_type": "LONG"
+```
+
+inside `position_manager.py`.
+
+This is currently acceptable as a temporary Foundation-stage placeholder because:
+
+* only LONG directional execution exists today
+* no alternative opportunity primitives are operational yet
+
+However, future architecture should derive:
+
+* `position_type`
+* opportunity classification
+* exposure semantics
+
+from:
+
+* execution_agent
+* strategy type
+* opportunity source
+
+NOT from `position_manager.py`.
+
+Long-term ownership principle:
+
+* execution layers define opportunity nature
+* position_manager persists operational state
+* portfolio_state aggregates exposure
+* risk layers evaluate systemic impact
+
+This preserves:
+
+* ownership clarity
+* extensibility
+* multi-opportunity flexibility
+* future strategy compatibility
+
+Future examples:
+
+* LONG
+* SHORT
+* YIELD
+* LENDING
+* DELTA_NEUTRAL
+* BASIS_TRADE
+* FUNDING_ARBITRAGE
+
+# FUTURE IDEAS — MORPHO AGENTS
+
+## Strategic Future Directions
+
+June 2026
+
+These ideas emerge organically from the current Morpho architecture and operational philosophy.
+
+They are NOT:
+
+* immediate implementation targets
+* active roadmap commitments
+* mandatory infrastructure expansions
+
+They exist to preserve:
+
+* long-term optionality
+* strategic direction
+* architectural evolution paths
+
+Implementation should occur ONLY when:
+
+* operational pressure justifies it
+* Foundation is sufficiently consolidated
+* runtime maturity supports it
+
+---
+
+# 1. OPPORTUNITY FINGERPRINTING
+
+## Purpose
+
+Persist the environmental profile surrounding each opportunity together with its real outcome.
+
+Potential dimensions:
+
+* volatility regime
+* liquidity conditions
+* funding context
+* correlation environment
+* execution timing
+* market stress conditions
+
+---
+
+## Existing Foundations
+
+* signal_memory
+* historical runtime states
+* future regime detection systems
+
+---
+
+## Strategic Value
+
+Allows Morpho to gradually learn:
+
+* which conditions produce real edge
+* when edges decay
+* when opportunities become unstable
+
+This becomes a natural foundation for:
+
+* adaptive intelligence
+* edge classification
+* opportunity confidence scoring
+
+---
+
+## Status
+
+FUTURE — Meta-Intelligence Layer candidate
+
+---
+
+# 2. GOVERNANCE REPLAY
+
+## Purpose
+
+Replay governance decisions and operational sequences to evaluate:
+
+* alternative actions
+* defensive responses
+* escalation timing
+* kill switch behavior
+
+Focus is:
+
+* governance simulation
+  NOT market prediction.
+
+---
+
+## Existing Foundations
+
+* INCIDENT_LOG
+* kill_switch_state
+* runtime logs
+* portfolio health snapshots
+
+---
+
+## Strategic Value
+
+Extremely aligned with:
+
+* operational governance
+* Morpho Academy
+* incident learning
+* operator training
+
+Potential future uses:
+
+* replay incidents
+* compare defensive strategies
+* evaluate escalation thresholds
+* train governance intuition
+
+---
+
+## Status
+
+FUTURE — Governance Simulation Layer
+
+---
+
+# 3. EDGE DECAY MONITOR
+
+## Purpose
+
+Detect gradual degradation of signals before deterioration becomes visible in portfolio performance.
+
+Goal:
+detect weakening edges early.
+
+---
+
+## Existing Foundations
+
+* signal_memory
+* performance history
+* opportunity tracking
+* future attribution systems
+
+---
+
+## Strategic Value
+
+One of the most valuable long-term capabilities of a mature opportunity intelligence system.
+
+Potential benefits:
+
+* retire decaying strategies
+* reduce hidden risk
+* improve capital allocation
+* preserve long-term survivability
+
+---
+
+## Status
+
+FUTURE — Phase 3 candidate
+
+---
+
+# 4. OPERATOR MORNING BRIEF
+
+## Purpose
+
+Generate a concise daily operational summary for the human operator.
+
+Focus:
+system awareness,
+NOT signal spam.
+
+---
+
+## Potential Contents
+
+* completed cycles
+* module failures
+* portfolio health changes
+* risk state changes
+* detected vs executed opportunities
+* runtime anomalies
+* governance events
+
+---
+
+## Existing Foundations
+
+* runtime_state
+* portfolio_health_state
+* notifier
+* kill_switch_state
+* logs
+
+---
+
+## Strategic Value
+
+Very high operator leverage.
+
+Improves:
+
+* awareness
+* observability
+* governance quality
+* solo-operator efficiency
+
+Low infrastructure complexity.
+Mostly integration of already existing primitives.
+
+---
+
+## Status
+
+FUTURE — High ROI operational enhancement
+
+---
+
+# 5. ARCHITECTURAL DRIFT AUDITOR
+
+## Purpose
+
+Lightweight audit system for detecting:
+
+* schema drift
+* ownership violations
+* stale assumptions
+* placeholder persistence
+* outdated field references
+
+---
+
+## Existing Foundations
+
+* grep-based workflow
+* audit philosophy
+* operational simplicity principles
+
+---
+
+## Strategic Value
+
+Protects Morpho against:
+
+* silent architectural decay
+* uncontrolled complexity
+* hidden coupling
+* stale assumptions
+
+Could eventually evolve into:
+
+* automated architectural linting
+* governance validation
+* runtime consistency checks
+
+---
+
+## Status
+
+FUTURE — Foundation hardening utility
+
+---
+
+# 6. INCIDENT KNOWLEDGE SYSTEM
+
+## Purpose
+
+Convert operational incidents into structured organizational learning.
+
+Each incident would contain:
+
+* root cause
+* detection path
+* runtime symptoms
+* recovery actions
+* governance lessons
+* future prevention rules
+
+---
+
+## Existing Foundations
+
+* INCIDENT_LOG
+* governance philosophy
+* Morpho Academy
+
+---
+
+## Strategic Value
+
+Transforms failures into:
+
+* institutional memory
+* governance training
+* operational intelligence
+
+Strong alignment with:
+
+* long-term survivability
+* solo-operator governance
+* continuous improvement
+
+---
+
+## Status
+
+FUTURE — Governance maturity layer
+
+---
+
+# IMPORTANT PRINCIPLE
+
+These ideas should remain:
+
+* dormant
+* optional
+* non-blocking
+
+until:
+
+* operational pressure
+* runtime maturity
+* strategic necessity
+
+justify implementation.
+
+Morpho grows through:
+
+* validated pressure
+* operational necessity
+* earned complexity
+
+NOT speculative expansion.
+

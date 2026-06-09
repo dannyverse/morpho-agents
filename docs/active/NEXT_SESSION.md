@@ -643,3 +643,79 @@ toward:
 
 coordinated state-driven operational infrastructure.
 
+---
+
+# NEXT SESSION — Foundation Consolidation
+
+## Primary Objective
+
+Review and clarify ownership boundaries between:
+
+* `position_state`
+* `portfolio_state`
+* `risk_manager`
+
+Goal:
+determine long-term operational ownership and aggregation responsibilities.
+
+---
+
+## Context
+
+During Risk Manager Consumer Alignment:
+
+* `risk_manager.py` migrated from:
+
+  * `portfolio_state`
+    → `position_state`
+
+because:
+
+* `position_state` currently contains the most complete operational metadata
+* `portfolio_state` appears partially aggregated / incomplete
+
+This revealed an important architectural question:
+
+> What should be the long-term operational Source of Truth for risk evaluation?
+
+---
+
+## Important Topics To Review
+
+* ownership boundaries
+* aggregation responsibilities
+* portfolio-level vs position-level state
+* future exposure models
+* avoiding duplicated authority
+
+---
+
+## Constraints
+
+Do NOT:
+
+* overengineer
+* redesign entire architecture
+* introduce abstraction layers prematurely
+
+Focus on:
+
+* clarity
+* ownership
+* operational simplicity
+* incremental evolution
+
+---
+
+## Possible Audit Commands
+
+```bash id="n3d2lm"
+grep -n "portfolio_state\|position_state" *.py
+```
+
+```bash id="j6q7rx"
+grep -n "LONG\|SHORT\|position_type" *.py
+```
+
+---
+

@@ -230,3 +230,84 @@ while preserving:
 
 as operational architecture documents.
 
+---
+
+## June 2026 — Risk Manager Consumer Alignment
+
+### Context
+
+`position_state` schema was recently expanded with:
+
+* `position_type`
+* `status`
+* `opened_at`
+
+`risk_manager.py` still referenced legacy directional fields:
+
+```python id="x2c3qv"
+direction == "LONG"
+direction == "SHORT"
+```
+
+which no longer matched the operational schema.
+
+---
+
+### Decision
+
+`risk_manager.py` now consumes:
+
+```text id="n8m4ld"
+position_state
+```
+
+instead of:
+
+```text id="g6j1zk"
+portfolio_state
+```
+
+for directional exposure calculations.
+
+---
+
+### Reasoning
+
+At the current Foundation stage:
+
+* `position_state` is the most complete operational Source of Truth
+* it contains the granular position metadata required by risk evaluation
+* `portfolio_state` still appears partially aggregated / incomplete
+
+This change restores:
+
+* schema alignment
+* directional calculations
+* consumer consistency
+
+while preserving:
+
+* runtime simplicity
+* operational clarity
+* incremental migration philosophy
+
+---
+
+### Important Note
+
+This decision may evolve later.
+
+Future architecture may:
+
+* redefine ownership boundaries
+* consolidate portfolio aggregation
+* introduce richer exposure models
+
+For now, this change is considered:
+
+* operationally correct
+* minimally invasive
+* Foundation-aligned
+
+---
+

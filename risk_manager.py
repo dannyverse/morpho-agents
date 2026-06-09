@@ -83,7 +83,7 @@ portfolio_query = """
 
 SELECT *
 
-FROM portfolio_state
+FROM position_state
 
 WHERE status='OPEN'
 
@@ -169,7 +169,7 @@ long_positions = len(
 
     portfolio_df[
         portfolio_df[
-            "direction"
+            "position_type"
         ] == "LONG"
     ]
 )
@@ -178,7 +178,7 @@ short_positions = len(
 
     portfolio_df[
         portfolio_df[
-            "direction"
+            "position_type"
         ] == "SHORT"
     ]
 )
