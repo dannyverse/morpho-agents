@@ -1,3 +1,22 @@
+NEXT SESSION OBJECTIVE
+----------------------
+
+Expand structured logging into risk_manager.py
+
+Goals:
+1. Replace critical governance prints with structured logs
+2. Log governance flags as structured events
+3. Log risk status transitions
+4. Preserve human-readable runtime output
+5. Validate observability pipeline end-to-end
+
+Architecture Focus:
+- Governable runtime intelligence
+- Auditability
+- Incremental observability expansion
+- Foundation-grade operational tracing
+
+
 # CURRENT PRIORITY
 
 POSITION_STATE PYTHON INTEGRATION

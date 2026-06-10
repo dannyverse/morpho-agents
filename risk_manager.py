@@ -10,6 +10,7 @@ from kill_switch_manager import (
     activate_kill_switch
 )
 
+from core.logger import logger
     
 # =========================
 # DATABASE
@@ -59,10 +60,18 @@ missing_tables = [
 if len(missing_tables) > 0:
 
     print("\n")
+    print("🛡️ RISK MANAGER")
+    print("=" * 50)
+
+    logger.info(
+        "risk_manager_started"
+    )
+
+    print("\n")
+
     print(
         "Missing required tables"
     )
-
     print(
         missing_tables
     )
