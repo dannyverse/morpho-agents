@@ -18,7 +18,8 @@ from core.logger import logger
 # =========================
 
 modules = [
-
+    "funding_agent.py",
+    
     "signal_analytics.py",
 
     "signal_memory.py",

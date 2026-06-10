@@ -1,9 +1,10 @@
 {
-    "cycle_id": 1781073095,
-    "heartbeat_timestamp": "2026-06-10 08:31:41.171155",
+    "cycle_id": 1781094616,
+    "heartbeat_timestamp": "2026-06-10 14:30:26.867364",
     "system_status": "HEALTHY",
     "runtime_mode": "NORMAL",
     "active_modules": [
+        "funding_agent.py",
         "signal_analytics.py",
         "signal_memory.py",
         "adaptive_scoring.py",
@@ -22,5 +23,5 @@
     "last_error": null,
     "heartbeat_ok": true,
     "cycle_duration_seconds": 0,
-    "last_successful_cycle": 1781073095
+    "last_successful_cycle": 1781094616
 }
