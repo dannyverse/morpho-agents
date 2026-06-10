@@ -304,6 +304,15 @@ if len(governance_flags) >= 2:
 if len(governance_flags) >= 3:
 
     risk_status = "CRITICAL"
+if len(governance_flags) > 0:
+
+    logger.warning(
+        "governance_flags_triggered",
+        flags=governance_flags,
+        exposure=exposure,
+        directional_imbalance=directional_imbalance,
+        risk_status=risk_status
+    )
 
 # =========================
 # KILL SWITCH ACTIVATION
@@ -413,6 +422,15 @@ print(
 
 print("\n")
 print("\n")
+
+logger.info(
+    "risk_manager_completed",
+    risk_status=risk_status,
+    open_positions=open_positions,
+    exposure=exposure,
+    kill_switch=kill_switch
+)
+
 print("🚀 Risk manager completed")
 
 conn.close()

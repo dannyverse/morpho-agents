@@ -1,3 +1,24 @@
+
+NEXT SESSION OBJECTIVE
+----------------------
+
+Continue governance-oriented observability expansion.
+
+Goals:
+1. Log governance flags as structured events
+2. Log risk status transitions
+3. Add module duration telemetry
+4. Expand observability into execution_agent.py
+5. Preserve operational simplicity and human readability
+
+Architecture Focus:
+- Governable runtime intelligence
+- Auditability
+- Runtime telemetry
+- Operational tracing
+- Foundation completion
+
+
 NEXT SESSION OBJECTIVE
 ----------------------
 
