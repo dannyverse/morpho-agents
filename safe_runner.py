@@ -10,6 +10,9 @@ from runtime_monitor import (
 from kill_switch_manager import (
     get_kill_switch_state
 )
+
+from core.logger import logger
+
 # =========================
 # SYSTEM MODULES
 # =========================
@@ -60,6 +63,13 @@ active_modules = []
 cycle_id = int(
     datetime.now().timestamp()
 )
+
+logger.info(
+    "safe_runner_started",
+    cycle_id=cycle_id,
+    total_modules=len(modules)
+)
+
 # =========================
 # KILL SWITCH CHECK
 # =========================
@@ -73,7 +83,6 @@ if kill_switch_state.get(
     False
 ):
 
-    print("\n")
     print("🚨 KILL SWITCH ACTIVE")
     print("=" * 50)
 
@@ -121,6 +130,12 @@ for module in modules:
         f"\n🚀 Running: {module}"
     )
 
+    logger.info(
+        "module_started",
+        module=module,
+        cycle_id=cycle_id
+    )
+
     try:
 
         exit_code = os.system(
@@ -141,6 +156,13 @@ for module in modules:
                 module
             )
 
+            logger.info(
+                "module_completed",
+                module=module,
+                cycle_id=cycle_id,
+                status="SUCCESS"
+            )
+
         else:
 
             status = "FAILED"
@@ -149,6 +171,13 @@ for module in modules:
 
             failed_modules.append(
                 module
+            )
+
+            logger.error(
+                "module_failed",
+                module=module,
+                cycle_id=cycle_id,
+                status="FAILED"
             )
 
         results.append({
@@ -170,6 +199,13 @@ for module in modules:
             module
         )
 
+        logger.error(
+            "module_exception",
+            module=module,
+            cycle_id=cycle_id,
+            error=str(e)
+        )
+
         results.append({
 
             "timestamp": str(
@@ -178,20 +214,12 @@ for module in modules:
 
             "module": module,
 
-            "status": "CRASHED"
+            "status": "EXCEPTION",
+
+            "error": str(e)
         })
 
-        print("\n")
-
-        print(
-            f"❌ Crash: {module}"
-        )
-
-        print(
-            str(e)
-        )
-
-# =========================
+# SUMMARY# =========================
 # FINAL RUNTIME STATUS
 # =========================
 
@@ -302,3 +330,9 @@ print("💾 Health log updated")
 print("\n")
 print("🚀 Safe runner completed")
 
+logger.info(
+    "safe_runner_completed",
+    cycle_id=cycle_id,
+    successful_modules=success,
+    failed_modules=failed
+)
