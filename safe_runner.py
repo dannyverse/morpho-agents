@@ -24,6 +24,10 @@ modules = [
 
     "signal_memory.py",
 
+    "signal_persistence.py",
+
+    "opportunity_monitor.py",
+
     "adaptive_scoring.py",
 
     "portfolio_manager.py",

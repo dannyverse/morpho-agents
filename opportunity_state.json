@@ -1,0 +1,154 @@
+{
+    "DOGE_SHORT": {
+        "asset": "DOGE",
+        "direction": "SHORT",
+        "persistence": 25,
+        "score": 4,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-11 20:08:11.977846"
+    },
+    "kPEPE_SHORT": {
+        "asset": "kPEPE",
+        "direction": "SHORT",
+        "persistence": 23,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977862"
+    },
+    "WLD_SHORT": {
+        "asset": "WLD",
+        "direction": "SHORT",
+        "persistence": 24,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977878"
+    },
+    "NEAR_SHORT": {
+        "asset": "NEAR",
+        "direction": "SHORT",
+        "persistence": 25,
+        "score": 4,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-11 20:08:11.977894"
+    },
+    "ONDO_SHORT": {
+        "asset": "ONDO",
+        "direction": "SHORT",
+        "persistence": 24,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977910"
+    },
+    "GRASS_SHORT": {
+        "asset": "GRASS",
+        "direction": "SHORT",
+        "persistence": 23,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977926"
+    },
+    "PURR_SHORT": {
+        "asset": "PURR",
+        "direction": "SHORT",
+        "persistence": 23,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977941"
+    },
+    "HYPE_SHORT": {
+        "asset": "HYPE",
+        "direction": "SHORT",
+        "persistence": 24,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977957"
+    },
+    "PENGU_SHORT": {
+        "asset": "PENGU",
+        "direction": "SHORT",
+        "persistence": 23,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977973"
+    },
+    "FARTCOIN_SHORT": {
+        "asset": "FARTCOIN",
+        "direction": "SHORT",
+        "persistence": 24,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977989"
+    },
+    "VVV_SHORT": {
+        "asset": "VVV",
+        "direction": "SHORT",
+        "persistence": 23,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.978005"
+    },
+    "PUMP_SHORT": {
+        "asset": "PUMP",
+        "direction": "SHORT",
+        "persistence": 23,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.978021"
+    },
+    "XPL_SHORT": {
+        "asset": "XPL",
+        "direction": "SHORT",
+        "persistence": 24,
+        "score": 4,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-11 20:08:11.978037"
+    },
+    "ASTER_SHORT": {
+        "asset": "ASTER",
+        "direction": "SHORT",
+        "persistence": 23,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.978053"
+    },
+    "MON_SHORT": {
+        "asset": "MON",
+        "direction": "SHORT",
+        "persistence": 23,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.978069"
+    },
+    "LIT_SHORT": {
+        "asset": "LIT",
+        "direction": "SHORT",
+        "persistence": 20,
+        "score": 2,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-11 20:08:11.978085"
+    },
+    "LINK_SHORT": {
+        "asset": "LINK",
+        "direction": "SHORT",
+        "persistence": 21,
+        "score": 4,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.978103"
+    },
+    "SOL_SHORT": {
+        "asset": "SOL",
+        "direction": "SHORT",
+        "persistence": 20,
+        "score": 2,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977830"
+    },
+    "TON_SHORT": {
+        "asset": "TON",
+        "direction": "SHORT",
+        "persistence": 15,
+        "score": 2,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-11 20:08:11.977589"
+    }
+}
