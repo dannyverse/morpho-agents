@@ -1,3 +1,17 @@
+
+NEXT SESSION PRIORITIES
+
+1. Execution Direction Propagation Audit
+2. Trace direction field across execution pipeline
+3. Fix portfolio direction persistence
+4. Validate DECAYING transitions
+5. Validate RETIRED transitions
+6. Add lifecycle Telegram alerts
+7. Add structured lifecycle logging
+
+
+
+
 # NEXT SESSION — PHASE 1 INITIALIZATION
 
 ============================================================
