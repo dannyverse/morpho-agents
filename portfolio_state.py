@@ -137,36 +137,41 @@ for _, row in df.iterrows():
     position_size = row["position_size"]
 
     unrealized_pnl = row["position_pnl"]
+print(row)
+print(row.index)
+if "direction" not in row:
+    raise Exception("Direction missing from execution payload")
 
-    position = {
+position = {
 
-        "timestamp": str(
-            datetime.now()
-        ),
+    "timestamp": str(
+        datetime.now()
+    ),
 
-        "asset": row["asset"],
+    "asset": row["asset"],
 
-        "direction": "LONG",
+    "direction": row["direction"],
 
-        "entry_price": entry_price,
+    "position_type": f"DIRECTIONAL_{row['direction']}",
 
-        "current_price": current_price,
+    "entry_price": entry_price,
 
-        "leverage": leverage,
+    "current_price": current_price,
 
-        "position_size": position_size,
+    "leverage": leverage,
 
-        "unrealized_pnl": unrealized_pnl,
+    "position_size": position_size,
 
-        "realized_pnl": 0,
+    "unrealized_pnl": unrealized_pnl,
 
-        "status": "OPEN"
-    }
+    "realized_pnl": 0,
 
-    positions.append(
-        position
-    )
+    "status": "OPEN",
+}
 
+positions.append(
+    position
+)
 
 
 

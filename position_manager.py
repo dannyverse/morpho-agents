@@ -173,6 +173,7 @@ current_price REAL,
 position_size REAL,
 
 position_pnl REAL,
+direction TEXT,
 position_type TEXT,
 status TEXT,
 opened_at TEXT
@@ -215,8 +216,12 @@ conn.execute(
 # =========================
 # SAVE POSITIONS
 # =========================
-
+if "direction" not in df.columns:
+    raise Exception("Direction missing from position persistence pipeline")
 positions = pd.DataFrame({
+"direction": df["direction"],
+
+"position_type": "DIRECTIONAL_" + df["direction"],
     "asset": df["asset"],
     "entry_price": df["entry_price"],
     "current_price": df["current_price"],
@@ -224,11 +229,10 @@ positions = pd.DataFrame({
     "position_pnl": df["unrealized_pnl"],
         
         
-# Temporary Foundation-stage placeholder.
+# Transitional Foundation-stage directional classification.
 # Future versions should derive position_type
-# from execution strategy / opportunity source.    
+# from execution strategy / opportunity source.
 
-"position_type": "LONG",
 "status": "OPEN",
 "opened_at": datetime.now().isoformat()
 })

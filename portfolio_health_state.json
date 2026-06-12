@@ -1,13 +1,13 @@
 {
     "schema_version": "1.0",
-    "timestamp": "2026-06-11 22:09:31.778363",
-    "health_score": 98.57,
+    "timestamp": "2026-06-12 09:37:54.188538",
+    "health_score": 100,
     "status": "HEALTHY",
     "metrics": {
-        "position_count": 21,
-        "deployment_efficiency": 100,
+        "position_count": 0,
+        "deployment_efficiency": 0,
         "directional_bias": 0,
-        "max_asset_concentration": 4.76
+        "max_asset_concentration": 0
     },
     "alerts": [],
     "derived_from": "position_state"

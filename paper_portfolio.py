@@ -68,14 +68,13 @@ if len(missing_tables) > 0:
 # =========================
 # LOAD EXECUTIONS
 # =========================
-
 query = """
 
 SELECT *
 
-FROM portfolio_state
+FROM executions
 
-
+WHERE status='EXECUTED'
 
 """
 
@@ -107,7 +106,7 @@ if len(portfolio_df) == 0:
 total_pnl = round(
 
     portfolio_df[
-        "unrealized_pnl"
+        "score"
     ].sum(),
 
     2
@@ -125,7 +124,7 @@ starting_equity = 10000
 total_pnl = round(
 
 portfolio_df[
-        "unrealized_pnl"
+        "score"
     ].sum(),
 
     2
@@ -144,7 +143,7 @@ open_positions = len(portfolio_df)
 exposure = round(
 
 portfolio_df[
-    "position_size"
+    "confidence"
 ].sum() / 100,
     2
 )

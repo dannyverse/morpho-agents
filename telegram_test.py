@@ -1,32 +1,14 @@
-import os
 import requests
 
-from dotenv import load_dotenv
+TOKEN = "8872667197:AAFsK5fNGqdLhConzEZLkJHgRMLmwWo6aFg"
 
-# =========================
-# LOAD ENV
-# =========================
+CHAT_ID = "1615611027"
 
-load_dotenv()
-
-TOKEN = os.getenv(
-    "TELEGRAM_BOT_TOKEN"
-)
-
-CHAT_ID = os.getenv(
-    "TELEGRAM_CHAT_ID"
-)
-
-# =========================
-# SEND ALERT
-# =========================
 
 def send_alert(message):
 
     url = (
-
         f"https://api.telegram.org/bot"
-
         f"{TOKEN}/sendMessage"
     )
 
@@ -37,14 +19,27 @@ def send_alert(message):
         "text": message
     }
 
-    response = requests.post(
+    try:
 
-        url,
+        response = requests.post(
 
-        json=payload
-    )
+            url,
 
-    return response.json()
+            json=payload,
+
+            timeout=5
+        )
+
+        return response.json()
+
+    except Exception as e:
+
+        print(
+            f"Telegram alert failed: {e}"
+        )
+
+        return None
+
 
 # =========================
 # TEST
@@ -53,8 +48,7 @@ def send_alert(message):
 if __name__ == "__main__":
 
     send_alert(
-
-        "✅ Telegram .env setup working"
+        "✅ Telegram setup working"
     )
 
     print(

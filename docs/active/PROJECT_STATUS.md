@@ -676,3 +676,10 @@ No migration or refactor will occur yet.
 Next step:
 Continue full dependency audit before designing canonical schema normalization.
 
+---
+
+# CORE ARCHITECTURAL REFERENCES
+
+See:
+
+- docs/core/DEVELOPMENT_PRINCIPLES.md

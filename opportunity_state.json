@@ -2,10 +2,10 @@
     "DOGE_SHORT": {
         "asset": "DOGE",
         "direction": "SHORT",
-        "persistence": 25,
-        "score": 4,
-        "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-11 20:08:11.977846"
+        "persistence": 30,
+        "score": 2,
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-12 07:37:50.728225"
     },
     "kPEPE_SHORT": {
         "asset": "kPEPE",
@@ -13,23 +13,23 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977862"
+        "last_seen": "2026-06-12 07:37:50.728258"
     },
     "WLD_SHORT": {
         "asset": "WLD",
         "direction": "SHORT",
-        "persistence": 24,
-        "score": 4,
-        "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977878"
+        "persistence": 37,
+        "score": 2,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-12 07:37:50.728274"
     },
     "NEAR_SHORT": {
         "asset": "NEAR",
         "direction": "SHORT",
-        "persistence": 25,
+        "persistence": 37,
         "score": 4,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-11 20:08:11.977894"
+        "last_seen": "2026-06-12 07:37:50.728290"
     },
     "ONDO_SHORT": {
         "asset": "ONDO",
@@ -37,7 +37,7 @@
         "persistence": 24,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977910"
+        "last_seen": "2026-06-12 07:37:50.728307"
     },
     "GRASS_SHORT": {
         "asset": "GRASS",
@@ -45,7 +45,7 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977926"
+        "last_seen": "2026-06-12 07:37:50.728323"
     },
     "PURR_SHORT": {
         "asset": "PURR",
@@ -53,15 +53,15 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977941"
+        "last_seen": "2026-06-12 07:37:50.728339"
     },
     "HYPE_SHORT": {
         "asset": "HYPE",
         "direction": "SHORT",
-        "persistence": 24,
+        "persistence": 42,
         "score": 4,
-        "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977957"
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-12 07:37:50.728355"
     },
     "PENGU_SHORT": {
         "asset": "PENGU",
@@ -69,7 +69,7 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977973"
+        "last_seen": "2026-06-12 07:37:50.728371"
     },
     "FARTCOIN_SHORT": {
         "asset": "FARTCOIN",
@@ -77,7 +77,7 @@
         "persistence": 24,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977989"
+        "last_seen": "2026-06-12 07:37:50.728387"
     },
     "VVV_SHORT": {
         "asset": "VVV",
@@ -85,7 +85,7 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.978005"
+        "last_seen": "2026-06-12 07:37:50.728404"
     },
     "PUMP_SHORT": {
         "asset": "PUMP",
@@ -93,15 +93,15 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.978021"
+        "last_seen": "2026-06-12 07:37:50.728420"
     },
     "XPL_SHORT": {
         "asset": "XPL",
         "direction": "SHORT",
-        "persistence": 24,
+        "persistence": 42,
         "score": 4,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-11 20:08:11.978037"
+        "last_seen": "2026-06-12 07:37:50.728436"
     },
     "ASTER_SHORT": {
         "asset": "ASTER",
@@ -109,7 +109,7 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.978053"
+        "last_seen": "2026-06-12 07:37:50.728453"
     },
     "MON_SHORT": {
         "asset": "MON",
@@ -117,15 +117,15 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.978069"
+        "last_seen": "2026-06-12 07:37:50.728469"
     },
     "LIT_SHORT": {
         "asset": "LIT",
         "direction": "SHORT",
-        "persistence": 20,
-        "score": 2,
+        "persistence": 38,
+        "score": 4,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-11 20:08:11.978085"
+        "last_seen": "2026-06-12 07:37:50.728485"
     },
     "LINK_SHORT": {
         "asset": "LINK",
@@ -133,15 +133,15 @@
         "persistence": 21,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.978103"
+        "last_seen": "2026-06-12 07:37:50.728501"
     },
     "SOL_SHORT": {
         "asset": "SOL",
         "direction": "SHORT",
-        "persistence": 20,
+        "persistence": 27,
         "score": 2,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977830"
+        "last_seen": "2026-06-12 07:37:50.728209"
     },
     "TON_SHORT": {
         "asset": "TON",
@@ -149,6 +149,30 @@
         "persistence": 15,
         "score": 2,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-11 20:08:11.977589"
+        "last_seen": "2026-06-12 07:37:50.722035"
+    },
+    "SUI_SHORT": {
+        "asset": "SUI",
+        "direction": "SHORT",
+        "persistence": 22,
+        "score": 2,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-12 07:37:50.728242"
+    },
+    "CRV_SHORT": {
+        "asset": "CRV",
+        "direction": "SHORT",
+        "persistence": 18,
+        "score": 4,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-12 07:37:50.728535"
+    },
+    "ADA_SHORT": {
+        "asset": "ADA",
+        "direction": "SHORT",
+        "persistence": 10,
+        "score": 2,
+        "lifecycle_stage": "DETECTED",
+        "last_seen": "2026-06-12 07:37:50.728518"
     }
 }
