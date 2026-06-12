@@ -52,8 +52,9 @@ query = """
 
 SELECT *
 
-FROM position_state
+FROM executions
 
+WHERE status='EXECUTED'
 
 
 
@@ -128,15 +129,26 @@ conn.execute(
 positions = []
 for _, row in df.iterrows():
 
-    entry_price = row["entry_price"]
+    entry_price = 0
 
-    current_price = row["current_price"]
+    current_price = 0
 
     leverage = 1
 
-    position_size = row["position_size"]
+    BASE_POSITION_SIZE = 2.0
+    
+    confidence = row["confidence"]
+    
+    if confidence >= 85:
+        position_size = BASE_POSITION_SIZE * 1.25
+    
+    elif confidence >= 75:
+        position_size = BASE_POSITION_SIZE
+    
+    else:
+        position_size = BASE_POSITION_SIZE * 0.75
 
-    unrealized_pnl = row["position_pnl"]
+    unrealized_pnl = row["score"]
 print(row)
 print(row.index)
 if "direction" not in row:
@@ -212,7 +224,43 @@ positions.append(
 # =========================
 # SAVE
 # =========================
+# =========================
+# SAVE
+# =========================
 
+create_query = """
+
+CREATE TABLE IF NOT EXISTS
+portfolio_state (
+
+    asset TEXT,
+
+    entry_price REAL,
+
+    current_price REAL,
+
+    position_size REAL,
+
+    unrealized_pnl REAL,
+
+    direction TEXT,
+
+    position_type TEXT,
+
+    status TEXT,
+
+    opened_at TEXT
+)
+
+"""
+
+conn.execute(
+    create_query
+)
+
+positions_df = pd.DataFrame(
+    positions
+)
 positions_df = pd.DataFrame(
     positions
 )

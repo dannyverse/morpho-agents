@@ -72,9 +72,10 @@ query = """
 
 SELECT *
 
-FROM executions
+FROM portfolio_state
 
-WHERE status='EXECUTED'
+WHERE status='OPEN'
+
 
 """
 
@@ -106,7 +107,7 @@ if len(portfolio_df) == 0:
 total_pnl = round(
 
     portfolio_df[
-        "score"
+        "unrealized_pnl"
     ].sum(),
 
     2
@@ -124,7 +125,7 @@ starting_equity = 10000
 total_pnl = round(
 
 portfolio_df[
-        "score"
+        "unrealized_pnl"
     ].sum(),
 
     2
@@ -143,8 +144,8 @@ open_positions = len(portfolio_df)
 exposure = round(
 
 portfolio_df[
-    "confidence"
-].sum() / 100,
+    "position_size"
+].sum(),
     2
 )
 

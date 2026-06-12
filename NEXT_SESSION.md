@@ -1,4 +1,54 @@
+# MORPHO AGENTS — NEXT SESSION PLAN
 
+## SESSION OBJECTIVE
+
+Introduce realistic pricing and PnL mechanics.
+
+## COMPLETED THIS SESSION
+
+- Restored coherent execution lineage
+- Fixed SHORT propagation corruption
+- Consolidated:
+  executions
+  → portfolio_state
+  → paper_portfolio
+  → position_manager
+  → risk_manager
+- Removed historical execution inflation
+- Normalized exposure sizing
+- Separated confidence from position sizing
+- Restored operationally coherent portfolio accounting
+- Runtime stabilized:
+  ✅ Success: 16
+  ❌ Failed: 0
+  Runtime Status: HEALTHY
+
+## CURRENT ARCHITECTURE STATE
+
+System now has:
+- coherent semantic lineage
+- coherent portfolio accounting
+- normalized exposure model
+- operational state persistence
+- consistent directional semantics
+
+## NEXT PRIORITIES
+
+1. Real pricing integration
+2. Realized/unrealized PnL mechanics
+3. Replay/recovery audit
+4. Schema governance discipline
+
+## IMPORTANT NOTES
+
+Current system still uses placeholder values:
+- entry_price = 0
+- current_price = 0
+- unrealized_pnl = 0
+
+These are now isolated operational adapters rather than structural corruption.
+
+Focus next session on economic realism, NOT new feature expansion.
 NEXT SESSION PRIORITIES
 
 1. Execution Direction Propagation Audit
