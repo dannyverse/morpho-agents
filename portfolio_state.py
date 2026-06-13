@@ -1,9 +1,12 @@
 import sqlite3
 import pandas as pd
-import requests
+
 
 from datetime import datetime
-
+from market_data_manager import (
+    refresh_market_data,
+    get_price
+)
 # =========================
 # DATABASE
 # =========================
@@ -11,37 +14,37 @@ from datetime import datetime
 conn = sqlite3.connect(
     "trading_system.db"
 )
-def get_current_price(asset):
 
-    try:
-
-        response = requests.post(
-
-            "https://api.hyperliquid.xyz/info",
-
-            json={
-
-                "type": "allMids"
-
-            },
-            timeout=5
-        )
-
-        prices = response.json()
-
-        return float(
-
-            prices.get(asset, 0)
-
-        )
-
-    except Exception as e:
+refresh_market_data()
     
-        print(
-            f"⚠️ Pricing error for {asset}: {e}"
-        )
+
+        
+
+            
+
+            
+
+                
+
+            
+        
     
-        return 0
+
+        
+
+        
+
+            
+
+        
+
+    
+    
+        
+            
+        
+    
+        
 
         
 # =========================
@@ -163,7 +166,7 @@ for _, row in df.iterrows():
 
     entry_price = row["entry_price"]
 
-    current_price = get_current_price(
+    current_price = get_price(
         row["asset"]
     )
 
