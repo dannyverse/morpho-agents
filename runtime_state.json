@@ -1,7 +1,7 @@
 {
-    "cycle_id": 1781295145,
-    "heartbeat_timestamp": "2026-06-12 22:12:36.213705",
-    "system_status": "HEALTHY",
+    "cycle_id": 1781329957,
+    "heartbeat_timestamp": "2026-06-13 07:55:06.743879",
+    "system_status": "DEGRADED",
     "runtime_mode": "NORMAL",
     "active_modules": [
         "funding_agent.py",
@@ -15,15 +15,16 @@
         "meta_intelligence.py",
         "risk_manager.py",
         "portfolio_health_manager.py",
-        "portfolio_state.py",
         "paper_portfolio.py",
         "position_manager.py",
         "strategy_analytics.py",
         "logger.py"
     ],
-    "failed_modules": [],
+    "failed_modules": [
+        "portfolio_state.py"
+    ],
     "last_error": null,
-    "heartbeat_ok": true,
+    "heartbeat_ok": false,
     "cycle_duration_seconds": 0,
-    "last_successful_cycle": 1781295145
+    "last_successful_cycle": 1781329957
 }

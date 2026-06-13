@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import random
+import requests
 from datetime import datetime
 
 from telegram_test import send_alert
@@ -12,7 +13,39 @@ from telegram_test import send_alert
 conn = sqlite3.connect(
     "trading_system.db"
 )
+def get_current_price(asset):
 
+    try:
+
+        response = requests.post(
+
+            "https://api.hyperliquid.xyz/info",
+
+            json={
+
+                "type": "allMids"
+
+            },
+            timeout=5
+        )
+
+        prices = response.json()
+
+        return float(
+
+            prices.get(asset, 0)
+
+        )
+
+    except Exception as e:
+    
+        print(
+            f"⚠️ Pricing error for {asset}: {e}"
+        )
+    
+        return 0
+
+        
 cycle_query = """
 
 SELECT value
@@ -312,6 +345,13 @@ for _, row in signals_df.iterrows():
 
         "confidence": confidence,
 
+        "entry_price": get_current_price(
+            row["asset"]
+        ),
+
+        "position_size": 2.5,
+
+        "signal_strength": signal_strength,
         "signal_strength": signal_strength,
 
         "regime": market_bias,

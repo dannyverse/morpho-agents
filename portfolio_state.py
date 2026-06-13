@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-
+import requests
 
 from datetime import datetime
 
@@ -11,7 +11,39 @@ from datetime import datetime
 conn = sqlite3.connect(
     "trading_system.db"
 )
+def get_current_price(asset):
 
+    try:
+
+        response = requests.post(
+
+            "https://api.hyperliquid.xyz/info",
+
+            json={
+
+                "type": "allMids"
+
+            },
+            timeout=5
+        )
+
+        prices = response.json()
+
+        return float(
+
+            prices.get(asset, 0)
+
+        )
+
+    except Exception as e:
+    
+        print(
+            f"⚠️ Pricing error for {asset}: {e}"
+        )
+    
+        return 0
+
+        
 # =========================
 # CHECK EXECUTIONS TABLE
 # =========================
@@ -129,9 +161,11 @@ conn.execute(
 positions = []
 for _, row in df.iterrows():
 
-    entry_price = 0
+    entry_price = row["entry_price"]
 
-    current_price = 0
+    current_price = get_current_price(
+        row["asset"]
+    )
 
     leverage = 1
 
@@ -148,7 +182,45 @@ for _, row in df.iterrows():
     else:
         position_size = BASE_POSITION_SIZE * 0.75
 
-    unrealized_pnl = row["score"]
+    if entry_price > 0:
+    
+        if row["direction"] == "LONG":
+    
+            unrealized_pnl = round(
+    
+                (
+                    (
+                        current_price
+                        -
+                        entry_price
+                    )
+                    /
+                    entry_price
+                ) * 100,
+    
+                2
+            )
+    
+        else:
+    
+            unrealized_pnl = round(
+    
+                (
+                    (
+                        entry_price
+                        -
+                        current_price
+                    )
+                    /
+                    entry_price
+                ) * 100,
+    
+                2
+            )
+    
+    else:
+    
+        unrealized_pnl = 0
 print(row)
 print(row.index)
 if "direction" not in row:
