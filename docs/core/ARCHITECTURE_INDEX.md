@@ -16,7 +16,27 @@ Its purpose is to:
 ---
 
 # CORE IDENTITY DOCUMENTS
+## MORPHO_ACADEMY_RESEARCH_EXPANSION.md
 
+Purpose:
+
+Defines Morpho Academy evolution into a Strategic Intelligence & Ecosystem Understanding Layer.
+
+Defines:
+
+* research philosophy
+* comparative systems analysis
+* protocol intelligence
+* opportunity structure analysis
+* incident studies
+* governance-oriented research
+* complexity budget discipline
+* survivability analysis
+* evolutionary judgment development
+
+Purpose:
+
+Preserve strategic cognition, ecosystem understanding, and governance-oriented research discipline while Morpho evolves.
 ## MORPHO_VISION.md
 
 Purpose:
