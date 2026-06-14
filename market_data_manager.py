@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime
 from datetime import timezone
+from telemetry import log_market_event
 market_cache = {}
 
 last_update_timestamp = None
@@ -31,9 +32,15 @@ def refresh_market_data():
         
         market_data_age_seconds = 0
                     
-        
-
         print("✅ Market data refreshed")
+
+        log_market_event(
+            event="market_data_refreshed",
+            status=get_market_data_status(),
+            details={
+                "assets_loaded": len(market_cache)
+            }
+        )        
 
     except Exception as e:
 

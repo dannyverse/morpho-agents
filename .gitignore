@@ -13,3 +13,4 @@ logs/
 *.csv
 
 .DS_Store
+market_events.log
