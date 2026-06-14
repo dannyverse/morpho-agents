@@ -5,7 +5,10 @@ import random
 from datetime import datetime
 from market_data_manager import (
     refresh_market_data,
-    get_price
+    get_price,
+    is_market_data_stale,
+    get_market_data_age,
+    get_market_data_status
 )
 from telegram_test import send_alert
 
@@ -18,7 +21,11 @@ conn = sqlite3.connect(
 )
 
 refresh_market_data()
-        
+if is_market_data_stale():
+
+    print(
+        f"⚠️ WARNING: Market data is stale ({get_market_data_age()} seconds old)"
+    )        
 cycle_query = """
 
 SELECT value
@@ -390,6 +397,25 @@ print(
     f"Risk Level: "
     f"{risk_level}"
 )
+
+market_data_status = get_market_data_status()
+
+status_icon = "✅"
+
+if market_data_status == "WARNING":
+    status_icon = "⚠️"
+
+elif market_data_status == "CRITICAL":
+    status_icon = "🚨"
+
+elif market_data_status == "UNKNOWN":
+    status_icon = "❓"
+
+print(
+    f"Market Data Status: "
+    f"{status_icon} "
+    f"{market_data_status}"
+)    
 
 print("\n")
 

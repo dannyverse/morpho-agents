@@ -5,7 +5,9 @@ market_cache = {}
 
 last_update_timestamp = None
 market_data_age_seconds = None
+WARNING_THRESHOLD_SECONDS = 120
 
+CRITICAL_THRESHOLD_SECONDS = 300
 def refresh_market_data():
 
     global market_cache
@@ -28,7 +30,7 @@ def refresh_market_data():
         )
         
         market_data_age_seconds = 0
-            
+                    
         
 
         print("✅ Market data refreshed")
@@ -60,3 +62,31 @@ def get_market_data_age():
         ).total_seconds(),
         2
     )
+def is_market_data_stale():
+
+    age = get_market_data_age()
+
+    if age is None:
+        return True
+
+    return age > WARNING_THRESHOLD_SECONDS
+
+    
+def get_market_data_status():
+
+    age = get_market_data_age()
+
+    if age is None:
+        return "UNKNOWN"
+
+    if age > CRITICAL_THRESHOLD_SECONDS:
+        return "CRITICAL"
+
+    if age > WARNING_THRESHOLD_SECONDS:
+        return "WARNING"
+
+    return "HEALTHY"
+    
+        
+
+    
