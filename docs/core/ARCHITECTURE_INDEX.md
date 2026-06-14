@@ -114,7 +114,26 @@ Defines:
 Guides architectural decisions.
 
 ---
+## GOVERNANCE_EVOLUTION_PRINCIPLES.md
 
+Purpose:
+
+Long-term governance evolution doctrine and expansion discipline framework.
+
+Defines:
+
+* governability-first evolution
+* capability expansion constraints
+* connector isolation philosophy
+* infrastructure identity preservation
+* complexity budget discipline
+* governance anti-patterns
+* operational expansion checklists
+* evolutionary risk management
+
+Purpose:
+
+Prevent architectural drift and preserve operational coherence during future expansion.
 # DOMAIN ARCHITECTURE DOCUMENTS
 
 ## PORTFOLIO_HEALTH_ARCHITECTURE.md
