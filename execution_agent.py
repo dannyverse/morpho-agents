@@ -399,7 +399,15 @@ print(
 )
 
 market_data_status = get_market_data_status()
+if market_data_status in ["CRITICAL", "UNKNOWN"]:
 
+    print(
+        "\n🚨 EXECUTION BLOCKED:"
+        " Market data infrastructure"
+        " is not trustworthy\n"
+    )
+
+    exit()
 status_icon = "✅"
 
 if market_data_status == "WARNING":

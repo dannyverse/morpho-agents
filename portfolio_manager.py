@@ -67,8 +67,18 @@ for asset in assets:
         0,
         round(allocation_score, 2)
     )
+realized_pnl = round(
+    asset_df["pnl"].sum(),
+    2
+)
 
-    portfolio.append({
+unrealized_pnl = 0
+
+total_pnl = round(
+    realized_pnl + unrealized_pnl,
+    2
+)
+portfolio.append({
 
         "asset": asset,
 
@@ -77,6 +87,12 @@ for asset in assets:
         "winrate": winrate,
 
         "avg_pnl": avg_pnl,
+
+        "realized_pnl": realized_pnl,
+
+        "unrealized_pnl": unrealized_pnl,
+
+        "total_pnl": total_pnl,
 
         "avg_score": avg_score,
 
@@ -137,3 +153,39 @@ print(
         ]
     ].head(15)
 )
+# ============================
+# RECONCILIATION AUDIT
+# ============================
+
+print("\n🔍 RECONCILIATION AUDIT\n")
+
+if portfolio_df.empty:
+
+    print("⚠️ WARNING: Portfolio is empty")
+
+if df.empty:
+
+    print("⚠️ WARNING: No executions found")
+
+if not portfolio_df.empty and df.empty:
+
+    print(
+        "🚨 INCONSISTENT STATE:"
+        " portfolio exists without executions"
+    )
+
+if portfolio_df["realized_pnl"].isnull().any():
+
+    print(
+        "🚨 INVALID STATE:"
+        " realized_pnl contains null values"
+    )
+
+if portfolio_df["total_pnl"].isnull().any():
+
+    print(
+        "🚨 INVALID STATE:"
+        " total_pnl contains null values"
+    )
+
+print("✅ Reconciliation audit completed")
