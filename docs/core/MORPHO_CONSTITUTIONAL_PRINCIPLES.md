@@ -25,7 +25,16 @@ The purpose of this document is not to define implementation.
 The purpose is to define constraints.
 
 Future architecture should be evaluated against these principles.
+# GOVERNANCE RULE
 
+Before any major architectural decision,
+evaluate the proposal against these principles.
+
+If a proposed change violates two or more principles,
+it requires explicit justification before proceeding.
+
+Constitutional principles are intended to guide evolution,
+not merely describe it.
 ---
 
 # PRINCIPLE 1
@@ -96,7 +105,9 @@ Examples:
 These layers may advise decisions.
 
 They must not become canonical economic truth.
+Derived analytics may inform autonomous decisions.
 
+They may never be the sole authority for capital deployment.
 ---
 
 # PRINCIPLE 6
