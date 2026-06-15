@@ -35,6 +35,35 @@ it requires explicit justification before proceeding.
 
 Constitutional principles are intended to guide evolution,
 not merely describe it.
+
+# CONSTITUTIONAL EXCEPTIONS
+
+Constitutional principles are constraints on evolution,
+not absolute prohibitions.
+
+A proposal that violates one or more principles is not
+automatically rejected.
+
+However:
+
+The burden of justification increases with the number
+and severity of violations.
+
+Any proposal violating multiple constitutional principles
+should demonstrate:
+
+* clear operational pressure
+* explicit tradeoff awareness
+* evaluation of simpler alternatives
+* preservation of human governability
+* proportional complexity cost
+
+Constitutional violations should be conscious decisions,
+not accidental outcomes.
+
+The purpose of the Constitution is not to prevent evolution.
+
+The purpose is to prevent unconscious evolution.
 ---
 
 # PRINCIPLE 1
