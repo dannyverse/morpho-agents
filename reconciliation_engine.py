@@ -20,7 +20,7 @@ with open(
 # ============================
 
 conn = sqlite3.connect(
-    "morpho.db"
+    "trading_system.db"
 )
 
 executions_df = pd.read_sql(

@@ -661,3 +661,97 @@ Clarify:
 
 Goal:
 Formal
+# NEXT SESSION — CANONICAL EXECUTION PERSISTENCE AUDIT
+
+## SESSION OBJECTIVE
+
+Primary objective:
+
+Canonical Execution Persistence Audit
+
+The goal is to identify and formalize the true execution persistence Source Of Truth before reconciliation evolution continues.
+
+Key questions:
+
+* Where does execution truth actually live?
+* Is execution history persisted canonically?
+* Is runtime execution state transient?
+* Should SQLite become the canonical persistence layer?
+* What persistence semantics are currently ambiguous?
+
+---
+
+# IMPORTANT DISCOVERY
+
+Current architecture now clearly separates:
+
+## signal_memory.csv
+
+Historical execution/signal memory
+
+vs
+
+## position_state.json
+
+Canonical live economic state
+
+This distinction is now foundational.
+
+---
+
+# MAJOR SESSION ACHIEVEMENTS
+
+Completed:
+
+* canonical position_state v0
+* live exposure semantics
+* mark-to-market valuation layer
+* unrealized pnl runtime semantics
+* valuation separation architecture
+* research expansion framework
+* economic truthfulness foundations
+
+---
+
+# IMPORTANT LIMITATION DISCOVERED
+
+reconciliation_engine.py revealed:
+
+```text id="nx1"
+no such table: executions
+```
+
+This indicates:
+
+```text id="nx2"
+canonical execution persistence
+is not yet fully consolidated
+```
+
+This must be resolved BEFORE reconciliation hardening proceeds.
+
+---
+
+# CURRENT ARCHITECTURAL DIRECTION
+
+Morpho now increasingly separates:
+
+* execution
+* persistence
+* valuation
+* governance
+* research cognition
+* live economic state
+
+This separation should remain protected.
+
+---
+
+# NEXT LIKELY FRONTIERS
+
+1. Canonical execution persistence
+2. Reconciliation v1
+3. Position lifecycle semantics
+4. Governance-aware exposure management
+5. Economic integrity validation
+
