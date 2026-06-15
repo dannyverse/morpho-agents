@@ -10,7 +10,7 @@ WARNING_THRESHOLD_SECONDS = 120
 
 CRITICAL_THRESHOLD_SECONDS = 300
 def refresh_market_data():
-
+    
     global market_cache
     global last_update_timestamp
 
@@ -47,7 +47,9 @@ def refresh_market_data():
         print(
             f"⚠️ Market data refresh error: {e}"
         )
+def get_market_cache():
 
+    return market_cache
 
 def get_price(asset):
 

@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import random
+import json
 
 from datetime import datetime
 from market_data_manager import (
@@ -355,7 +356,44 @@ for _, row in signals_df.iterrows():
 # =========================
 # SAVE
 # =========================
+# ============================
+# POSITION STATE UPDATE
+# ============================
 
+position_state = {}
+
+for execution in executions:
+
+    if execution["execution_decision"] != "APPROVED":
+        continue
+
+    position_state[
+        execution["asset"]
+    ] = {
+
+        "status": "OPEN",
+
+        "side": execution["direction"],
+
+        "entry_price": execution["entry_price"],
+
+        "quantity": execution["position_size"],
+
+        "opened_at": execution["timestamp"],
+
+        "exchange": "hyperliquid"
+    }
+
+with open(
+    "state/position_state.json",
+    "w"
+) as f:
+
+    json.dump(
+        position_state,
+        f,
+        indent=4
+    )
 executions_df = pd.DataFrame(
     executions
 )
