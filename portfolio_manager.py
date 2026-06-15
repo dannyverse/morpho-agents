@@ -71,7 +71,8 @@ realized_pnl = round(
     asset_df["pnl"].sum(),
     2
 )
-
+# Placeholder until canonical live position accounting exists
+# Future unrealized PnL will use position_state mark-to-market valuation
 unrealized_pnl = 0
 
 total_pnl = round(

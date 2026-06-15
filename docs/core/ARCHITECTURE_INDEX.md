@@ -155,7 +155,35 @@ Purpose:
 
 Prevent architectural drift and preserve operational coherence during future expansion.
 # DOMAIN ARCHITECTURE DOCUMENTS
+## POSITION_STATE_ARCHITECTURE.md
 
+Purpose:
+
+Defines the future canonical live economic Source Of Truth for Morpho.
+
+Defines:
+
+* live position semantics
+* exposure semantics
+* mark-to-market foundations
+* unrealized pnl foundations
+* reconciliation foundations
+* governance visibility
+* economic truthfulness
+
+Important distinction:
+
+Separates:
+
+* historical execution memory
+
+from:
+
+* live deployed capital state
+
+Purpose:
+
+Establish future economic reality semantics and canonical position governance architecture.
 ## PORTFOLIO_HEALTH_ARCHITECTURE.md
 
 Purpose:
