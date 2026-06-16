@@ -257,3 +257,61 @@ while preserving:
 * auditability
 * human understanding
 
+---
+
+# ECONOMIC STATE ARCHITECTURE DISCOVERY
+
+Major architectural clarification achieved during documentation and audit sessions.
+
+Economic Truth Hierarchy formalized:
+
+L0 Sovereign Truth
+
+L1 Position State
+
+L2 Executions
+
+L3A Position Valuation
+
+L3B Portfolio State
+
+L4 Assessment Domains
+
+L5 Governance
+
+Key conclusions:
+
+* Position State represents operational economic reality
+* Executions represent immutable historical truth
+* Position Valuation represents position-level interpretation
+* Portfolio State represents portfolio-level interpretation
+* Derived systems may inform decisions
+* Derived systems may never redefine reality
+
+Current architecture mapping hypothesis:
+
+position_state.json
+→ L1 Position State
+
+portfolio_state (sqlite)
+→ likely L3A Position Valuation
+
+sqlite position_state
+→ likely transitional or redundant artifact
+
+Important:
+
+No migration approved.
+
+No code changes approved.
+
+Current status:
+
+Architecture clarified.
+
+Migration design pending.
+
+Recommended next session objective:
+
+Validate current runtime components against the Economic Truth Hierarchy and determine whether a formal migration plan should be created.
+

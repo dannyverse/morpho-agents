@@ -137,6 +137,31 @@ Recommended architectural overview document.
 
 ---
 
+## ECONOMIC_STATE_ARCHITECTURE.md
+
+Purpose:
+
+Defines Morpho's Economic Truth Hierarchy and economic state ontology.
+
+Defines:
+
+* Sovereign Truth
+* Position State
+* Executions
+* Position Valuation
+* Portfolio State
+* Assessment Domains
+* Governance Information Flow
+
+Purpose:
+
+Preserve semantic clarity between reality, interpretation, assessment, and governance.
+
+Serves as the canonical reference for economic state ownership and information flow.
+
+---
+
+
 ## ARCHITECTURE_PRINCIPLES.md
 
 Purpose:
@@ -283,7 +308,25 @@ Purpose:
 Research reference only.
 
 Not an implementation roadmap.
+## KNOWLEDGE_GOVERNANCE_PRINCIPLES_JUNE_2026.md
 
+Purpose:
+
+Captures future research topics related to:
+
+* learning
+* institutional memory
+* knowledge governance
+* explainable learning
+* adaptive intelligence
+
+Important:
+
+Research reference only.
+
+Not an implementation roadmap.
+
+Not active technical debt.
 ---
 # RESEARCH DOCUMENTS
 
