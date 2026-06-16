@@ -72,6 +72,27 @@ Defines:
 * operational protocol
 
 Recommended first-read document for new sessions.
+## MORPHO_CONSTITUTIONAL_PRINCIPLES.md
+
+Purpose:
+
+Defines the foundational constraints governing Morpho evolution.
+
+Defines:
+
+* governability principles
+* ownership principles
+* economic truth principles
+* constitutional governance
+* complexity discipline
+* architectural evolution constraints
+
+Important:
+
+The Constitution exists to guide evolution,
+not merely describe architecture.
+
+All major architectural decisions should be evaluated against constitutional principles.
 
 ---
 
@@ -234,6 +255,58 @@ Defines:
 * risk domain boundaries
 
 ---
+# CORE ARCHITECTURE DOCUMENTS
+
+...
+RISK_STATE_ARCHITECTURE.md
+
+---
+
+# RESEARCH DOCUMENTS
+
+## GEMINI_ARCHITECTURAL_INSIGHTS_JUNE_2026.md
+
+Purpose:
+
+Captures external architectural insights relevant to future Morpho evolution.
+
+Topics:
+
+* Sovereign Truth
+* Economic Truth Hierarchy
+* Reconciliation Philosophy
+* Lifecycle Semantics
+* Constitutional Thinking
+
+Purpose:
+
+Research reference only.
+
+Not an implementation roadmap.
+
+---
+# RESEARCH DOCUMENTS
+
+## GEMINI_ARCHITECTURAL_INSIGHTS_JUNE_2026.md
+
+Purpose:
+
+Captures external architectural insights relevant to future Morpho evolution.
+
+Topics:
+
+* Sovereign Truth
+* Economic Truth Hierarchy
+* Reconciliation Philosophy
+* Lifecycle Semantics
+* Constitutional Thinking
+
+Purpose:
+
+Research reference only.
+
+Not an implementation roadmap.
+
 
 # OPERATIONAL MEMORY DOCUMENTS
 
@@ -335,7 +408,39 @@ Must be updated at the end of sessions.
 ---
 
 # SOURCE OF TRUTH HIERARCHY
+# ECONOMIC TRUTH HIERARCHY
 
+L0
+
+Sovereign Economic Truth
+
+(Blockchain / Protocol State)
+
+---
+
+L1
+
+Operational Economic Truth
+
+(position_state)
+
+---
+
+L2
+
+Historical Economic Truth
+
+(executions)
+
+---
+
+L3
+
+Derived Economic Interpretation
+
+(position_valuator)
+
+---
 ## position_state
 
 Operational Source Of Truth.

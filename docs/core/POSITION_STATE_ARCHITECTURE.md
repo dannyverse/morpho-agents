@@ -103,11 +103,18 @@ Example conceptual structure:
 
 ## status
 
-Defines whether position is:
+Current minimal lifecycle semantics:
 
 * OPEN
+
+Future lifecycle candidates:
+
 * CLOSED
-* PARTIALLY_CLOSED
+* LIQUIDATED
+
+Lifecycle expansion should occur only under operational pressure.
+
+The objective is to preserve semantic simplicity until additional lifecycle complexity becomes operationally necessary.
 
 ---
 
@@ -216,30 +223,89 @@ Avoid:
 
 As of June 2026:
 
-```text id="ps12"
-position_state
-does not yet exist canonically
-```
+position_state now exists as the canonical operational representation of live economic exposure.
 
-Current portfolio semantics are derived primarily from:
+Current implementation includes:
 
-```text id="ps13"
-signal_memory.csv
-```
+* status
+* side
+* entry_price
+* quantity
+* exchange
+* opened_at
 
-which represents:
+Position state is generated from approved executions and serves as the operational view of deployed capital.
 
-```text id="ps14"
-historical execution memory
-```
+---
 
-rather than:
+# IMPORTANT DISCOVERY
 
-```text id="ps15"
-live economic state
-```
+The Position State implementation led to a major architectural realization:
 
-This distinction is intentional and now explicitly documented.
+Historical Truth
+≠
+Live Truth
+
+Executions represent:
+
+historical economic actions.
+
+position_state represents:
+
+current economic exposure reality.
+
+These layers should remain separate.
+
+---
+
+# ECONOMIC TRUTH HIERARCHY
+
+Current conceptual hierarchy:
+
+L0
+
+Sovereign Economic Truth
+
+(Blockchain / Protocol State)
+
+---
+
+L1
+
+Operational Economic Truth
+
+(position_state)
+
+---
+
+L2
+
+Historical Economic Truth
+
+(executions)
+
+---
+
+L3
+
+Derived Economic Interpretation
+
+(position_valuator)
+
+---
+
+# OPEN QUESTIONS
+
+Remaining architectural questions include:
+
+* lifecycle ownership
+* position closure semantics
+* liquidation semantics
+* reconciliation philosophy
+* sovereign truth integration
+
+These represent the next stage of Position State evolution.
+
 
 ---
 

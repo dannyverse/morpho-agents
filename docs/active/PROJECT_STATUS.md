@@ -221,7 +221,27 @@ ACTIVE
 ---
 
 ## Operational State Layer
+## Economic Truth Hierarchy
 
+L0
+Sovereign Economic Truth
+(Blockchain / Protocol State)
+
+L1
+Operational Economic Truth
+(position_state)
+
+L2
+Historical Economic Truth
+(executions)
+
+L3
+Derived Economic Interpretation
+(position_valuator)
+
+Status:
+
+CONFIRMED
 position_state
 
 Purpose:
@@ -397,19 +417,71 @@ Must exist before large-scale opportunity expansion.
 
 ---
 
-## Observability Ownership
+## Position Lifecycle Semantics
 
 Current:
 
-system_log ownership remains ambiguous.
+Position state exists.
+
+Lifecycle transitions do not.
+
+The system currently lacks formal position lifecycle management.
+
+Open Questions:
+
+* OPEN → CLOSED transitions
+* ownership of lifecycle updates
+* closure semantics
+* liquidation semantics
 
 Status:
 
-PENDING
+NEXT ARCHITECTURAL FRONTIER
 
-Next Audit:
+## Reconciliation Philosophy
 
-Observability Foundation.
+Current:
+
+Initial reconciliation foundations exist.
+
+However:
+
+The role of reconciliation is not yet formally defined.
+
+Open Questions:
+
+* corruption detection?
+* state divergence detection?
+* sovereign truth enforcement?
+* operational validation?
+
+Status:
+
+UNDER ARCHITECTURAL REVIEW
+
+## Sovereign Truth Integration
+
+Current:
+
+Local state is authoritative for paper trading.
+
+Future protocol integrations introduce a higher truth layer.
+
+Principle:
+
+Blockchain / Protocol State
+=
+Sovereign Economic Truth
+
+Open Questions:
+
+* reconciliation mechanisms
+* conflict resolution
+* state override policies
+
+Status:
+
+FUTURE REQUIREMENT
 
 ---
 
@@ -449,22 +521,36 @@ Focus:
 
 Estimated Completion:
 
-~70%
-PHASE 0 COMPLETE WHEN
+95-98%
 
-✅ Source of Truth formalized
+Current Status:
 
-✅ Ownership model formalized
+Foundation objectives have largely been achieved.
 
-✅ Circularity resolved
+Recent completions include:
 
-✅ Observability Layer operational
+* Canonical Position State
+* Execution Persistence Separation
+* Mark-to-Market Valuation
+* Economic Truth Hierarchy
+* Reconciliation Foundations
+* Constitutional Governance Framework
 
-✅ Risk Foundation implemented
+Remaining Foundation work is primarily focused on:
 
-✅ Exchange Abstraction initiated
+* Lifecycle Semantics
+* Reconciliation Maturity
+* Ownership Clarification
+* Risk Layer Consolidation
+* Exchange Abstraction
 
-✅ No critical technical debt remains
+The project is increasingly transitioning from:
+
+Foundation
+
+toward:
+
+Stabilization & Governance.
 ---
 
 # ROADMAP
@@ -631,50 +717,61 @@ This includes:
 * StateManager direction
 * operational architecture principles
 
-# POSITION STATE DEPENDENCY AUDIT — INITIAL FINDINGS
+# POSITION STATE AUDIT
 
-## Critical Discovery
+## Result
 
-portfolio_state.py currently assumes a directional trading schema:
+Canonical live exposure state established.
 
-* portfolio_df["direction"]
-* LONG / SHORT position logic
-* directional imbalance calculations
+position_state now serves as the operational representation of live economic exposure.
 
-However, the actual position_state table currently only contains:
+Current schema includes:
 
-* asset
-* entry_price
-* current_price
-* position_size
-* position_pnl
-
-Missing fields:
-
-* direction
-* side
 * status
+* side
+* entry_price
+* quantity
+* exchange
+* opened_at
 
-This confirms a canonical schema inconsistency between:
+Status:
 
-* runtime operational assumptions
-* actual Source Of Truth structure
+FOUNDATION COMPLETE
 
-## Architectural Implication
+---
 
-There are currently two partially conflicting operational models inside Morpho:
+## Remaining Questions
 
-1. Minimal position tracking model
-2. Directional trading/exposure model
+Position state ownership remains operationally simple but future lifecycle ownership is not yet formalized.
 
-This is now identified as a major Foundation debt.
+Open Questions:
 
-## Important Decision
+* lifecycle transitions
+* closure semantics
+* liquidation semantics
+* reconciliation boundaries
+* sovereign truth integration
 
-No migration or refactor will occur yet.
+---
 
-Next step:
-Continue full dependency audit before designing canonical schema normalization.
+## Architectural Position
+
+position_state represents:
+
+Current Live Economic Exposure
+
+It does not represent:
+
+* historical truth
+* analytics
+* portfolio intelligence
+* opportunity intelligence
+
+Those remain separate architectural domains.
+
+Status:
+
+CONFIRMED
 
 ---
 

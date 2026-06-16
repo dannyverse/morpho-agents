@@ -39,13 +39,82 @@ The system is organized around:
 ---
 
 # SOURCE OF TRUTH HIERARCHY
+# ECONOMIC TRUTH HIERARCHY
 
+Morpho distinguishes between:
+
+Operational State Ownership
+
+and
+
+Economic Truth Ownership.
+
+Current economic hierarchy:
+
+L0
+
+Sovereign Economic Truth
+
+(Blockchain / Protocol State)
+
+---
+
+L1
+
+Operational Economic Truth
+
+(position_state)
+
+---
+
+L2
+
+Historical Economic Truth
+
+(executions)
+
+---
+
+L3
+
+Derived Economic Interpretation
+
+(position_valuator)
+
+---
+
+Important:
+
+Historical Truth
+≠
+Live Truth
+
+Derived Analytics
+≠
+Source Truth
+
+These distinctions are foundational to future reconciliation and governance architecture.
+
+---
 ## position_state
 
 Role:
 
 Operational Source Of Truth for deployed capital.
+Important:
 
+position_state represents:
+
+current live economic exposure.
+
+It does not represent:
+
+* historical actions
+* analytics
+* opportunity intelligence
+* portfolio interpretation
+
+Historical Truth and Live Truth remain separate architectural layers.
 Purpose:
 
 * active positions
