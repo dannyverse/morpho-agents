@@ -1,189 +1,28 @@
 # MORPHO AGENTS — NEXT SESSION
 
-## DATE
-
 June 2026
 
 ---
 
-# CURRENT PROJECT STATE
+# CURRENT PHASE
 
-Morpho has transitioned from:
+STABILIZATION
 
-Foundation
+Foundation complete.
 
-COMPLETE
-
-June 2026
-
-Current phase:
-
-Stabilization
-
-STARTING
-
-
----
-# CURRENT PROJECT STATE
-
-FOUNDATION COMPLETE
-
-June 2026
-
-Current phase:
-
-Stabilization
-
-STARTING
+Current focus has shifted from ownership governance to semantic governance.
 
 ---
 
-# CURRENT ARCHITECTURE
+# SESSION OBJECTIVE
 
-L1 Position State
+Semantic Governance Audit
 
-↓
+Goal:
 
-L3A Position Valuation
+Determine whether overloaded names exist inside Morpho and whether they represent semantic debt.
 
-↓
-
-Consumers
-
-Architecture validated.
-
-No major ambiguities remain.
-
----
-
-# NEXT SESSION OBJECTIVE
-
-Begin Stabilization Phase
-
-Focus:
-
-1. Explicit L1 ownership documentation
-
-2. Lightweight reconciliation philosophy
-
-3. Market data freshness governance
-
-4. Realized + Unrealized PnL completeness
-
----
-
-# NOT PRIORITIES
-
-No lifecycle engine
-
-No event bus
-
-No async architecture
-
-No ML layer
-
-Complexity remains earned
-
----
-
-# STRATEGIC QUESTION
-
-The machine foundations exist.
-
-The next question is:
-
-What should the machine understand?
-
-## Circularity Hypothesis Rejected
-
-Feared architecture:
-
-position_state ↔ portfolio_state
-
-was not supported by runtime evidence.
-
-Actual architecture:
-
-position_state.json
-
-↓
-
-portfolio_state
-
-↓
-
-consumers
-
----
-
-## Transitional Artifacts
-
-sqlite position_state
-
-Category C
-
-position_manager.py
-
-Category C
-
-Experimental deprecation validated.
-
-Safe runner completed successfully without executing position_manager.py.
-
----
-
-# CURRENT ARCHITECTURE
-
-L1
-
-position_state.json
-
-↓
-
-L3A
-
-portfolio_state
-
-↓
-
-StateManager
-
-risk_manager
-
-portfolio_health_manager
-
-dashboard
-
-↓
-
-paper_portfolio
-
----
-
-# NEXT SESSION OBJECTIVE
-
-Foundation Simplification
-
-Primary objective:
-
-Safely remove transitional artifacts.
-
-Focus:
-
-* remove dead dashboard query
-* remove position_manager.py
-* remove sqlite position_state
-* verify no hidden dependencies remain
-
-Priority:
-
-simplification before expansion.
-
----
-
-# STRATEGIC REMINDER
-
-Follow:
+Method:
 
 Observe
 
@@ -193,31 +32,120 @@ Understand
 
 ↓
 
+Gather Evidence
+
+↓
+
 Define
 
-↓
-
-Migrate
-
-↓
-
-Validate
-
-↓
-
-Simplify
-
-Never:
-
-Delete
-
-↓
-
-Pray
+No implementation assumed.
 
 ---
 
-# CURRENT PROJECT DIRECTION
+# CONTEXT
+
+Reality discovery audit revealed that most operational realities are mature and healthy.
+
+The main debt discovered during Stabilization appears to be semantic rather than ownership related.
+
+Current question is no longer:
+
+Who owns reality?
+
+but:
+
+What does a name actually mean?
+
+---
+
+# INITIAL CANDIDATES
+
+health_score
+
+system_status
+
+status
+
+risk_status
+
+---
+
+# QUESTIONS
+
+Does the same name represent multiple meanings?
+
+Do different realities accidentally share terminology?
+
+Are there hidden semantic ambiguities?
+
+Are some names legacy artifacts?
+
+---
+
+# KNOWN RESULTS
+
+## MATURE REALITIES
+
+* Economic Reality
+* Valuation Reality
+* Runtime Reality
+* Governance Reality
+* Market Reality
+* Historical Reality
+* Signal Memory Reality
+* Performance Reality
+* Risk Reality
+
+## LATENT REALITIES
+
+* Structural Health Reality
+* Opportunity Lifecycle Reality
+
+## LEGACY CANDIDATES
+
+Candidate Category C.
+
+Observation period active.
+
+* portfolio_manager.py
+* portfolio_dashboard.py
+* portfolio_health.py
+* system_logger.py
+
+---
+
+# DISCOVERED PRINCIPLES
+
+One Reality
+↓
+One Owner
+↓
+Many Consumers
+
+No Consumer ≠ Dead
+
+Dead Modules ≠ Dead Realities
+
+Same Name ≠ Same Meaning
+
+Semantic Debt > Ownership Debt
+
+Meaning precedes migration.
+
+---
+
+# SUCCESS CONDITION
+
+End the session with:
+
+* semantic anomalies identified;
+* meanings clearly separated;
+* no refactors performed without evidence;
+* improved understanding of Morpho semantics.
+
+---
+
+# STRATEGIC DIRECTION
 
 Foundation
 
@@ -227,7 +155,7 @@ Stabilization
 
 ↓
 
-Simplification
+Semantic Governance
 
 ↓
 

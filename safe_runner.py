@@ -30,7 +30,7 @@ modules = [
 
     "adaptive_scoring.py",
 
-    "portfolio_manager.py",
+    # "portfolio_manager.py",
 
     "execution_agent.py",
 
