@@ -23,7 +23,7 @@ query = """
 
 SELECT *
 
-FROM position_state
+FROM portfolio_state
 
 
 """

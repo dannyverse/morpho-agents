@@ -36,15 +36,15 @@ modules = [
 
     "meta_intelligence.py",
 
+    "portfolio_state.py",
+
     "risk_manager.py",
 
     "portfolio_health_manager.py",
 
-    "portfolio_state.py",
-
     "paper_portfolio.py",
 
-    "position_manager.py",
+    # "position_manager.py",
 
     "strategy_analytics.py",
 

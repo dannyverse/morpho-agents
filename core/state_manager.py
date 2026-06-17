@@ -60,16 +60,14 @@ class StateManager:
     # =========================
     # POSITION STATE
     # =========================
-
     def get_position_state(self):
-
         conn = self.get_connection()
 
         query = """
 
         SELECT *
 
-        FROM position_state
+        FROM portfolio_state
 
         """
 
@@ -79,6 +77,20 @@ class StateManager:
         )
 
         conn.close()
+
+        # =========================
+        # COMPATIBILITY ADAPTER
+        # =========================
+
+        if (
+            "unrealized_pnl" in df.columns
+            and
+            "position_pnl" not in df.columns
+        ):
+
+            df["position_pnl"] = (
+                df["unrealized_pnl"]
+            )
 
         return df
 
