@@ -14,3 +14,4 @@ logs/
 
 .DS_Store
 market_events.log
+backups/

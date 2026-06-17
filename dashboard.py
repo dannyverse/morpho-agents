@@ -57,17 +57,6 @@ LIMIT 50
 
 """
 
-positions_query = """
-
-SELECT *
-
-FROM position_state
-
-ORDER BY position_pnl DESC
-
-LIMIT 20
-
-"""
 
 executions = pd.read_sql_query(
 

@@ -68,16 +68,6 @@ tables_df = pd.read_sql_query(
     conn
 )
 
-if "position_state" not in tables_df["name"].values:
-
-    print("\n")
-    print(
-        "No executions table found"
-    )
-
-    conn.close()
-
-    exit()
 
 # =========================
 # LOAD EXECUTIONS
