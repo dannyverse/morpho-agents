@@ -194,14 +194,32 @@ for _, row in signals_df.iterrows():
 
     confidence = round(
 
-        random.uniform(60, 95),
+        min(
+
+            95,
+
+            60 + row["score"] * 5 + row["persistence"]
+
+        ),
 
         2
     )
 
     signal_strength = round(
 
-        random.uniform(0.5, 1.0),
+        min(
+
+            1.0,
+
+            max(
+
+                0.5,
+
+                abs(row["pnl"])
+
+            )
+
+        ),
 
         2
     )
