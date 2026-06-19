@@ -1,18 +1,1 @@
-{
-    "ADA": {
-        "status": "OPEN",
-        "side": "SHORT",
-        "entry_price": 0.18091,
-        "quantity": 2.5,
-        "opened_at": "2026-06-15 07:26:07.512526",
-        "exchange": "hyperliquid"
-    },
-    "HYPE": {
-        "status": "OPEN",
-        "side": "SHORT",
-        "entry_price": 64.8305,
-        "quantity": 2.5,
-        "opened_at": "2026-06-15 07:26:07.774068",
-        "exchange": "hyperliquid"
-    }
-}
+{}
