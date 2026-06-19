@@ -215,8 +215,7 @@ for _, row in signals_df.iterrows():
 
                 0.5,
 
-                abs(row["pnl"])
-
+                (row["score"] + row["persistence"]) / 10
             )
 
         ),
@@ -224,16 +223,21 @@ for _, row in signals_df.iterrows():
         2
     )
 
-    rationale = random.choice(
+if row["persistence"] >= 5:
 
-        [
-            "momentum breakout",
-            "funding imbalance",
-            "trend continuation",
-            "volatility expansion",
-            "adaptive score confirmation"
-        ]
-    )
+    rationale = "persistent funding anomaly"
+
+elif abs(row["funding"]) > 20:
+
+    rationale = "extreme funding imbalance"
+
+elif row["score"] >= 4:
+
+    rationale = "high opportunity score"
+
+else:
+
+    rationale = "moderate opportunity"
 
     execution_decision = "APPROVED"
 

@@ -181,39 +181,27 @@ if len(executions_df) > 0:
             "Governance rejecting most signals."
         )
 
+
 # =========================
 # HALT LOGIC
 # =========================
 
-halt_active = False
+halt_recommendation = False
 
 if risk_level == "HIGH_RISK":
 
-    halt_active = True
-
-    with open(
-        "HALT_TRADING.txt",
-        "w"
-    ) as f:
-
-        f.write(
-            "AI HALT ACTIVATED"
-        )
-
+    halt_recommendation = True
     ai_commentary.append(
 
-        "Autonomous halt activated."
+        "Halt recommendation issued."
     )
 
 else:
 
-    if os.path.exists(
-        "HALT_TRADING.txt"
-    ):
+    ai_commentary.append(
 
-        os.remove(
-            "HALT_TRADING.txt"
-        )
+        "No halt recommendation."
+    )
 
 # =========================
 # FINAL SUMMARY
@@ -297,7 +285,7 @@ telegram_message = (
 
     f"Risk Level: {risk_level}\n"
 
-    f"Halt Active: {halt_active}\n\n"
+    f"Halt Recommendation: {halt_recommendation}\n\n"
 
     f"{summary}"
 )
@@ -333,7 +321,7 @@ print(
 
 print(
     f"Halt Active: "
-    f"{halt_active}"
+    f"{halt_recommendation}"
 )
 
 print("\n")
