@@ -72,7 +72,7 @@ except:
 
 market_bias = "NEUTRAL"
 
-risk_level = "NORMAL"
+decision_health = "NORMAL"
 
 ai_commentary = []
 
@@ -165,7 +165,7 @@ if len(executions_df) > 0:
 
     if avg_confidence < 75:
 
-        risk_level = "DEFENSIVE"
+        decision_health = "DEFENSIVE"
 
         ai_commentary.append(
 
@@ -174,7 +174,7 @@ if len(executions_df) > 0:
 
     if approval_rate < 0.4:
 
-        risk_level = "HIGH_RISK"
+        decision_health = "HIGH_RISK"
 
         ai_commentary.append(
 
@@ -188,7 +188,7 @@ if len(executions_df) > 0:
 
 halt_recommendation = False
 
-if risk_level == "HIGH_RISK":
+if decision_health == "HIGH_RISK":
 
     halt_recommendation = True
     ai_commentary.append(
@@ -223,7 +223,7 @@ result = {
 
     "market_bias": market_bias,
 
-    "risk_level": risk_level,
+    "decision_health": decision_health,
 
     "ai_summary": summary
 }
@@ -245,7 +245,7 @@ ai_reasoning (
 
     market_bias TEXT,
 
-    risk_level TEXT,
+    decision_health TEXT,
 
     ai_summary TEXT
 )
@@ -283,7 +283,7 @@ telegram_message = (
 
     f"Market Bias: {market_bias}\n"
 
-    f"Risk Level: {risk_level}\n"
+    f"Decision Health: {decision_health}\n"
 
     f"Halt Recommendation: {halt_recommendation}\n\n"
 
@@ -315,8 +315,8 @@ print(
 )
 
 print(
-    f"Risk Level: "
-    f"{risk_level}"
+    f"Decision Health: "
+    f"{decision_health}"
 )
 
 print(

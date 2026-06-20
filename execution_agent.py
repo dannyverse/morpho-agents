@@ -104,7 +104,7 @@ except:
 
 market_bias = "NEUTRAL"
 
-risk_level = "NORMAL"
+decision_health = "NORMAL"
 
 if len(ai_df) > 0:
 
@@ -112,8 +112,8 @@ if len(ai_df) > 0:
         "market_bias"
     ].iloc[-1]
 
-    risk_level = ai_df[
-        "risk_level"
+    decision_health = ai_df[
+        "decision_health"
     ].iloc[-1]
 
 # =========================
@@ -168,13 +168,13 @@ MIN_SIGNAL_STRENGTH = 0.65
 # AI ADAPTATION
 # =========================
 
-if risk_level == "DEFENSIVE":
+if decision_health == "DEFENSIVE":
 
     MIN_CONFIDENCE = 80
 
     MIN_SIGNAL_STRENGTH = 0.75
 
-elif risk_level == "HIGH_RISK":
+elif decision_health == "HIGH_RISK":
 
     MIN_CONFIDENCE = 85
 
@@ -310,7 +310,7 @@ else:
 
             f"AI Bias: {market_bias}\n"
 
-            f"Risk Level: {risk_level}\n"
+            f"Decision Health: {decision_health}\n"
 
             f"Rationale: {rationale}"
         )
@@ -355,11 +355,10 @@ else:
         "position_size": 2.5,
 
         "signal_strength": signal_strength,
-        "signal_strength": signal_strength,
 
         "regime": market_bias,
 
-        "governance_status": risk_level,
+        "governance_status": decision_health,
 
         "rationale": rationale,
 
@@ -454,8 +453,8 @@ print(
 )
 
 print(
-    f"Risk Level: "
-    f"{risk_level}"
+    f"Decision Health: "
+    f"{decision_health}"
 )
 
 market_data_status = get_market_data_status()
