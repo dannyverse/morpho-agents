@@ -1,4 +1,6 @@
 import json
+import sqlite3
+import pandas as pd
 from market_data_manager import (
     refresh_market_data,
     get_market_cache
@@ -8,13 +10,20 @@ from market_data_manager import (
 # LOAD POSITION STATE
 # ============================
 
-with open(
-    "state/position_state.json",
-    "r"
-) as f:
+conn = sqlite3.connect(
+    "trading_system.db"
+)
 
-    position_state = json.load(f)
+position_df = pd.read_sql(
+    """
+    SELECT *
+    FROM portfolio_state
+    WHERE status='OPEN'
+    """,
+    conn
+)
 
+conn.close()
 
 # ============================
 # LOAD MARKET DATA
@@ -28,7 +37,15 @@ market_data = get_market_cache()
 # MARK-TO-MARKET VALUATION
 # ============================
 
-for asset, position in position_state.items():
+for _, position in position_df.iterrows():
+
+    asset = position["asset"]
+
+    entry_price = position["entry_price"]
+
+    quantity = position["position_size"]
+
+    side = position["direction"]
 
     current_price = float(
         market_data.get(
@@ -36,11 +53,7 @@ for asset, position in position_state.items():
             0
         )
     )
-    entry_price = position["entry_price"]
 
-    quantity = position["quantity"]
-
-    side = position["side"]
 
     if side == "LONG":
 
@@ -74,8 +87,5 @@ print(
 )
 
 print(
-    json.dumps(
-        position_state,
-        indent=4
-    )
+    position_df
 )

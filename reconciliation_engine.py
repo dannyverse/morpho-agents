@@ -1,135 +1,119 @@
-import json
 import sqlite3
 import pandas as pd
 
 
-# ============================
-# LOAD POSITION STATE
-# ============================
-
-with open(
-    "state/position_state.json",
-    "r"
-) as f:
-
-    position_state = json.load(f)
-
-
-# ============================
-# LOAD EXECUTIONS
-# ============================
+print(
+    "\n🔍 RECONCILIATION ENGINE\n"
+)
 
 conn = sqlite3.connect(
     "trading_system.db"
 )
 
-executions_df = pd.read_sql(
+portfolio_df = pd.read_sql(
     """
     SELECT *
-    FROM executions
+    FROM portfolio_state
     """,
     conn
 )
 
 conn.close()
 
-
-# ============================
-# APPROVED EXECUTIONS ONLY
-# ============================
-
-approved_df = executions_df[
-    executions_df[
-        "execution_decision"
-    ] == "APPROVED"
-]
-
-
-# ============================
-# RECONCILIATION AUDIT
-# ============================
-
-print(
-    "\n🔍 RECONCILIATION ENGINE\n"
-)
-
 issues_found = 0
 
 
 # ============================
-# CHECK 1
-# EXECUTION -> POSITION
+# EMPTY CHECK
 # ============================
 
-for _, execution in approved_df.iterrows():
+if portfolio_df.empty:
 
-    asset = execution["asset"]
+    print(
+        "ℹ️ No open positions found."
+    )
 
-    if asset not in position_state:
+else:
 
-        print(
-            f"❌ Missing position_state entry: {asset}"
-        )
+    # ============================
+    # SCHEMA CHECK
+    # ============================
 
-        issues_found += 1
+    required_columns = [
 
-        continue
+        "asset",
 
-    position = position_state[asset]
+        "direction",
 
-    if (
-        position["side"]
-        !=
-        execution["direction"]
-    ):
+        "entry_price",
 
-        print(
-            f"❌ Direction mismatch: {asset}"
-        )
+        "position_size",
 
-        issues_found += 1
+        "status"
+    ]
 
-    if (
-        position["entry_price"]
-        !=
-        execution["entry_price"]
-    ):
+    for column in required_columns:
 
-        print(
-            f"❌ Entry price mismatch: {asset}"
-        )
+        if column not in portfolio_df.columns:
 
-        issues_found += 1
+            print(
+                f"❌ Missing column: {column}"
+            )
 
+            issues_found += 1
+
+    # ============================
+    # POSITION CHECK
+    # ============================
+
+    for _, row in portfolio_df.iterrows():
+
+        asset = row["asset"]
+
+        if pd.isna(
+            row["direction"]
+        ):
+
+            print(
+                f"❌ Missing direction: {asset}"
+            )
+
+            issues_found += 1
+
+        if pd.isna(
+            row["entry_price"]
+        ):
+
+            print(
+                f"❌ Missing entry price: {asset}"
+            )
+
+            issues_found += 1
+
+        if pd.isna(
+            row["position_size"]
+        ):
+
+            print(
+                f"❌ Missing position size: {asset}"
+            )
+
+            issues_found += 1
+
+        if row["status"] != "OPEN":
+
+            print(
+                f"⚠️ Non-open position: {asset}"
+            )
 
 # ============================
-# CHECK 2
-# POSITION -> EXECUTION
-# ============================
-
-approved_assets = set(
-    approved_df["asset"]
-)
-
-for asset in position_state:
-
-    if asset not in approved_assets:
-
-        print(
-            f"❌ Orphaned position: {asset}"
-        )
-
-        issues_found += 1
-
-
-# ============================
-# FINAL RESULT
+# RESULT
 # ============================
 
 if issues_found == 0:
 
     print(
-        "✅ Reconciliation healthy"
+        "\n✅ Reconciliation successful."
     )
 
 else:

@@ -193,51 +193,39 @@ rejected = 0
 for _, row in signals_df.iterrows():
 
     confidence = round(
-
         min(
-
             95,
-
             60 + row["score"] * 5 + row["persistence"]
-
         ),
-
         2
     )
 
     signal_strength = round(
-
         min(
-
             1.0,
-
             max(
-
                 0.5,
-
                 (row["score"] + row["persistence"]) / 10
             )
-
         ),
-
         2
     )
 
-if row["persistence"] >= 5:
+    if row["persistence"] >= 5:
 
-    rationale = "persistent funding anomaly"
+        rationale = "persistent funding anomaly"
 
-elif abs(row["funding"]) > 20:
+    elif abs(row["funding"]) > 20:
 
-    rationale = "extreme funding imbalance"
+        rationale = "extreme funding imbalance"
 
-elif row["score"] >= 4:
+    elif row["score"] >= 4:
 
-    rationale = "high opportunity score"
+        rationale = "high opportunity score"
 
-else:
+    else:
 
-    rationale = "moderate opportunity"
+        rationale = "moderate opportunity"
 
     execution_decision = "APPROVED"
 
@@ -248,23 +236,15 @@ else:
     # =========================
 
     if (
-
         market_bias == "SHORT_BIAS"
-
-        and
-
-        row["direction"] == "LONG"
+        and row["direction"] == "LONG"
     ):
 
         confidence -= 10
 
     elif (
-
         market_bias == "LONG_BIAS"
-
-        and
-
-        row["direction"] == "SHORT"
+        and row["direction"] == "SHORT"
     ):
 
         confidence -= 10
@@ -296,22 +276,15 @@ else:
         approved += 1
 
         print(
-            f"\n✅ EXECUTED: "
-            f"{row['asset']}"
+            f"\n✅ EXECUTED: {row['asset']}"
         )
 
         telegram_message = (
-
             f"✅ EXECUTED {row['asset']}\n\n"
-
             f"Confidence: {confidence}\n"
-
             f"Signal Strength: {signal_strength}\n"
-
             f"AI Bias: {market_bias}\n"
-
             f"Decision Health: {decision_health}\n"
-
             f"Rationale: {rationale}"
         )
 
@@ -326,8 +299,7 @@ else:
         rejected += 1
 
         print(
-            f"\n❌ REJECTED: "
-            f"{row['asset']}"
+            f"\n❌ REJECTED: {row['asset']}"
         )
 
     # =========================
@@ -365,6 +337,7 @@ else:
         "execution_decision": execution_decision,
 
         "rejection_reason": rejection_reason,
+
         "cycle_id": cycle_id,
 
         "status": status
@@ -374,47 +347,11 @@ else:
         execution
     )
 
+
 # =========================
 # SAVE
 # =========================
-# ============================
-# POSITION STATE UPDATE
-# ============================
 
-position_state = {}
-
-for execution in executions:
-
-    if execution["execution_decision"] != "APPROVED":
-        continue
-
-    position_state[
-        execution["asset"]
-    ] = {
-
-        "status": "OPEN",
-
-        "side": execution["direction"],
-
-        "entry_price": execution["entry_price"],
-
-        "quantity": execution["position_size"],
-
-        "opened_at": execution["timestamp"],
-
-        "exchange": "hyperliquid"
-    }
-
-with open(
-    "state/position_state.json",
-    "w"
-) as f:
-
-    json.dump(
-        position_state,
-        f,
-        indent=4
-    )
 executions_df = pd.DataFrame(
     executions
 )
