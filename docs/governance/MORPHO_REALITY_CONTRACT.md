@@ -142,11 +142,15 @@ Both success and complexity must continue to be earned.
 
 # FAILURE CLAUSE
 
-If no edge exists after 90 days:
+If no convincing evidence of edge emerges
+during the experiment:
 
 Capital deployment stops.
 
 No additional capital is added.
+
+Further capital requires a new hypothesis,
+not additional architecture.
 
 Morpho will not continue indefinitely under the assumption that more architecture will create edge.
 
