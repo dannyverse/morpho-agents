@@ -68,7 +68,45 @@ active_modules = []
 cycle_id = int(
     datetime.now().timestamp()
 )
+# =========================
+# UPDATE CURRENT CYCLE
+# =========================
 
+conn = sqlite3.connect(
+    "trading_system.db"
+)
+
+conn.execute(
+    """
+    CREATE TABLE IF NOT EXISTS system_state (
+
+        key TEXT PRIMARY KEY,
+
+        value TEXT
+    )
+    """
+)
+
+conn.execute(
+    """
+    INSERT OR REPLACE INTO system_state
+    (
+        key,
+        value,
+        updated_at
+    )
+    VALUES (?,?,?)
+    """,
+    (
+        "current_cycle_id",
+        str(cycle_id),
+        str(datetime.now())
+    )
+)
+
+conn.commit()
+
+conn.close()
 logger.info(
     "safe_runner_started",
     cycle_id=cycle_id,

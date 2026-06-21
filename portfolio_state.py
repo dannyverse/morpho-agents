@@ -17,7 +17,26 @@ conn = sqlite3.connect(
 
 refresh_market_data()
     
+cycle_query = """
 
+SELECT value
+
+FROM system_state
+
+WHERE key='current_cycle_id'
+
+"""
+
+cycle_df = pd.read_sql_query(
+
+    cycle_query,
+
+    conn
+)
+
+cycle_id = cycle_df[
+    "value"
+].iloc[0]
         
 
             
@@ -81,11 +100,7 @@ FROM executions
 
 WHERE status='EXECUTED'
 
-
-
-
-
-
+AND cycle_id=?
 
 """
 
@@ -93,7 +108,11 @@ df = pd.read_sql_query(
 
     query,
 
-    conn
+    conn,
+
+    params=(
+        cycle_id,
+    )
 )
 
 # =========================
@@ -152,6 +171,7 @@ conn.execute(
 # =========================
 
 positions = []
+
 for _, row in df.iterrows():
 
     entry_price = row["entry_price"]
@@ -163,24 +183,33 @@ for _, row in df.iterrows():
     leverage = 1
 
     BASE_POSITION_SIZE = 2.0
-    
+
     confidence = row["confidence"]
-    
+
     if confidence >= 85:
-        position_size = BASE_POSITION_SIZE * 1.25
-    
+
+        position_size = (
+            BASE_POSITION_SIZE * 1.25
+        )
+
     elif confidence >= 75:
-        position_size = BASE_POSITION_SIZE
-    
+
+        position_size = (
+            BASE_POSITION_SIZE
+        )
+
     else:
-        position_size = BASE_POSITION_SIZE * 0.75
+
+        position_size = (
+            BASE_POSITION_SIZE * 0.75
+        )
 
     if entry_price > 0:
-    
+
         if row["direction"] == "LONG":
-    
+
             unrealized_pnl = round(
-    
+
                 (
                     (
                         current_price
@@ -190,14 +219,14 @@ for _, row in df.iterrows():
                     /
                     entry_price
                 ) * 100,
-    
+
                 2
             )
-    
+
         else:
-    
+
             unrealized_pnl = round(
-    
+
                 (
                     (
                         entry_price
@@ -207,131 +236,58 @@ for _, row in df.iterrows():
                     /
                     entry_price
                 ) * 100,
-    
+
                 2
             )
-    
+
     else:
-    
+
         unrealized_pnl = 0
-print(row)
-print(row.index)
-if "direction" not in row:
-    raise Exception("Direction missing from execution payload")
 
-position = {
+    position = {
 
-    "timestamp": str(
-        datetime.now()
-    ),
+        "timestamp": str(
+            datetime.now()
+        ),
 
-    "asset": row["asset"],
+        "asset": row["asset"],
 
-    "direction": row["direction"],
+        "direction": row["direction"],
 
-    "position_type": f"DIRECTIONAL_{row['direction']}",
+        "position_type":
+            f"DIRECTIONAL_{row['direction']}",
 
-    "entry_price": entry_price,
+        "entry_price": entry_price,
 
-    "current_price": current_price,
+        "current_price": current_price,
 
-    "leverage": leverage,
+        "leverage": leverage,
 
-    "position_size": position_size,
+        "position_size": position_size,
 
-    "unrealized_pnl": unrealized_pnl,
+        "unrealized_pnl": unrealized_pnl,
 
-    "realized_pnl": 0,
+        "realized_pnl": 0,
 
-    "status": "OPEN",
-}
+        "status": "OPEN"
+    }
 
-positions.append(
-    position
-)
-
-
-
-
-
-
-
-
-
-
-
-
-       
-
-       
-
-        
-    
-
-    
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-    
-
-    
-        
-    
+    positions.append(
+        position
+    )
 
 # =========================
 # SAVE
 # =========================
-# =========================
-# SAVE
-# =========================
-
-create_query = """
-
-CREATE TABLE IF NOT EXISTS
-portfolio_state (
-
-    asset TEXT,
-
-    entry_price REAL,
-
-    current_price REAL,
-
-    position_size REAL,
-
-    unrealized_pnl REAL,
-
-    direction TEXT,
-
-    position_type TEXT,
-
-    status TEXT,
-
-    opened_at TEXT
-)
-
-"""
-
-conn.execute(
-    create_query
-)
 
 positions_df = pd.DataFrame(
     positions
 )
-positions_df = pd.DataFrame(
-    positions
-)
+
 conn.execute(
     "DELETE FROM portfolio_state"
 )
+
 positions_df.to_sql(
 
     "portfolio_state",
