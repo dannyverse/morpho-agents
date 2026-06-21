@@ -1,4 +1,3 @@
-
 import sqlite3
 import pandas as pd
 import json
@@ -24,7 +23,6 @@ query = """
 SELECT *
 
 FROM portfolio_state
-
 
 """
 
@@ -69,6 +67,29 @@ else:
     # DIRECTIONAL BIAS
     # =====================
 
+    long_count = len(
+        positions_df[
+            positions_df["direction"] == "LONG"
+        ]
+    )
+
+    short_count = len(
+        positions_df[
+            positions_df["direction"] == "SHORT"
+        ]
+    )
+
+    directional_bias = round(
+        (
+            abs(
+                long_count -
+                short_count
+            )
+            /
+            position_count
+        ) * 100,
+        2
+    )
 
     # =====================
     # ASSET CONCENTRATION
@@ -80,8 +101,9 @@ else:
         * 100
     )
 
-    max_asset_concentration = (
-        asset_counts.max()
+    max_asset_concentration = round(
+        asset_counts.max(),
+        2
     )
 
     # =====================
@@ -105,6 +127,11 @@ else:
 
     health_score -= (
         max_asset_concentration * 0.3
+    )
+
+    health_score = round(
+        health_score,
+        2
     )
 
     # =====================
@@ -131,6 +158,12 @@ else:
     # ALERTS
     # =====================
 
+    if directional_bias > 50:
+
+        alerts.append(
+            "Moderate directional bias"
+        )
+
     if directional_bias > 80:
 
         alerts.append(
@@ -155,10 +188,7 @@ state = {
         datetime.now()
     ),
 
-    "health_score": round(
-        health_score,
-        2
-    ),
+    "health_score": health_score,
 
     "status": status,
 
@@ -189,7 +219,7 @@ state = {
     "alerts": alerts,
 
     "derived_from":
-    "position_state"
+    "portfolio_state"
 }
 
 # =========================
@@ -197,30 +227,20 @@ state = {
 # =========================
 
 with tempfile.NamedTemporaryFile(
-
     "w",
-
     delete=False
-
 ) as temp_file:
 
     json.dump(
-
         state,
-
         temp_file,
-
         indent=4
     )
 
-    temp_path = (
-        temp_file.name
-    )
+    temp_path = temp_file.name
 
 os.replace(
-
     temp_path,
-
     "portfolio_health_state.json"
 )
 
@@ -245,10 +265,9 @@ print(
 )
 
 print("\n")
+
 print(
     "✅ portfolio_health_state.json updated"
 )
 
 conn.close()
-
-
