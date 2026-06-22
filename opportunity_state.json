@@ -5,15 +5,15 @@
         "persistence": 47,
         "score": 2,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006447"
+        "last_seen": "2026-06-22 20:10:56.811287"
     },
     "kPEPE_SHORT": {
         "asset": "kPEPE",
         "direction": "SHORT",
-        "persistence": 48,
+        "persistence": 52,
         "score": 4,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006480"
+        "last_seen": "2026-06-22 20:10:56.811320"
     },
     "WLD_SHORT": {
         "asset": "WLD",
@@ -21,23 +21,23 @@
         "persistence": 39,
         "score": 2,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:41.997652"
+        "last_seen": "2026-06-22 20:10:56.800063"
     },
     "NEAR_SHORT": {
         "asset": "NEAR",
         "direction": "SHORT",
-        "persistence": 53,
+        "persistence": 58,
         "score": 2,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006496"
+        "last_seen": "2026-06-22 20:10:56.811336"
     },
     "ONDO_SHORT": {
         "asset": "ONDO",
         "direction": "SHORT",
         "persistence": 40,
         "score": 4,
-        "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006512"
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-22 20:10:56.811352"
     },
     "GRASS_SHORT": {
         "asset": "GRASS",
@@ -45,7 +45,7 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006529"
+        "last_seen": "2026-06-22 20:10:56.811368"
     },
     "PURR_SHORT": {
         "asset": "PURR",
@@ -53,15 +53,15 @@
         "persistence": 26,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006545"
+        "last_seen": "2026-06-22 20:10:56.811385"
     },
     "HYPE_SHORT": {
         "asset": "HYPE",
         "direction": "SHORT",
-        "persistence": 65,
+        "persistence": 70,
         "score": 4,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006561"
+        "last_seen": "2026-06-22 20:10:56.811401"
     },
     "PENGU_SHORT": {
         "asset": "PENGU",
@@ -69,15 +69,15 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006577"
+        "last_seen": "2026-06-22 20:10:56.811417"
     },
     "FARTCOIN_SHORT": {
         "asset": "FARTCOIN",
         "direction": "SHORT",
-        "persistence": 52,
+        "persistence": 57,
         "score": 4,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006594"
+        "last_seen": "2026-06-22 20:10:56.811433"
     },
     "VVV_SHORT": {
         "asset": "VVV",
@@ -85,31 +85,31 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006610"
+        "last_seen": "2026-06-22 20:10:56.811449"
     },
     "PUMP_SHORT": {
         "asset": "PUMP",
         "direction": "SHORT",
-        "persistence": 26,
+        "persistence": 31,
         "score": 4,
-        "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006626"
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-22 20:10:56.811465"
     },
     "XPL_SHORT": {
         "asset": "XPL",
         "direction": "SHORT",
-        "persistence": 62,
+        "persistence": 67,
         "score": 2,
-        "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006643"
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-22 20:10:56.811481"
     },
     "ASTER_SHORT": {
         "asset": "ASTER",
         "direction": "SHORT",
         "persistence": 32,
         "score": 4,
-        "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006659"
+        "lifecycle_stage": "ACTIVE",
+        "last_seen": "2026-06-22 20:10:56.811497"
     },
     "MON_SHORT": {
         "asset": "MON",
@@ -117,31 +117,31 @@
         "persistence": 23,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006675"
+        "last_seen": "2026-06-22 20:10:56.811514"
     },
     "LIT_SHORT": {
         "asset": "LIT",
         "direction": "SHORT",
-        "persistence": 66,
+        "persistence": 72,
         "score": 4,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006691"
+        "last_seen": "2026-06-22 20:10:56.811530"
     },
     "LINK_SHORT": {
         "asset": "LINK",
         "direction": "SHORT",
-        "persistence": 22,
+        "persistence": 23,
         "score": 4,
-        "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006707"
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-22 20:10:56.811547"
     },
     "SOL_SHORT": {
         "asset": "SOL",
         "direction": "SHORT",
-        "persistence": 34,
+        "persistence": 38,
         "score": 2,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006431"
+        "last_seen": "2026-06-22 20:10:56.811271"
     },
     "TON_SHORT": {
         "asset": "TON",
@@ -149,15 +149,15 @@
         "persistence": 15,
         "score": 2,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:41.990468"
+        "last_seen": "2026-06-22 20:10:56.792845"
     },
     "SUI_SHORT": {
         "asset": "SUI",
         "direction": "SHORT",
-        "persistence": 45,
+        "persistence": 47,
         "score": 2,
-        "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006463"
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-22 20:10:56.811303"
     },
     "CRV_SHORT": {
         "asset": "CRV",
@@ -165,15 +165,15 @@
         "persistence": 38,
         "score": 4,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006740"
+        "last_seen": "2026-06-22 20:10:56.811579"
     },
     "ADA_SHORT": {
         "asset": "ADA",
         "direction": "SHORT",
-        "persistence": 25,
+        "persistence": 26,
         "score": 2,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006723"
+        "last_seen": "2026-06-22 20:10:56.811563"
     },
     "XLM_SHORT": {
         "asset": "XLM",
@@ -181,14 +181,30 @@
         "persistence": 10,
         "score": 2,
         "lifecycle_stage": "ACTIVE",
-        "last_seen": "2026-06-19 05:46:42.006040"
+        "last_seen": "2026-06-22 20:10:56.808374"
     },
     "JTO_SHORT": {
         "asset": "JTO",
         "direction": "SHORT",
+        "persistence": 18,
+        "score": 4,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-22 20:10:56.811611"
+    },
+    "AERO_SHORT": {
+        "asset": "AERO",
+        "direction": "SHORT",
         "persistence": 12,
         "score": 4,
         "lifecycle_stage": "STRENGTHENING",
-        "last_seen": "2026-06-19 05:46:42.006756"
+        "last_seen": "2026-06-22 20:10:56.811627"
+    },
+    "UNI_SHORT": {
+        "asset": "UNI",
+        "direction": "SHORT",
+        "persistence": 12,
+        "score": 2,
+        "lifecycle_stage": "STRENGTHENING",
+        "last_seen": "2026-06-22 20:10:56.811595"
     }
 }

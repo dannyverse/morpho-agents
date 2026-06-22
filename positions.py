@@ -2,6 +2,12 @@ import sqlite3
 import pandas as pd
 import uuid
 
+from datetime import datetime
+
+from market_data_manager import (
+    refresh_market_data,
+    get_price
+)
 # =========================
 # DATABASE
 # =========================
@@ -152,6 +158,116 @@ for _, row in portfolio_df.iterrows():
     created_positions += 1
 
 # =========================
+# REFRESH MARKET DATA
+# =========================
+
+refresh_market_data()
+
+# =========================
+# UPDATE OPEN POSITIONS
+# =========================
+
+positions_df = pd.read_sql_query(
+
+    """
+
+    SELECT *
+
+    FROM positions
+
+    WHERE status='OPEN'
+
+    """,
+
+    conn
+)
+
+updated_positions = 0
+
+for _, row in positions_df.iterrows():
+
+    entry_price = row["entry_price"]
+
+    current_price = get_price(
+        row["asset"]
+    )
+
+    if entry_price > 0:
+
+        if row["direction"] == "LONG":
+
+            unrealized_pnl = round(
+
+                (
+                    (
+                        current_price
+                        -
+                        entry_price
+                    )
+                    /
+                    entry_price
+                ) * 100,
+
+                2
+            )
+
+        else:
+
+            unrealized_pnl = round(
+
+                (
+                    (
+                        entry_price
+                        -
+                        current_price
+                    )
+                    /
+                    entry_price
+                ) * 100,
+
+                2
+            )
+
+    else:
+
+        unrealized_pnl = 0
+
+    conn.execute(
+
+        """
+
+        UPDATE positions
+
+        SET
+
+            current_price=?,
+
+            unrealized_pnl=?,
+
+            updated_at=?
+
+        WHERE position_id=?
+
+        """,
+
+        (
+
+            current_price,
+
+            unrealized_pnl,
+
+            str(datetime.now()),
+
+            row["position_id"]
+
+        )
+    )
+
+    updated_positions += 1
+
+conn.commit()
+
+# =========================
 # RELOAD POSITIONS
 # =========================
 
@@ -194,6 +310,11 @@ print("\n")
 print(
     f"New Positions Created: "
     f"{created_positions}"
+)
+
+print(
+    f"Updated Positions: "
+    f"{updated_positions}"
 )
 
 print(

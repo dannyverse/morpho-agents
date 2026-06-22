@@ -1,16 +1,16 @@
 {
     "schema_version": "1.0",
-    "timestamp": "2026-06-19 07:46:45.891892",
-    "health_score": 70.0,
-    "status": "WARNING",
+    "timestamp": "2026-06-22 22:11:18.496115",
+    "health_score": 80.8,
+    "status": "HEALTHY",
     "metrics": {
-        "position_count": 1,
-        "deployment_efficiency": 5,
-        "directional_bias": 0,
-        "max_asset_concentration": 100.0
+        "position_count": 25,
+        "deployment_efficiency": 100,
+        "directional_bias": 60.0,
+        "max_asset_concentration": 4.0
     },
     "alerts": [
-        "High asset concentration"
+        "Moderate directional bias"
     ],
-    "derived_from": "position_state"
+    "derived_from": "portfolio_state"
 }

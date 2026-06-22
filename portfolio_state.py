@@ -1,12 +1,8 @@
 import sqlite3
 import pandas as pd
 
-
 from datetime import datetime
-from market_data_manager import (
-    refresh_market_data,
-    get_price
-)
+
 # =========================
 # DATABASE
 # =========================
@@ -14,121 +10,6 @@ from market_data_manager import (
 conn = sqlite3.connect(
     "trading_system.db"
 )
-
-refresh_market_data()
-    
-cycle_query = """
-
-SELECT value
-
-FROM system_state
-
-WHERE key='current_cycle_id'
-
-"""
-
-cycle_df = pd.read_sql_query(
-
-    cycle_query,
-
-    conn
-)
-
-cycle_id = cycle_df[
-    "value"
-].iloc[0]
-        
-
-            
-
-            
-
-                
-
-            
-        
-    
-
-        
-
-        
-
-            
-
-        
-
-    
-    
-        
-            
-        
-    
-        
-
-        
-# =========================
-# CHECK EXECUTIONS TABLE
-# =========================
-
-tables_query = """
-
-SELECT name
-
-FROM sqlite_master
-
-WHERE type='table'
-
-"""
-
-tables_df = pd.read_sql_query(
-
-    tables_query,
-
-    conn
-)
-
-
-# =========================
-# LOAD EXECUTIONS
-# =========================
-
-query = """
-
-SELECT *
-
-FROM executions
-
-WHERE status='EXECUTED'
-
-AND cycle_id=?
-
-"""
-
-df = pd.read_sql_query(
-
-    query,
-
-    conn,
-
-    params=(
-        cycle_id,
-    )
-)
-
-# =========================
-# EMPTY CHECK
-# =========================
-
-if len(df) == 0:
-
-    print("\n")
-    print(
-        "No executions found"
-    )
-
-    conn.close()
-
-    exit()
 
 # =========================
 # CREATE TABLE
@@ -157,7 +38,9 @@ portfolio_state (
 
     realized_pnl REAL,
 
-    status TEXT
+    status TEXT,
+
+    position_type TEXT
 )
 
 """
@@ -167,84 +50,35 @@ conn.execute(
 )
 
 # =========================
-# BUILD POSITIONS
+# LOAD OPEN POSITIONS
 # =========================
 
-positions = []
+positions_query = """
 
-for _, row in df.iterrows():
+SELECT *
 
-    entry_price = row["entry_price"]
+FROM positions
 
-    current_price = get_price(
-        row["asset"]
-    )
+WHERE status='OPEN'
 
-    leverage = 1
+"""
 
-    BASE_POSITION_SIZE = 2.0
+positions_df = pd.read_sql_query(
 
-    confidence = row["confidence"]
+    positions_query,
 
-    if confidence >= 85:
+    conn
+)
 
-        position_size = (
-            BASE_POSITION_SIZE * 1.25
-        )
+# =========================
+# BUILD SNAPSHOT
+# =========================
 
-    elif confidence >= 75:
+snapshot = []
 
-        position_size = (
-            BASE_POSITION_SIZE
-        )
+for _, row in positions_df.iterrows():
 
-    else:
-
-        position_size = (
-            BASE_POSITION_SIZE * 0.75
-        )
-
-    if entry_price > 0:
-
-        if row["direction"] == "LONG":
-
-            unrealized_pnl = round(
-
-                (
-                    (
-                        current_price
-                        -
-                        entry_price
-                    )
-                    /
-                    entry_price
-                ) * 100,
-
-                2
-            )
-
-        else:
-
-            unrealized_pnl = round(
-
-                (
-                    (
-                        entry_price
-                        -
-                        current_price
-                    )
-                    /
-                    entry_price
-                ) * 100,
-
-                2
-            )
-
-    else:
-
-        unrealized_pnl = 0
-
-    position = {
+    portfolio_row = {
 
         "timestamp": str(
             datetime.now()
@@ -254,41 +88,41 @@ for _, row in df.iterrows():
 
         "direction": row["direction"],
 
+        "entry_price": row["entry_price"],
+
+        "current_price": row["current_price"],
+
+        "leverage": 1,
+
+        "position_size": row["position_size"],
+
+        "unrealized_pnl": row["unrealized_pnl"],
+
+        "realized_pnl": row["realized_pnl"],
+
+        "status": row["status"],
+
         "position_type":
-            f"DIRECTIONAL_{row['direction']}",
-
-        "entry_price": entry_price,
-
-        "current_price": current_price,
-
-        "leverage": leverage,
-
-        "position_size": position_size,
-
-        "unrealized_pnl": unrealized_pnl,
-
-        "realized_pnl": 0,
-
-        "status": "OPEN"
+            f"DIRECTIONAL_{row['direction']}"
     }
 
-    positions.append(
-        position
+    snapshot.append(
+        portfolio_row
     )
 
 # =========================
-# SAVE
+# SAVE SNAPSHOT
 # =========================
 
-positions_df = pd.DataFrame(
-    positions
+snapshot_df = pd.DataFrame(
+    snapshot
 )
 
 conn.execute(
     "DELETE FROM portfolio_state"
 )
 
-positions_df.to_sql(
+snapshot_df.to_sql(
 
     "portfolio_state",
 
@@ -303,21 +137,19 @@ positions_df.to_sql(
 # VERIFY
 # =========================
 
-verify_query = """
-
-SELECT *
-
-FROM portfolio_state
-
-ORDER BY ROWID DESC
-
-LIMIT 10
-
-"""
-
 verify_df = pd.read_sql_query(
 
-    verify_query,
+    """
+
+    SELECT *
+
+    FROM portfolio_state
+
+    ORDER BY ROWID DESC
+
+    LIMIT 10
+
+    """,
 
     conn
 )
@@ -353,6 +185,7 @@ print(
 )
 
 print("\n")
+
 print(
     "🚀 Portfolio state completed"
 )

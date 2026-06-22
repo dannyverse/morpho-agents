@@ -36,6 +36,8 @@ modules = [
 
     "meta_intelligence.py",
 
+    "positions.py",
+
     "portfolio_state.py",
 
     "risk_manager.py",
