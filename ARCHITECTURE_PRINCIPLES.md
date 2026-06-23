@@ -10,7 +10,7 @@ This document records the architectural principles that have emerged through:
 * multi-LLM architectural review
 * iterative refinement
 
-These principles should guide future architectural decisions.
+These principles guide architectural decisions.
 
 This document is not a roadmap.
 
@@ -20,13 +20,15 @@ This document defines architectural doctrine.
 
 # ARCHITECTURAL CONSENSUS
 
-After contrasting the architecture with multiple LLM reviews (Claude + Grok), the following principles are now considered strongly validated.
+The following principles have repeatedly survived implementation and operational reality.
+
+No principle is above reality.
 
 ---
 
-## CONFIRMED ARCHITECTURAL PRINCIPLES
+# CONFIRMED ARCHITECTURAL PRINCIPLES
 
-### Live State vs Historical Logs
+## Live State vs Historical Logs
 
 Live operational state and historical records must remain separated.
 
@@ -46,9 +48,7 @@ Historical records must never become operational dependencies.
 
 ---
 
-### Ownership Boundaries
-
-Ownership boundaries are critical.
+## Single Owner Per State
 
 Each operational domain should have:
 
@@ -56,212 +56,283 @@ Each operational domain should have:
 * one authoritative state
 * one responsibility boundary
 
----
-
-### Governance Persistence
-
-Governance state must persist independently from runtime memory.
-
-Governance is not a temporary runtime condition.
-
-Governance is operational state.
+Ownership ambiguity produces fragility.
 
 ---
 
-### Runtime Self-Protection
+## Derived States Adapt To Source Of Truth
 
-Runtime self-protection is now part of Morpho core architecture.
+Derived states should adapt to Source of Truth maturity.
 
-The system must be capable of:
+Source of Truth should not be distorted to satisfy derived states.
+
+Current example:
+
+market_data_manager
+
+↓
+
+positions
+
+↓
+
+portfolio_state
+
+---
+
+## Reality Ownership ≠ Transition Governance
+
+Owning reality and governing transitions are different responsibilities.
+
+Operational reality should remain simple.
+
+Transition governance may evolve separately.
+
+Future lifecycle engines govern transitions.
+
+They do not own reality.
+
+---
+
+## Infrastructure Before Intelligence
+
+Operational infrastructure should mature before higher intelligence layers.
+
+Priority order:
+
+Infrastructure
+
+↓
+
+Observability
+
+↓
+
+Risk
+
+↓
+
+Execution
+
+↓
+
+Optimization
+
+↓
+
+Intelligence
+
+---
+
+## Runtime Self-Protection
+
+Runtime self-protection is part of core architecture.
+
+The system should be capable of:
 
 * detecting unsafe conditions
 * persisting governance state
 * halting execution safely
 * recovering safely
 
-without manual operational intervention.
+without manual intervention.
 
 ---
 
-### Incremental Migration Philosophy
+## Incremental Migration Philosophy
 
-Incremental migration is preferred over big-bang refactors.
+Prefer:
 
-Migration pattern:
+incremental migrations
 
-1. Create specialized states/tables
-2. Dual writes during transition
-3. Migrate consumers incrementally
-4. Deprecate legacy structures after validation
+over
 
-Large simultaneous refactors increase operational risk.
+large refactors.
+
+Pattern:
+
+1. Introduce new owner.
+2. Dual ownership temporarily if necessary.
+3. Migrate consumers.
+4. Remove legacy paths after validation.
+
+Large simultaneous refactors increase risk.
 
 ---
 
-### StateManager Direction
+## Operational Simplicity
 
-StateManager should evolve toward:
+Every module should be explainable in one sentence.
 
-* centralized read abstraction
-* validated write gateway
-* unified operational access layer
+New components must solve a real problem.
 
-Direct JSON access from modules should gradually disappear over time.
+Complexity is a cost.
+
+Sophistication is not a goal.
+
+---
+
+## Discovery Is Not Authorization
+
+Discoveries do not automatically change scope.
+
+Interesting architecture is not authorization.
+
+Real problems may be documented without immediate implementation.
+
+---
+
+## Reality Over Principles
+
+Principles serve reality.
+
+Reality does not serve principles.
+
+No principle is above reality.
+
+---
+
+## Finite Audits, Infinite Learning
+
+Audits are tools.
+
+Reality is the objective.
+
+Seek sufficient confidence.
+
+Not perfect confidence.
 
 ---
 
 # CONFIRMED OWNERSHIP DIRECTION
 
-## runtime_monitor.py
+## system_state
 
-Role:
-
-sole runtime state owner
+Runtime coordination owner.
 
 ---
 
-## kill_switch_manager.py
+## market_data_manager
 
-Role:
-
-sole governance state owner
+Price infrastructure owner.
 
 ---
 
-## future portfolio_health_manager.py
+## positions
 
-Role:
-
-portfolio health owner
+Operational Source of Truth owner.
 
 ---
 
-## future risk_state_manager.py
+## portfolio_state
 
-Role:
-
-risk state owner
+Derived operational snapshot.
 
 ---
 
-# EMERGING ARCHITECTURAL DIRECTION
+## kill_switch_manager
 
-Morpho is transitioning from:
+Governance owner.
+
+---
+
+## portfolio_health_manager
+
+Portfolio health owner.
+
+---
+
+# EMERGING DIRECTION
+
+Morpho is evolving from:
 
 loosely connected scripts
 
 toward:
 
-* coordinated operational infrastructure
-* governance-aware runtime architecture
-* autonomous operational system foundation
+* coordinated infrastructure
+* governance-aware runtime
+* operational intelligence
+
+without sacrificing simplicity.
 
 ---
 
-# REMAINING ARCHITECTURAL QUESTIONS
+# POST-DEPLOYMENT QUESTIONS
 
-Portfolio Health Architecture has now been formalized in:
+These questions are intentionally deferred.
 
-PORTFOLIO_HEALTH_ARCHITECTURE.md
+## Lifecycle Semantics
 
-The following questions remain unresolved and should guide future Foundation sessions.
+OPEN
+
+↓
+
+CLOSED
+
+↓
+
+Liquidation
+
+↓
+
+Retirement
+
+Transition governance remains future work.
 
 ---
 
-## position_state ↔ portfolio_state circularity
-
-Status:
-
-HIGH PRIORITY
-
----
-
-## portfolio_health_state responsibilities
+## Reconciliation Maturity
 
 Questions:
 
-* What is portfolio health?
-* What belongs in portfolio_health_state?
-* Should portfolio health trigger governance actions?
+* corruption detection
+* divergence detection
+* sovereign truth enforcement
 
 ---
 
-## risk_state decomposition boundaries
-
-Questions:
-
-* What belongs in risk_state?
-* What belongs in runtime_state?
-* What belongs in portfolio_health_state?
-
----
-
-## exchange abstraction architecture
-
-Status:
-
-NOT IMPLEMENTED
+## Exchange Abstraction
 
 Future requirement:
 
-exchange-agnostic opportunity execution layer
+exchange-agnostic execution layer.
 
 ---
 
-## governance trigger interfaces
+## Unified Risk Layer
 
-Operational domains should not manipulate runtime behavior directly.
+Ownership and decomposition remain future work.
 
-Governance ownership should remain centralized through:
+---
 
-kill_switch_manager.py
+## Meta Intelligence
 
-Potential pattern:
+Deferred.
 
-portfolio_health_manager.py
-↓
-kill_switch_manager.activate_kill_switch()
-↓
-governance persistence
-↓
-safe_runner enforcement
+Infrastructure precedes intelligence.
 
-# RELATED ARCHITECTURE DOCUMENTS
+---
 
-The following architectural domains have now been formalized:
+# CORE PRINCIPLES
 
-* PORTFOLIO_HEALTH_ARCHITECTURE.md
-* PORTFOLIO_HEALTH_STATE_SCHEMA.md
+Single owner per state.
 
-These documents define:
+Derived states adapt to Source of Truth maturity.
 
-* Portfolio Health responsibilities
-* operational boundaries
-* governance interfaces
-* state structure
-* structural fragility philosophy
-* operational schema design
+Reality ownership ≠ transition governance.
 
-# FORMALIZED OPERATIONAL DOMAINS
+Infrastructure before intelligence.
 
-The following operational domains have now been formally defined:
+Operational simplicity over sophistication.
 
-* Runtime State
-* Portfolio Health
-* Risk State
-* Governance State
+Discovery is not authorization.
 
-Related architecture documents:
+Reality over principles.
 
-* PORTFOLIO_HEALTH_ARCHITECTURE.md
-* PORTFOLIO_HEALTH_STATE_SCHEMA.md
-* RISK_STATE_ARCHITECTURE.md
+No principle above reality.
 
-These domains establish:
+Finite audits.
 
-* operational ownership boundaries
-* governance escalation patterns
-* derived operational intelligence states
-* environmental vs structural separation
-* centralized governance enforcement
+Infinite learning.
 

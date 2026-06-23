@@ -232,6 +232,45 @@ for _, row in signals_df.iterrows():
     rejection_reason = "NONE"
 
     # =========================
+    # DUPLICATE PREVENTION
+    # =========================
+
+    duplicate_query = """
+
+    SELECT *
+
+    FROM positions
+
+    WHERE asset=?
+
+    AND direction=?
+
+    AND status='OPEN'
+
+    """
+
+    duplicate_df = pd.read_sql_query(
+
+        duplicate_query,
+
+        conn,
+
+        params=(
+
+            row["asset"],
+
+            row["direction"]
+
+        )
+    )
+
+    if len(duplicate_df) > 0:
+
+        execution_decision = "REJECTED"
+
+        rejection_reason = "DUPLICATE_POSITION"
+
+    # =========================
     # AI MARKET BIAS FILTER
     # =========================
 

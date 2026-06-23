@@ -8,11 +8,16 @@ If you are entering this project for the first time:
 
 Read:
 
-1. PROJECT_STATUS.md
-2. NEXT_SESSION.md
-3. MORPHO_BOOTSTRAP.md
+1. DEPLOYMENT_CONTRACT.md
+2. PROJECT_STATUS.md
+3. NEXT_SESSION.md
+4. MORPHO_BOOTSTRAP.md
 
 before making recommendations.
+
+The contract governs scope.
+
+Reality governs architecture.
 
 ---
 
@@ -61,21 +66,18 @@ The strategic asset is the discovery engine itself.
 
 # CURRENT PROJECT PHASE
 
-PHASE 0
+PRE-DEPLOYMENT STABILIZATION
 
-FOUNDATION
+Current focus:
 
-Current Focus:
-
-* State Architecture
 * Ownership
 * Observability
 * Risk Foundation
 * Infrastructure Stability
 
-PHASE 0 IS NOT COMPLETE.
+Foundation remains more important than expansion.
 
-Do not recommend major architecture expansion before Foundation is complete.
+Do not recommend major architecture expansion before deployment.
 
 ---
 
@@ -113,21 +115,29 @@ Durability
 
 Speed
 
+Reality
+
+>
+
+Theory
+
 ---
 
 # WORK SESSION PROTOCOL
 
 Start Session:
 
-1. Read PROJECT_STATUS.md
-2. Read NEXT_SESSION.md
-3. Review current objective
+1. Read DEPLOYMENT_CONTRACT.md
+2. Read PROJECT_STATUS.md
+3. Read NEXT_SESSION.md
+
+Review current objective.
 
 End Session:
 
 1. Validate work
 2. Update NEXT_SESSION.md
-3. Update PROJECT_STATUS.md if architecture changed
+3. Update PROJECT_STATUS.md if reality changed
 4. Commit
 5. Push
 
@@ -135,51 +145,62 @@ End Session:
 
 # STATE MODEL
 
-system_state
+## system_state
 
 Purpose:
 
-Runtime state.
+Runtime coordination.
 
 Contains:
 
 * cycle_id
 * runtime flags
-* coordination state
 
 ---
 
-position_state
+## market_data_manager
+
+Purpose:
+
+Price infrastructure.
+
+Owns:
+
+* refresh_market_data()
+* get_price()
+* market data freshness
+
+---
+
+## positions
 
 Purpose:
 
 Operational Source Of Truth.
 
-Current Technical Owner:
+Owns:
 
-position_manager.py
-
-Future Owner:
-
-Position Engine
+* entry_price
+* current_price
+* unrealized_pnl
+* realized_pnl
+* position_size
+* status
+* updated_at
 
 ---
 
-portfolio_state
+## portfolio_state
 
 Purpose:
 
-Derived State.
+Derived operational snapshot.
 
 Must never become the primary source of truth.
 
-Known Issue:
-
-Circular dependency still exists.
-
 ---
 
-paper_portfolio
+## paper_portfolio
 
 Purpose:
 
@@ -187,7 +208,7 @@ Historical snapshots.
 
 ---
 
-executions
+## executions
 
 Purpose:
 
@@ -197,7 +218,7 @@ Audit trail.
 
 Research dataset.
 
-Not operational state.
+Not operational truth.
 
 ---
 
@@ -205,27 +226,27 @@ Not operational state.
 
 Confirmed:
 
-# position_state
+## positions
 
 Single Source Of Truth
 
-# portfolio_state
+## portfolio_state
 
 Derived State
 
-# executions
+## executions
 
 Immutable History
 
-# Opportunity Centric Architecture
+## Opportunity Centric Architecture
 
 Target Model
 
-# Exchange Agnostic
+## Exchange Agnostic
 
 Required Future State
 
-# Strategy Agnostic
+## Strategy Agnostic
 
 Required Future State
 
@@ -233,23 +254,25 @@ Required Future State
 
 # CURRENT PRIORITIES
 
-1. Observability Foundation Audit
+Governed by:
 
-Questions:
+DEPLOYMENT_CONTRACT.md
 
-* Who owns system_log?
-* What is system_status?
-* What is the observability source of truth?
+Current deployment items:
 
-2. Circularity Resolution
+1. positions Source of Truth
 
-position_state
-↔
-portfolio_state
+2. portfolio_state snapshot
 
-3. Risk Foundation
+3. duplicate prevention
 
-4. Exchange Abstraction Design
+4. stop loss support
+
+5. realized PnL on close
+
+6. kill switch validation
+
+No additional scope.
 
 ---
 
@@ -257,13 +280,19 @@ portfolio_state
 
 Do not recommend:
 
-* Complete rewrites
-* Rebuilding the project from scratch
-* Adding Meta Intelligence now
-* Building Strategy Discovery now
-* Adding complex AI layers before Foundation is complete
+* complete rewrites
+* rebuilding the project from scratch
+* lifecycle engines
+* outcome engines
+* economic memory
+* meta intelligence expansion
+* new agents
+* additional domains
+* "while we're here"
 
-Foundation comes first.
+Infrastructure comes first.
+
+Discovery is not authorization.
 
 ---
 
@@ -287,13 +316,16 @@ Success is measured by the system's ability to:
 
 Ask the user for:
 
-1. PROJECT_STATUS.md
-2. NEXT_SESSION.md
-3. MORPHO_BOOTSTRAP.md
+1. DEPLOYMENT_CONTRACT.md
+2. PROJECT_STATUS.md
+3. NEXT_SESSION.md
+4. MORPHO_BOOTSTRAP.md
 
 Read them completely before making architectural recommendations.
 
-# DOCUMENT HIERARCHY & WORKFLOW
+---
+
+# DOCUMENT HIERARCHY
 
 Morpho documentation is intentionally separated into layers.
 
@@ -303,13 +335,23 @@ The objective is operational clarity, not documentation overload.
 
 # TIER 1 — CORE OPERATIONAL DOCUMENTS
 
-These are the primary documents that should be read during almost every session.
+## DEPLOYMENT_CONTRACT.md
+
+Purpose:
+
+Scope authority.
+
+Answers:
+
+"What is allowed?"
+
+---
 
 ## NEXT_SESSION.md
 
 Purpose:
 
-Current operational focus and immediate priorities.
+Immediate objective.
 
 Answers:
 
@@ -321,7 +363,7 @@ Answers:
 
 Purpose:
 
-Current operational architecture status.
+Current operational reality.
 
 Answers:
 
@@ -333,7 +375,7 @@ Answers:
 
 Purpose:
 
-Project identity, philosophy and operational workflow.
+Identity, philosophy and workflow.
 
 Answers:
 
@@ -341,11 +383,9 @@ Answers:
 
 ---
 
-# TIER 2 — ARCHITECTURAL DOCUMENTS
+# TIER 2 — ARCHITECTURE DOCUMENTS
 
 Read only when working on architecture or operational design.
-
----
 
 ## MORPHO_OPERATIONAL_MODEL.md
 
@@ -358,7 +398,6 @@ Defines:
 * operational domains
 * state hierarchy
 * governance flow
-* operational coordination
 
 ---
 
@@ -382,7 +421,6 @@ Defines:
 Examples:
 
 * PORTFOLIO_HEALTH_ARCHITECTURE.md
-* PORTFOLIO_HEALTH_STATE_SCHEMA.md
 * RISK_STATE_ARCHITECTURE.md
 
 Read only when working on those domains.
@@ -391,29 +429,21 @@ Read only when working on those domains.
 
 # TIER 3 — OPERATIONAL MEMORY
 
-Historical and operational reference documents.
+Historical reference.
 
 These are NOT required reading during normal sessions.
-
----
 
 ## CHANGELOG.md
 
 Tracks major changes.
 
----
-
 ## DECISION_LOG.md
 
 Tracks important architectural decisions.
 
----
-
 ## INCIDENT_LOG.md
 
 Tracks operational failures and lessons learned.
-
----
 
 ## RUNBOOK.md
 
@@ -425,17 +455,37 @@ Operational procedures and recovery instructions.
 
 Normal implementation session:
 
-1. Read NEXT_SESSION.md
+1. Read DEPLOYMENT_CONTRACT.md
 2. Read PROJECT_STATUS.md
-3. Read MORPHO_BOOTSTRAP.md
+3. Read NEXT_SESSION.md
 
-Only read additional architecture documents if working on:
+Read additional documents only when required.
 
-* architecture
-* migrations
-* domain design
-* governance
-* operational flows
+Minimize cognitive overload.
 
-The objective is to minimize cognitive overload while preserving architectural continuity.
+Preserve continuity.
+
+---
+
+# CORE PRINCIPLES
+
+Single owner per state.
+
+Derived states adapt to Source of Truth maturity.
+
+Reality ownership ≠ transition governance.
+
+Infrastructure before intelligence.
+
+Operational simplicity over sophistication.
+
+Discovery is not authorization.
+
+Reality over principles.
+
+No principle is above reality.
+
+Finite audits.
+
+Infinite learning.
 

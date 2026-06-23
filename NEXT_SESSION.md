@@ -1,52 +1,184 @@
+# MORPHO AGENTS — NEXT SESSION
+
+June 23, 2026
+
+---
+
+# CURRENT PHASE
+
+PRE-DEPLOYMENT STABILIZATION
+
+---
+
+# CONTRACT STATUS
+
+## Item 1
+
+positions becomes Source of Truth
+
+Status:
+
+COMPLETE
+
+Evidence:
+
+Positive
+
+Consumer audits positive.
+
+---
+
+## Item 2
+
+portfolio_state becomes derived snapshot
+
+Status:
+
+COMPLETE
+
+Evidence:
+
+Positive
+
+Architecture aligned.
+
+---
+
+## Item 3
+
+Duplicate prevention
+
+Status:
+
+COMPLETE
+
+Evidence:
+
+Positive
+
+Duplicate OPEN positions are blocked.
+
+Rejection reason:
+
+DUPLICATE_POSITION
+
+---
+
+## Item 6
+
+Kill switch validation
+
+Status:
+
+COMPLETE
+
+Evidence:
+
+Positive
+
+Runtime validation successful.
+
+Flow confirmed:
+
+activate_kill_switch()
+
+↓
+
+kill_switch_state.json
+
+↓
+
+safe_runner
+
+↓
+
+execution aborted
+
+---
+
+# REMAINING DEPLOYMENT ITEMS
+
+## Item 4
+
+Minimal stop loss support
+
+Status:
+
+PENDING
+
+Observation:
+
+Appears to start from zero.
+
+No existing infrastructure discovered.
+
+---
+
+## Item 5
+
+Basic realized PnL on close
+
+Status:
+
+PENDING
+
+Observation:
+
+Most infrastructure already exists.
+
+realized_pnl fields already propagate through the system.
+
+Missing component:
+
+Close event semantics.
+
+---
+
 # NEXT SESSION
 
 SCOPE CHECK
 
-This session works exclusively on:
+Item 5
 
-Item 1
-
-positions.py becomes Source of Truth
+Basic realized PnL on close
 
 Primary objective:
 
-Transfer ownership of current_price and unrealized_pnl from portfolio_state to positions.
+Define minimal close semantics and persist realized_pnl on close.
 
-Current:
+Nothing else.
 
-executions
-→ portfolio_state
-→ positions
+---
 
-Target:
+# SESSION SUMMARY
 
-positions
-→ portfolio_state
+Architectural audits confirmed:
 
-No additional domains.
+* positions is consolidated as Source of Truth.
+* portfolio_state is a derived snapshot.
+* executions are used as historical memory, not operational reality.
+* Duplicate prevention implemented and validated.
+* Kill switch runtime path validated successfully.
 
-No lifecycle engine.
+---
 
-No outcome engine.
+# PRINCIPLE
 
-No economic memory.
+Continue with:
 
-No meta intelligence improvements.
+One item
 
-No "while we're here".
+↓
 
-If new discoveries appear:
+Evidence
 
-→ Document
+↓
 
-→ FUTURE_IDEAS.md
+Next item
 
-→ Do not implement
+Avoid opening multiple fronts simultaneously.
 
-→ End session
+Finite audits.
 
-Deployment Contract remains active.
+Infinite learning.
 
-Target deployment date:
-
-August 1, 2026.

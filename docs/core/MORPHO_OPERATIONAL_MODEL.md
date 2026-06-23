@@ -11,16 +11,15 @@ Its objective is to explain:
 * Source Of Truth hierarchy
 * state relationships
 * governance flow
-* operational intelligence layers
 * enforcement flow
 
-This document represents the current operational architecture direction of Morpho during Foundation Phase.
+This document represents the current operational architecture during Pre-Deployment Stabilization.
 
 ---
 
 # CORE ARCHITECTURAL MODEL
 
-Morpho is transitioning from:
+Morpho is evolving from:
 
 loosely connected scripts
 
@@ -30,26 +29,25 @@ state-driven operational infrastructure.
 
 The system is organized around:
 
-* operational domains
 * explicit ownership
-* derived operational intelligence
+* Source of Truth hierarchy
+* derived operational states
 * centralized governance
-* autonomous runtime coordination
+* runtime coordination
 
 ---
 
-# SOURCE OF TRUTH HIERARCHY
 # ECONOMIC TRUTH HIERARCHY
 
 Morpho distinguishes between:
 
-Operational State Ownership
+Economic Truth
 
 and
 
-Economic Truth Ownership.
+Derived Interpretation.
 
-Current economic hierarchy:
+Current hierarchy:
 
 L0
 
@@ -57,13 +55,17 @@ Sovereign Economic Truth
 
 (Blockchain / Protocol State)
 
+Future
+
 ---
 
 L1
 
 Operational Economic Truth
 
-(position_state)
+positions
+
+(Source Of Truth)
 
 ---
 
@@ -71,389 +73,354 @@ L2
 
 Historical Economic Truth
 
-(executions)
+executions
+
+(Immutable History)
 
 ---
 
 L3
 
-Derived Economic Interpretation
+Derived Operational Interpretation
 
-(position_valuator)
+portfolio_state
+
+(snapshot)
 
 ---
 
 Important:
 
 Historical Truth
-≠
-Live Truth
 
-Derived Analytics
 ≠
-Source Truth
 
-These distinctions are foundational to future reconciliation and governance architecture.
+Operational Truth
+
+Derived States
+
+≠
+
+Source Of Truth
 
 ---
-## position_state
+
+# positions
 
 Role:
 
-Operational Source Of Truth for deployed capital.
-Important:
+Operational Source Of Truth.
 
-position_state represents:
+Purpose:
 
-current live economic exposure.
+Represent current deployed capital.
 
-It does not represent:
+Owns:
+
+* entry_price
+* current_price
+* position_size
+* unrealized_pnl
+* realized_pnl
+* status
+* updated_at
+
+Does not represent:
 
 * historical actions
 * analytics
 * opportunity intelligence
-* portfolio interpretation
-
-Historical Truth and Live Truth remain separate architectural layers.
-Purpose:
-
-* active positions
-* deployed exposure
-* operational portfolio state
-
-Current Technical Owner:
-
-position_manager.py
-
-Future Architectural Owner:
-
-Position Engine
 
 ---
 
-## executions
+# executions
 
 Role:
 
-Immutable historical execution history.
+Immutable historical history.
 
 Purpose:
 
 * audit trail
 * analytics
 * research
-* telemetry
 
-NOT operational state.
+Not operational truth.
 
-NOT operational dependency.
+Not an operational dependency.
 
 ---
 
-## portfolio_state
+# portfolio_state
 
 Role:
 
-Derived operational representation.
+Derived operational snapshot.
 
-Status:
+Consumes:
 
-Active but still partially circular.
+positions
 
-Known architectural issue:
+Purpose:
 
-position_state
-↔
+Provide operational views and downstream consumers.
+
+Must never become the Source Of Truth.
+
+---
+
+# OPERATIONAL FLOW
+
+system_state
+
+↓
+
+safe_runner
+
+↓
+
+market_data_manager
+
+↓
+
+positions
+
+↓
+
 portfolio_state
 
-Circularity remains unresolved.
+↓
+
+risk_manager
+
+↓
+
+portfolio_health_manager
+
+↓
+
+paper_portfolio
+
+↓
+
+analytics
 
 ---
 
 # OPERATIONAL DOMAINS
 
-Morpho currently defines four primary operational domains.
-
----
-
-# 1. Runtime State
+## Runtime Coordination
 
 Question:
 
-"Is the machine operational?"
+Is the machine operational?
 
 Owner:
 
-runtime_monitor.py
-
-Operational State:
-
-runtime_state.json
+system_state
 
 Responsibilities:
 
-* runtime coordination
+* cycle coordination
 * runtime flags
-* system operational status
-* execution cycle monitoring
 
 ---
 
-# 2. Portfolio Health
+## Price Infrastructure
 
 Question:
 
-"Is deployed capital structurally healthy?"
+Can market prices be trusted?
 
 Owner:
 
-portfolio_health_manager.py
-
-Future Operational State:
-
-portfolio_health_state.json
+market_data_manager
 
 Responsibilities:
 
-* structural fragility assessment
-* concentration analysis
-* deployment quality analysis
-* capital structure evaluation
-* operational health scoring
-
-Portfolio Health evaluates internal structural quality of deployed capital.
+* market refresh
+* price retrieval
+* freshness checks
 
 ---
 
-# 3. Risk State
+## Economic State
 
 Question:
 
-"How dangerous is the current operational environment?"
+What capital is deployed?
 
 Owner:
 
-risk_state_manager.py
-
-Future Operational State:
-
-risk_state.json
+positions
 
 Responsibilities:
 
-* market danger assessment
-* infrastructure instability assessment
-* liquidity deterioration detection
-* exchange instability monitoring
-* environmental operational risk analysis
-
-Risk State evaluates external/environmental danger.
+* exposure
+* PnL
+* position status
 
 ---
 
-# 4. Governance State
+## Portfolio Interpretation
 
 Question:
 
-"What operational actions are allowed?"
+How should deployed capital be represented?
 
 Owner:
 
-kill_switch_manager.py
-
-Operational State:
-
-kill_switch_state.json
+portfolio_state
 
 Responsibilities:
 
-* kill switch persistence
-* governance enforcement
-* operational protection
-* execution permission control
-
-Governance remains centralized.
-
----
-
-# DOMAIN SEPARATION
-
-## Runtime State
-
-Evaluates:
-
-machine operational integrity.
+* derived snapshots
+* downstream consumers
 
 ---
 
 ## Portfolio Health
 
-Evaluates:
+Question:
 
-internal structural fragility of deployed capital.
+Is deployed capital structurally healthy?
+
+Owner:
+
+portfolio_health_manager
+
+Responsibilities:
+
+* concentration analysis
+* structural fragility
+* deployment quality
 
 ---
 
-## Risk State
+## Risk
 
-Evaluates:
+Question:
 
-external environmental operational danger.
+Is the environment dangerous?
+
+Owner:
+
+risk_manager
+
+Responsibilities:
+
+* exposure limits
+* risk evaluation
+* protection
 
 ---
 
 ## Governance
 
-Controls:
+Question:
 
-operational permissions and enforcement.
+What actions are allowed?
 
----
+Owner:
 
-# DERIVED OPERATIONAL INTELLIGENCE
+kill_switch_manager
 
-Morpho is evolving toward a layered architecture:
+Responsibilities:
 
-Source Of Truth
-↓
-Manager
-↓
-Derived Operational State
-↓
-Governance Recommendation
-↓
-Centralized Enforcement
-
-Examples:
-
-position_state
-↓
-portfolio_health_manager.py
-↓
-portfolio_health_state.json
-
----
-
-telemetry
-↓
-risk_state_manager.py
-↓
-risk_state.json
-
----
-
-runtime telemetry
-↓
-runtime_monitor.py
-↓
-runtime_state.json
+* execution permissions
+* persistence
+* emergency protection
 
 ---
 
 # GOVERNANCE FLOW
 
-Operational domains should NOT directly manipulate runtime execution.
+Operational domains should not directly manipulate execution.
 
-Operational domains may:
+Flow:
 
-* evaluate
-* score
-* escalate
-* recommend governance action
+operational state
 
-Governance decides enforcement.
-
-Operational flow:
-
-operational state / telemetry
 ↓
+
 domain manager
+
 ↓
-derived operational state
+
+evaluation
+
 ↓
+
 governance recommendation
+
 ↓
-kill_switch_manager.py
+
+kill_switch_manager
+
 ↓
-safe_runner.py
+
+safe_runner
 
 ---
 
-# CENTRALIZED ENFORCEMENT MODEL
+# CENTRALIZED ENFORCEMENT
 
-safe_runner.py represents the primary operational enforcement layer.
+safe_runner.py represents the primary enforcement layer.
 
-Execution may be halted when:
+Execution can be halted when:
 
 kill_switch_active = true
 
-Governance persistence survives:
+Governance survives:
 
 * crashes
 * restarts
-* runtime failures
-
-This behavior is now considered foundational architecture.
+* failures
 
 ---
 
 # STATE MANAGER DIRECTION
 
-StateManager is evolving toward:
+StateManager should evolve toward:
 
 * centralized read abstraction
 * validated write gateway
 * unified operational access layer
 
-Future direction:
-
-Direct JSON access should gradually disappear from modules.
+Direct access should gradually decrease over time.
 
 ---
 
-# ARCHITECTURAL PRINCIPLES
+# PHASE OBJECTIVE
 
-Morpho architectural direction prioritizes:
+Pre-Deployment Stabilization does not prioritize advanced intelligence.
 
-* ownership clarity
-* operational observability
-* governance centralization
-* incremental migration
-* state-driven coordination
-* operational resilience
-* explainable operational intelligence
+Current objective:
 
----
-
-# PHASE 0 OBJECTIVE
-
-Foundation Phase objective is NOT advanced intelligence.
-
-Foundation objective is:
-
-* stable operational architecture
-* clean ownership boundaries
+* stable ownership
+* runtime robustness
+* observability
 * governance safety
-* operational visibility
-* structural observability
-* runtime resilience
+* operational simplicity
+
+Infrastructure precedes intelligence.
 
 ---
 
-# CURRENT EMERGING MODEL
+# EMERGING MODEL
 
 Morpho is evolving toward:
 
-Autonomous Operational Infrastructure for Digital Capital.
+Operational Infrastructure for Opportunity Intelligence.
 
-The objective is not merely strategy execution.
+The objective is not strategy execution.
 
-The objective is coordinated operational intelligence capable of:
+The objective is coordinated operational capability able to:
 
-* evaluating opportunities
-* evaluating structural fragility
-* evaluating environmental danger
-* coordinating governance
-* protecting deployed capital
-* evolving operational capability over time
+* evaluate opportunities
+* protect capital
+* monitor exposure
+* coordinate governance
+* preserve operational continuity
+* evolve over time
 

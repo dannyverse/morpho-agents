@@ -64,35 +64,61 @@ The strategic asset is the discovery engine itself.
 Traditional Model:
 
 Markets
+
 ↓
+
 Signals
+
 ↓
+
 Trades
+
 ↓
+
 Profit
 
 Morpho Model:
 
 Markets
+
 ↓
+
 Information
+
 ↓
+
 Opportunities
+
 ↓
+
 Evaluation
+
 ↓
+
 Validation
+
 ↓
+
 Risk
+
 ↓
+
 Capital Allocation
+
 ↓
+
 Execution
+
 ↓
+
 Monitoring
+
 ↓
+
 Learning
+
 ↓
+
 Improved Opportunity Discovery
 
 ---
@@ -117,55 +143,14 @@ Morpho is:
 Morpho is not:
 
 * A single trading strategy
-* A funding arbitrage bot
 * A Hyperliquid bot
+* A funding arbitrage bot
 * A DeFi yield bot
 * A market making bot
 
-Those are potential opportunity sources.
+Those are opportunity sources.
 
 Not the system itself.
-
----
-
-# OPPORTUNITY TYPES
-
-Current and future opportunity categories include:
-
-## Trading Opportunities
-
-* Momentum
-* Mean Reversion
-* Trend Following
-* Volatility Events
-* Liquidity Dislocations
-
-## Arbitrage Opportunities
-
-* Cross Exchange Arbitrage
-* Funding Arbitrage
-* Spot / Perp Arbitrage
-* Cross Chain Arbitrage
-
-## DeFi Opportunities
-
-* Lending
-* Borrowing
-* Yield Farming
-* Liquidity Provision
-* Restaking
-* Incentive Programs
-
-## Future Categories
-
-Any opportunity source that can be:
-
-* observed
-* evaluated
-* risk adjusted
-* capital allocated
-
-can become part of Morpho.
 
 ---
 
@@ -194,101 +179,79 @@ Optimization
 Rules:
 
 * One primary objective per session
-* Audit before refactor
 * Incremental migrations
 * No large simultaneous changes
+* Audit before refactor
 * Document decisions
-* Maintain continuity documents
+* Preserve continuity
 
 ---
 
-# CURRENT ARCHITECTURE
+# CURRENT PHASE
 
-## Runtime Layer
+PRE-DEPLOYMENT STABILIZATION
 
-system_state
+Deployment target:
 
-Purpose:
+August 1, 2026
 
-* cycle_id
-* runtime coordination
-* system flags
+Scope authority:
 
-Status:
+DEPLOYMENT_CONTRACT.md
 
-ACTIVE
+No automatic scope expansion.
 
----
-
-## Operational State Layer
-## Economic Truth Hierarchy
-
-L0
-Sovereign Economic Truth
-(Blockchain / Protocol State)
-
-L1
-Operational Economic Truth
-(position_state)
-
-L2
-Historical Economic Truth
-(executions)
-
-L3
-Derived Economic Interpretation
-(position_valuator)
-
-Status:
-
-CONFIRMED
-position_state
-
-Purpose:
-
-Single Source of Truth for deployed capital.
-
-Current Technical Owner:
-
-position_manager.py
-
-Future Architectural Owner:
-
-Position Engine
-
-Status:
-
-CONFIRMED
+Discovery is not authorization.
 
 ---
 
-## Derived State Layer
+# CURRENT ECONOMIC ARCHITECTURE
+
+market_data_manager
+
+↓
+
+positions
+
+(Source of Truth)
+
+↓
 
 portfolio_state
 
-Purpose:
+(derived snapshot)
 
-Derived operational representation.
+↓
 
-Status:
+risk_manager
 
-ACTIVE
+↓
 
-Known Issue:
+portfolio_health_manager
 
-Circular dependency exists.
-
-Requires future resolution.
-
----
-
-## Historical Layer
+↓
 
 paper_portfolio
 
+↓
+
+analytics
+
+---
+
+# OWNERSHIP MODEL
+
+## market_data_manager
+
 Purpose:
 
-Historical snapshots.
+Price infrastructure.
+
+Owns:
+
+* refresh_market_data()
+* get_price()
+* market data freshness
 
 Status:
 
@@ -296,204 +259,143 @@ ACTIVE
 
 ---
 
-## Immutable History Layer
-
-executions
+## positions
 
 Purpose:
 
-Audit trail.
+Single Source of Truth for operational economic exposure.
 
-Historical analysis.
+Owns:
 
-Research dataset.
-
-Status:
-
-IMMUTABLE
-
-No longer operationally required.
-
----
-
-# AUDITS COMPLETED
-
-## Source Of Truth Audit
-
-Result:
-
-position_state confirmed as operational source of truth.
+* entry_price
+* current_price
+* unrealized_pnl
+* realized_pnl
+* position_size
+* status
+* updated_at
 
 Status:
 
-COMPLETE
+ACTIVE
 
 ---
 
-## Executions Dependency Audit
+## portfolio_state
 
-Result:
+Purpose:
 
-Operational dependency removed.
+Derived operational snapshot.
 
 Status:
 
-COMPLETE
+ACTIVE
+
+Does not own prices or PnL calculations.
 
 ---
 
-## Flow Of State Audit
+## executions
 
-Result:
+Purpose:
 
-State hierarchy identified.
+Immutable historical audit trail.
+
+Not operationally authoritative.
 
 Status:
 
-COMPLETE
+ACTIVE
 
 ---
 
-## Position Ownership Audit
+# CURRENT RUNTIME
 
-Result:
+safe_runner.py
 
-Current technical owner:
+↓
 
-position_manager.py
+funding_agent
 
-Future owner:
+↓
 
-Position Engine
+signal_analytics
 
-Status:
+↓
 
-COMPLETE
+signal_memory
 
----
+↓
 
-# ARCHITECTURAL GAPS
+signal_persistence
 
-## Circularity
+↓
 
-Current:
+opportunity_monitor
 
-position_state
-↔
+↓
+
+adaptive_scoring
+
+↓
+
+execution_agent
+
+↓
+
+meta_intelligence
+
+↓
+
+positions
+
+↓
+
 portfolio_state
 
-Status:
+↓
 
-PENDING
+risk_manager
 
-Priority:
+↓
 
-HIGH
+portfolio_health_manager
 
----
+↓
 
-## Exchange Abstraction
+paper_portfolio
 
-Current:
+↓
 
-Direct integrations remain embedded inside agents.
+strategy_analytics
 
-Examples:
+↓
 
-* Hyperliquid
-* Binance
-
-Status:
-
-VISION DEFINED
-
-IMPLEMENTATION PENDING
-
-Future Requirement:
-
-Exchange Layer abstraction.
-
-Must exist before large-scale opportunity expansion.
+logger
 
 ---
 
-## Position Lifecycle Semantics
+# DEPLOYMENT CONTRACT
 
-Current:
+Allowed work before deployment:
 
-Position state exists.
-
-Lifecycle transitions do not.
-
-The system currently lacks formal position lifecycle management.
-
-Open Questions:
-
-* OPEN → CLOSED transitions
-* ownership of lifecycle updates
-* closure semantics
-* liquidation semantics
+1. positions.py becomes Source of Truth
 
 Status:
 
-NEXT ARCHITECTURAL FRONTIER
-
-## Reconciliation Philosophy
-
-Current:
-
-Initial reconciliation foundations exist.
-
-However:
-
-The role of reconciliation is not yet formally defined.
-
-Open Questions:
-
-* corruption detection?
-* state divergence detection?
-* sovereign truth enforcement?
-* operational validation?
-
-Status:
-
-UNDER ARCHITECTURAL REVIEW
-
-## Sovereign Truth Integration
-
-Current:
-
-Local state is authoritative for paper trading.
-
-Future protocol integrations introduce a higher truth layer.
-
-Principle:
-
-Blockchain / Protocol State
-=
-Sovereign Economic Truth
-
-Open Questions:
-
-* reconciliation mechanisms
-* conflict resolution
-* state override policies
-
-Status:
-
-FUTURE REQUIREMENT
+IMPLEMENTED
 
 ---
 
-## Risk Foundation
+2. portfolio_state becomes derived snapshot from positions
 
-Current:
+Status:
 
-Partial implementation.
+IMPLEMENTED
 
-Future Requirement:
+---
 
-Unified risk layer.
+3. Duplicate prevention in execution_agent
 
 Status:
 
@@ -501,56 +403,50 @@ PENDING
 
 ---
 
-# CURRENT PROJECT PHASE
+4. Minimal stop loss support
 
-PHASE 0
+Status:
 
-FOUNDATION
+PENDING
 
-Goal:
+---
 
-Create a stable machine.
+5. Basic realized PnL on close
 
-Focus:
+Status:
 
-* State Architecture
-* Ownership
-* Observability
-* Risk Foundation
-* Infrastructure
+PENDING
 
-Estimated Completion:
+---
 
-95-98%
+6. Kill switch validation
 
-Current Status:
+Status:
 
-Foundation objectives have largely been achieved.
+PENDING
 
-Recent completions include:
+---
 
-* Canonical Position State
-* Execution Persistence Separation
-* Mark-to-Market Valuation
-* Economic Truth Hierarchy
-* Reconciliation Foundations
-* Constitutional Governance Framework
+# CURRENT EVIDENCE
 
-Remaining Foundation work is primarily focused on:
+Runtime evidence:
 
-* Lifecycle Semantics
-* Reconciliation Maturity
-* Ownership Clarification
-* Risk Layer Consolidation
-* Exchange Abstraction
+Positive.
 
-The project is increasingly transitioning from:
+Initial validations completed.
 
-Foundation
+Consumer audit:
 
-toward:
+Positive.
 
-Stabilization & Governance.
+Ownership audit:
+
+Positive.
+
+Evidence accumulation continues.
+
+Implementation alone does not imply stability.
+
 ---
 
 # ROADMAP
@@ -561,17 +457,11 @@ FOUNDATION
 
 Objective:
 
-Build a stable and observable system.
+Build a stable and observable machine.
 
-Includes:
+Status:
 
-* State ownership
-* Source of truth
-* Observability
-* Risk foundations
-* Infrastructure
-
-Current Phase
+Largely completed.
 
 ---
 
@@ -585,10 +475,10 @@ Enable the system to understand opportunities.
 
 Includes:
 
-* Opportunity Model
-* Opportunity Lifecycle
-* Opportunity Registry
-* Opportunity Scoring
+* Opportunity model
+* Opportunity lifecycle
+* Opportunity registry
+* Opportunity scoring
 
 ---
 
@@ -602,10 +492,9 @@ Deploy capital intelligently.
 
 Includes:
 
-* Capital Allocation Engine
-* Portfolio Construction
-* Risk Allocation
-* Opportunity Prioritization
+* Portfolio construction
+* Capital allocation
+* Risk allocation
 
 ---
 
@@ -619,11 +508,10 @@ Learn what works.
 
 Includes:
 
-* Opportunity Memory
-* Experimentation Framework
-* Performance Attribution
-* Edge Tracking
-* Opportunity Validation
+* Opportunity memory
+* Performance attribution
+* Experimentation framework
+* Edge tracking
 
 ---
 
@@ -633,22 +521,60 @@ META QUANT ENGINE
 
 Objective:
 
-Improve the system's ability to discover new opportunities.
+Improve opportunity discovery itself.
 
 Includes:
 
-* Strategy Discovery
-* Strategy Generation
-* Strategy Mutation
-* Strategy Retirement
-* Autonomous Research Loops
-* Meta Intelligence Layer
+* Strategy discovery
+* Strategy mutation
+* Autonomous research loops
+* Meta intelligence
+
+---
+
+# POST-DEPLOYMENT FRONTIERS
+
+Deferred intentionally:
+
+* Lifecycle semantics
+* Reconciliation maturity
+* Sovereign truth integration
+* Exchange abstraction
+* Unified risk layer
+* Opportunity memory evolution
+* Meta intelligence evolution
+
+These are not current priorities.
+
+---
+
+# ARCHITECTURAL PRINCIPLES
+
+Single owner per state.
+
+Derived states adapt to Source of Truth maturity.
+
+Reality ownership ≠ transition governance.
+
+Infrastructure before intelligence.
+
+Operational simplicity over sophistication.
+
+Discovery is not authorization.
+
+Reality over principles.
+
+No principle is above reality.
+
+Finite audits.
+
+Infinite learning.
 
 ---
 
 # SUCCESS METRICS
 
-Success is NOT measured primarily by short-term PnL.
+Success is not measured primarily by short-term PnL.
 
 Success is measured by the system's ability to:
 
@@ -666,31 +592,36 @@ Success is measured by the system's ability to:
 # CURRENT ASSESSMENT
 
 Vision:
+
 Strong
 
 Architecture:
+
 Strong
 
-State Management:
-Strong
+Ownership:
 
-Ownership Model:
 Strong
 
 Observability:
-Partial
+
+Good
 
 Risk Layer:
+
 Partial
 
 Opportunity Framework:
+
 Early
 
-Discovery Capability:
+Meta Intelligence:
+
 Minimal
 
-Meta Intelligence:
-Not Implemented
+Deployment Readiness:
+
+Improving
 
 ---
 
@@ -698,85 +629,7 @@ Not Implemented
 
 Morpho Agents is a machine designed to continuously improve its ability to discover, evaluate and exploit opportunities across digital markets.
 
-The long-term goal is not to build a strategy.
+The goal is not to build a strategy.
 
-The long-term goal is to build a machine capable of finding the next strategy.
+The goal is to build a machine capable of finding the next strategy.
 
-# ARCHITECTURAL PRINCIPLES
-
-Morpho architectural doctrine is progressively being consolidated in:
-
-ARCHITECTURE_PRINCIPLES.md
-
-This includes:
-
-* ownership philosophy
-* governance philosophy
-* migration philosophy
-* live state vs historical state principles
-* StateManager direction
-* operational architecture principles
-
-# POSITION STATE AUDIT
-
-## Result
-
-Canonical live exposure state established.
-
-position_state now serves as the operational representation of live economic exposure.
-
-Current schema includes:
-
-* status
-* side
-* entry_price
-* quantity
-* exchange
-* opened_at
-
-Status:
-
-FOUNDATION COMPLETE
-
----
-
-## Remaining Questions
-
-Position state ownership remains operationally simple but future lifecycle ownership is not yet formalized.
-
-Open Questions:
-
-* lifecycle transitions
-* closure semantics
-* liquidation semantics
-* reconciliation boundaries
-* sovereign truth integration
-
----
-
-## Architectural Position
-
-position_state represents:
-
-Current Live Economic Exposure
-
-It does not represent:
-
-* historical truth
-* analytics
-* portfolio intelligence
-* opportunity intelligence
-
-Those remain separate architectural domains.
-
-Status:
-
-CONFIRMED
-
----
-
-# CORE ARCHITECTURAL REFERENCES
-
-See:
-
-- docs/core/DEVELOPMENT_PRINCIPLES.md
