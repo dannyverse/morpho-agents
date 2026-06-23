@@ -1,184 +1,218 @@
 # MORPHO AGENTS — NEXT SESSION
 
-June 23, 2026
+--------------------------------------------------
 
----
+CURRENT PHASE
 
-# CURRENT PHASE
+PRE-DEPLOYMENT EVIDENCE PHASE
 
-PRE-DEPLOYMENT STABILIZATION
+Foundation implementation has been completed.
 
----
+Current priority is no longer architecture.
 
-# CONTRACT STATUS
+Current priority is evidence accumulation and deployment readiness.
 
-## Item 1
+--------------------------------------------------
 
-positions becomes Source of Truth
+DEPLOYMENT CONTRACT STATUS
 
-Status:
+Item 1
 
-COMPLETE
+positions Source Of Truth
 
-Evidence:
-
-Positive
-
-Consumer audits positive.
-
----
-
-## Item 2
-
-portfolio_state becomes derived snapshot
-
-Status:
+STATUS
 
 COMPLETE
 
-Evidence:
+Evidence positive.
 
-Positive
+--------------------------------------------------
 
-Architecture aligned.
+Item 2
 
----
+portfolio_state derived snapshot
 
-## Item 3
-
-Duplicate prevention
-
-Status:
+STATUS
 
 COMPLETE
 
-Evidence:
+Evidence positive.
 
-Positive
+--------------------------------------------------
 
-Duplicate OPEN positions are blocked.
+Item 3
 
-Rejection reason:
+duplicate position prevention
 
-DUPLICATE_POSITION
-
----
-
-## Item 6
-
-Kill switch validation
-
-Status:
+STATUS
 
 COMPLETE
 
-Evidence:
+Evidence positive.
 
-Positive
+--------------------------------------------------
 
-Runtime validation successful.
+Item 4
 
-Flow confirmed:
+minimal stop loss
 
-activate_kill_switch()
+STATUS
+
+COMPLETE
+
+Evidence positive.
+
+OPEN
 
 ↓
 
-kill_switch_state.json
+stop loss trigger
 
 ↓
 
-safe_runner
+status = CLOSED
 
 ↓
 
-execution aborted
+position frozen
 
----
-
-# REMAINING DEPLOYMENT ITEMS
-
-## Item 4
-
-Minimal stop loss support
-
-Status:
-
-PENDING
-
-Observation:
-
-Appears to start from zero.
-
-No existing infrastructure discovered.
-
----
-
-## Item 5
-
-Basic realized PnL on close
-
-Status:
-
-PENDING
-
-Observation:
-
-Most infrastructure already exists.
-
-realized_pnl fields already propagate through the system.
-
-Missing component:
-
-Close event semantics.
-
----
-
-# NEXT SESSION
-
-SCOPE CHECK
+--------------------------------------------------
 
 Item 5
 
-Basic realized PnL on close
+realized PnL on close
 
-Primary objective:
+STATUS
 
-Define minimal close semantics and persist realized_pnl on close.
+COMPLETE
 
-Nothing else.
+Evidence positive.
 
----
+realized_pnl persists after close.
 
-# SESSION SUMMARY
+CLOSED positions become historical truth.
 
-Architectural audits confirmed:
+--------------------------------------------------
 
-* positions is consolidated as Source of Truth.
-* portfolio_state is a derived snapshot.
-* executions are used as historical memory, not operational reality.
-* Duplicate prevention implemented and validated.
-* Kill switch runtime path validated successfully.
+Item 6
 
----
+kill switch validation
 
-# PRINCIPLE
+STATUS
 
-Continue with:
+COMPLETE
 
-One item
+Evidence positive.
+
+safe_runner correctly halts execution.
+
+--------------------------------------------------
+
+OPEN / CLOSED SEMANTICS
+
+OPEN positions
 
 ↓
 
-Evidence
+Operational Reality
 
 ↓
 
-Next item
+portfolio_state
 
-Avoid opening multiple fronts simultaneously.
+↓
+
+paper_portfolio
+
+↓
+
+risk_manager
+
+↓
+
+logger
+
+CLOSED positions
+
+↓
+
+Historical Truth
+
+↓
+
+historical_analytics
+
+No operational consumers of CLOSED positions discovered.
+
+Audit result positive.
+
+--------------------------------------------------
+
+CURRENT OBJECTIVE
+
+Accumulate evidence.
+
+Observe reality.
+
+Avoid opening new architectural fronts.
+
+Prioritize stability over expansion.
+
+--------------------------------------------------
+
+NEXT SESSION PRIORITIES
+
+1.
+
+Run normal cycles.
+
+Observe runtime behavior.
+
+2.
+
+Confirm:
+
+- exposure remains coherent
+- duplicate prevention remains healthy
+- CLOSED positions remain isolated
+- stop loss behavior remains correct
+- kill switch behavior remains available
+- runtime health remains HEALTHY
+
+3.
+
+Deployment readiness assessment.
+
+Question:
+
+Is the machine sufficiently stable for small-capital deployment?
+
+--------------------------------------------------
+
+SESSION PHILOSOPHY
+
+Observe
+
+↓
+
+Understand
+
+↓
+
+Validate
+
+↓
+
+Accumulate evidence
+
+↓
+
+Deploy
+
+Reality remains the ultimate authority.
 
 Finite audits.
 
 Infinite learning.
 
+No principle is above reality.

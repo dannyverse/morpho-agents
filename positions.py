@@ -232,6 +232,46 @@ for _, row in positions_df.iterrows():
 
         unrealized_pnl = 0
 
+    # =========================
+    # MINIMAL STOP LOSS
+    # =========================
+
+    if unrealized_pnl <= -5:
+
+        conn.execute(
+
+            """
+
+            UPDATE positions
+
+            SET
+
+                status='CLOSED',
+
+                realized_pnl=?,
+
+                updated_at=?
+
+            WHERE position_id=?
+
+            """,
+
+            (
+
+                unrealized_pnl,
+
+                str(datetime.now()),
+
+                row["position_id"]
+
+            )
+
+        )
+
+        updated_positions += 1
+
+        continue
+
     conn.execute(
 
         """
@@ -261,11 +301,10 @@ for _, row in positions_df.iterrows():
             row["position_id"]
 
         )
+
     )
 
     updated_positions += 1
-
-conn.commit()
 
 # =========================
 # RELOAD POSITIONS
@@ -291,6 +330,7 @@ closed_positions = len(
         positions_df["status"] == "CLOSED"
     ]
 )
+conn.commit()
 
 conn.close()
 
