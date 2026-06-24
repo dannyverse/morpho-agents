@@ -1,218 +1,184 @@
 # MORPHO AGENTS — NEXT SESSION
 
---------------------------------------------------
+---
 
 CURRENT PHASE
 
 PRE-DEPLOYMENT EVIDENCE PHASE
 
-Foundation implementation has been completed.
+Foundation implementation remains complete.
 
-Current priority is no longer architecture.
+Current priority is operational readiness and evidence accumulation before real-capital deployment.
 
-Current priority is evidence accumulation and deployment readiness.
+---
 
---------------------------------------------------
+SESSION SUMMARY
 
-DEPLOYMENT CONTRACT STATUS
+Morning Session Completed Successfully.
 
-Item 1
+Key outcomes:
 
-positions Source Of Truth
+1. Operational Alerting advanced significantly.
 
-STATUS
+Implemented:
 
-COMPLETE
+* Safe Runner Failure Alert
+* Kill Switch Activation Alert
 
-Evidence positive.
+Validation:
 
---------------------------------------------------
+* Kill Switch alert successfully delivered to Telegram.
+* notifier.py integration confirmed operational.
+* kill_switch_manager.py syntax validated.
+* safe_runner.py validation completed successfully.
 
-Item 2
+Result:
 
-portfolio_state derived snapshot
+Morpho now actively notifies the operator when critical operational events occur.
 
-STATUS
+---
 
-COMPLETE
+SCAR REVIEW STATUS
 
-Evidence positive.
+SCAR 1 — REAL CAPITAL PROTECTION
 
---------------------------------------------------
+Investigated.
 
-Item 3
+Findings:
 
-duplicate position prevention
+* Hyperliquid supports native Stop Loss.
+* Hyperliquid supports Take Profit.
+* Hyperliquid supports Trigger Orders.
+* Hyperliquid supports Reduce Only Orders.
 
-STATUS
+Current Status:
 
-COMPLETE
+Morpho does not yet use these capabilities.
 
-Evidence positive.
+Conclusion:
 
---------------------------------------------------
+Not an architectural blocker.
 
-Item 4
+Future integration should be evaluated before real-capital deployment.
 
-minimal stop loss
+---
 
-STATUS
+SCAR 2 — OPERATIONAL ALERTING
 
-COMPLETE
+Status:
 
-Evidence positive.
+Largely resolved.
 
-OPEN
+Completed:
 
-↓
+* Safe Runner Failure Alert
+* Kill Switch Activation Alert
 
-stop loss trigger
+Validated:
 
-↓
+* Telegram delivery confirmed.
 
-status = CLOSED
+Remaining candidate improvement:
 
-↓
+* Daily Heartbeat message
 
-position frozen
+Not required for immediate continuation.
 
---------------------------------------------------
+---
 
-Item 5
+SCAR 3 — ACCOUNT VISIBILITY
 
-realized PnL on close
+Major discovery:
 
-STATUS
+Morpho observes market reality.
 
-COMPLETE
+Morpho does not yet observe account reality.
 
-Evidence positive.
+Current account visibility:
 
-realized_pnl persists after close.
+* Balance: unavailable
+* Positions: unavailable
+* Orders: unavailable
 
-CLOSED positions become historical truth.
+Research findings:
 
---------------------------------------------------
+Hyperliquid exposes account information through:
 
-Item 6
+clearinghouseState
 
-kill switch validation
+openOrders
 
-STATUS
+using wallet address only.
 
-COMPLETE
+No private key required.
 
-Evidence positive.
+No signing required.
 
-safe_runner correctly halts execution.
+No trading permissions required.
 
---------------------------------------------------
+---
 
-OPEN / CLOSED SEMANTICS
+NEXT SESSION OBJECTIVE
 
-OPEN positions
+PRIMARY OBJECTIVE
 
-↓
+Account Visibility Investigation
 
-Operational Reality
+Goal:
 
-↓
+Determine how to implement read-only account visibility using Hyperliquid account endpoints.
 
-portfolio_state
+Desired visibility:
 
-↓
+* Account Balance
+* Open Positions
+* Open Orders
 
-paper_portfolio
+Constraints:
 
-↓
+* Read-only
+* No execution
+* No signing
+* No private keys
 
-risk_manager
+Focus:
 
-↓
+Observability before automation.
 
-logger
+---
 
-CLOSED positions
+SUCCESS CRITERIA
 
-↓
+By session end:
 
-Historical Truth
+* Understand Hyperliquid account endpoints.
+* Define future Morpho operational wallet.
+* Determine minimal implementation scope.
+* Decide whether Account Visibility should be implemented before real-capital deployment.
 
-↓
+---
 
-historical_analytics
+ARCHITECTURAL REMINDER
 
-No operational consumers of CLOSED positions discovered.
+Do not build reconciliation systems.
 
-Audit result positive.
+Do not build execution infrastructure.
 
---------------------------------------------------
+Do not build account automation.
 
-CURRENT OBJECTIVE
+Current objective:
 
-Accumulate evidence.
+Observe account reality.
 
-Observe reality.
+Not control account reality.
 
-Avoid opening new architectural fronts.
+---
 
-Prioritize stability over expansion.
+PRINCIPLE
 
---------------------------------------------------
+Finite Audits.
 
-NEXT SESSION PRIORITIES
+Infinite Learning.
 
-1.
+Reality First.
 
-Run normal cycles.
-
-Observe runtime behavior.
-
-2.
-
-Confirm:
-
-- exposure remains coherent
-- duplicate prevention remains healthy
-- CLOSED positions remain isolated
-- stop loss behavior remains correct
-- kill switch behavior remains available
-- runtime health remains HEALTHY
-
-3.
-
-Deployment readiness assessment.
-
-Question:
-
-Is the machine sufficiently stable for small-capital deployment?
-
---------------------------------------------------
-
-SESSION PHILOSOPHY
-
-Observe
-
-↓
-
-Understand
-
-↓
-
-Validate
-
-↓
-
-Accumulate evidence
-
-↓
-
-Deploy
-
-Reality remains the ultimate authority.
-
-Finite audits.
-
-Infinite learning.
-
-No principle is above reality.

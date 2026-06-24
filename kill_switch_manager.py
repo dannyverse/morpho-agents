@@ -2,6 +2,7 @@ import json
 import os
 import tempfile
 from datetime import datetime
+from notifier import send_alert
 
 # =========================
 # CONFIG
@@ -96,6 +97,15 @@ def activate_kill_switch(
 
     write_kill_switch_state(
         state
+    )
+    send_alert(
+
+        f"🚨 MORPHO KILL SWITCH ACTIVATED\n\n"
+
+        f"Reason: {reason}\n"
+
+        f"Activated By: {activated_by}"
+
     )
 
 # =========================
