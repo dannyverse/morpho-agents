@@ -149,3 +149,67 @@ Incomplete work is not automatic justification for postponement.
 A deadline is not automatic justification for deployment.
 
 Both deployment and delay require conscious written decisions.
+# ITEM 7
+
+READ-ONLY ACCOUNT VISIBILITY
+
+PURPOSE
+
+Observe exchange account reality before real-capital deployment.
+
+SCOPE
+
+Implement read-only visibility for:
+
+* Account balance
+* Open positions
+* Open orders
+
+using Hyperliquid account endpoints.
+
+ALLOWED
+
+* Query clearinghouseState
+* Query openOrders
+* Display results
+* Log results
+* Generate alerts
+
+FORBIDDEN
+
+* Reconciliation Engine
+* Automatic discrepancy resolution
+* Automatic database modification
+* Automatic position correction
+* Automatic order cancellation
+* Trading decisions based on discrepancies
+* Any write operation to exchange
+* Any signing operation
+* Any use of private keys
+
+RULE
+
+If exchange reality differs from database reality:
+
+Observe.
+
+Log.
+
+Alert.
+
+Do not resolve.
+
+Human interpretation remains mandatory during the Pre-Deployment Evidence Phase.
+
+SUCCESS CRITERIA
+
+Morpho can display:
+
+* Account balance
+* Open positions
+* Open orders
+
+from a wallet address using read-only exchange queries.
+
+Nothing more.
+
