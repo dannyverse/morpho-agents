@@ -62,11 +62,29 @@ conn.execute(
 
 portfolio_query = """
 
-SELECT *
+SELECT ps.*
 
-FROM portfolio_state
+FROM portfolio_state ps
 
-WHERE status='OPEN'
+INNER JOIN (
+
+    SELECT
+
+        asset,
+
+        direction,
+
+        MAX(rowid) AS max_rowid
+
+    FROM portfolio_state
+
+    WHERE status='OPEN'
+
+    GROUP BY asset, direction
+
+) latest
+
+ON ps.rowid = latest.max_rowid
 
 """
 
