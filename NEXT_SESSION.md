@@ -1,184 +1,161 @@
 # MORPHO AGENTS — NEXT SESSION
 
----
+## PRIMARY OBJECTIVE
 
-CURRENT PHASE
+First Official Production Deployment Preparation
 
-PRE-DEPLOYMENT EVIDENCE PHASE
+The architecture phase is considered operationally complete.
 
-Foundation implementation remains complete.
+The objective is no longer to design Morpho.
 
-Current priority is operational readiness and evidence accumulation before real-capital deployment.
-
----
-
-SESSION SUMMARY
-
-Morning Session Completed Successfully.
-
-Key outcomes:
-
-1. Operational Alerting advanced significantly.
-
-Implemented:
-
-* Safe Runner Failure Alert
-* Kill Switch Activation Alert
-
-Validation:
-
-* Kill Switch alert successfully delivered to Telegram.
-* notifier.py integration confirmed operational.
-* kill_switch_manager.py syntax validated.
-* safe_runner.py validation completed successfully.
-
-Result:
-
-Morpho now actively notifies the operator when critical operational events occur.
+The objective is to migrate the modern architecture safely into production.
 
 ---
 
-SCAR REVIEW STATUS
+# CURRENT STATUS
 
-SCAR 1 — REAL CAPITAL PROTECTION
+Completed
 
-Investigated.
+✓ Deployment Contract
 
-Findings:
+✓ Deployment Playbook
 
-* Hyperliquid supports native Stop Loss.
-* Hyperliquid supports Take Profit.
-* Hyperliquid supports Trigger Orders.
-* Hyperliquid supports Reduce Only Orders.
+✓ Production Manifest
 
-Current Status:
+✓ VPS Reality Reconciliation Audit
 
-Morpho does not yet use these capabilities.
+✓ Runtime Audit
 
-Conclusion:
+✓ Source of Truth Audit
 
-Not an architectural blocker.
+✓ Portfolio State Audit
 
-Future integration should be evaluated before real-capital deployment.
+✓ Deployment Governance Established
 
----
+Current Assessment
 
-SCAR 2 — OPERATIONAL ALERTING
+Architecture: READY
 
-Status:
+Runtime: READY
 
-Largely resolved.
+Governance: READY
 
-Completed:
+Deployment Preparation: IN PROGRESS
 
-* Safe Runner Failure Alert
-* Kill Switch Activation Alert
-
-Validated:
-
-* Telegram delivery confirmed.
-
-Remaining candidate improvement:
-
-* Daily Heartbeat message
-
-Not required for immediate continuation.
+Production Migration: PENDING
 
 ---
 
-SCAR 3 — ACCOUNT VISIBILITY
+# SESSION OBJECTIVES
 
-Major discovery:
+## Phase 1 — Complete Production Reality
 
-Morpho observes market reality.
+Update PRODUCTION_MANIFEST.md using audited VPS information.
 
-Morpho does not yet observe account reality.
+Document:
 
-Current account visibility:
-
-* Balance: unavailable
-* Positions: unavailable
-* Orders: unavailable
-
-Research findings:
-
-Hyperliquid exposes account information through:
-
-clearinghouseState
-
-openOrders
-
-using wallet address only.
-
-No private key required.
-
-No signing required.
-
-No trading permissions required.
+- VPS provider
+- Hostname
+- IP
+- Runtime
+- Database
+- Startup method
+- Current production observations
 
 ---
 
-NEXT SESSION OBJECTIVE
+## Phase 2 — Deployment Readiness
 
-PRIMARY OBJECTIVE
+Verify production requirements.
 
-Account Visibility Investigation
+Confirm:
+
+- requirements.txt
+
+- .env requirements
+
+- wallet configuration
+
+- Python version
+
+- virtual environment
+
+- database expectations
 
 Goal:
 
-Determine how to implement read-only account visibility using Hyperliquid account endpoints.
-
-Desired visibility:
-
-* Account Balance
-* Open Positions
-* Open Orders
-
-Constraints:
-
-* Read-only
-* No execution
-* No signing
-* No private keys
-
-Focus:
-
-Observability before automation.
+A clean Ubuntu VPS must be able to reproduce the environment.
 
 ---
 
-SUCCESS CRITERIA
+## Phase 3 — Migration Strategy
 
-By session end:
+Define the production migration sequence.
 
-* Understand Hyperliquid account endpoints.
-* Define future Morpho operational wallet.
-* Determine minimal implementation scope.
-* Decide whether Account Visibility should be implemented before real-capital deployment.
+1. Backup VPS
+
+2. Backup database
+
+3. Freeze production
+
+4. Archive historical deployment
+
+5. Deploy current Morpho
+
+6. Create clean virtual environment
+
+7. Install dependencies
+
+8. Restore configuration
+
+9. Smoke Test
+
+10. Evidence Phase
+
+11. Production Go Live
 
 ---
 
-ARCHITECTURAL REMINDER
+# POST DEPLOYMENT OBJECTIVES
 
-Do not build reconciliation systems.
+After stable deployment:
 
-Do not build execution infrastructure.
+Remove temporary migration bootstrap from positions.py.
 
-Do not build account automation.
+Evaluate routing system_state through StateManager.
 
-Current objective:
+Evaluate replacing os.system with subprocess for improved runtime control.
 
-Observe account reality.
+These are operational improvements.
 
-Not control account reality.
+They are not deployment blockers.
 
 ---
 
-PRINCIPLE
+# SUCCESS CRITERIA
 
-Finite Audits.
+Deployment executed without data loss.
 
-Infinite Learning.
+Historical VPS preserved.
 
-Reality First.
+Historical database preserved.
 
+Modern architecture operational.
+
+Evidence Phase completed successfully.
+
+Rollback remains available.
+
+Production reflects current GitHub architecture.
+
+---
+
+# OPERATIONAL PRINCIPLE
+
+Architecture has reached deployment maturity.
+
+From this point forward:
+
+Operational reality becomes the primary source of learning.
+
+Reality will guide further architectural evolution.
