@@ -109,16 +109,13 @@ decision_health = "NORMAL"
 if len(ai_df) > 0:
 
     market_bias = ai_df["market_bias"].iloc[-1]
-    risk_level = ai_df["risk_level"].iloc[-1]
-
-    if risk_level == "HIGH_RISK":
-        decision_health = "DEFENSIVE"
-    else:
-        decision_health = "NORMAL"
+    decision_health = ai_df["decision_health"].iloc[-1]
 
 else:
+
     market_bias = "NEUTRAL"
     decision_health = "NORMAL"
+
 # =========================
 # CREATE TABLE
 # =========================
@@ -137,6 +134,12 @@ executions (
     score REAL,
 
     confidence REAL,
+
+    entry_price REAL,
+
+    position_size REAL,
+
+    cycle_id TEXT,
 
     signal_strength REAL,
 

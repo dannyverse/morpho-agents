@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS positions (
 
     current_price REAL,
 
+    stop_loss_price REAL,
+
     position_size REAL,
 
     opened_at TEXT,
@@ -130,6 +132,14 @@ for _, row in portfolio_df.iterrows():
 
         continue
 
+    if row["direction"] == "LONG":
+
+        stop_loss_price = row["entry_price"] * 0.98
+
+    else:
+
+        stop_loss_price = row["entry_price"] * 1.02
+
     position = {
 
         "position_id": str(
@@ -143,6 +153,8 @@ for _, row in portfolio_df.iterrows():
         "entry_price": row["entry_price"],
 
         "current_price": row["current_price"],
+
+        "stop_loss_price": stop_loss_price,
 
         "position_size": row["position_size"],
 
