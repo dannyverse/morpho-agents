@@ -200,11 +200,7 @@ directional_imbalance = abs(
 )
 
 exposure = round(
-
-    paper_df[
-        "exposure"
-    ].iloc[-1],
-
+    directional_imbalance * 5,
     2
 )
 
@@ -303,7 +299,7 @@ if len(governance_flags) >= 2:
 
 if len(governance_flags) >= 3:
 
-    risk_status = "CRITICAL"
+    risk_status = "HIGH_RISK"
 if len(governance_flags) > 0:
 
     logger.warning(
