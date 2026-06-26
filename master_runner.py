@@ -1,10 +1,10 @@
 import os
+import sys
 import time
 import sqlite3
 from datetime import datetime
 import uuid
 from core.logger import logger
-
 
 
 # =========================
@@ -146,7 +146,7 @@ while True:
         )
 
         exit_code = os.system(
-            "python safe_runner.py"
+            f"{sys.executable} safe_runner.py"
         )
 
         # =========================

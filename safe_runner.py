@@ -1,4 +1,5 @@
 import os
+import sys
 import pandas as pd
 import sqlite3
 from datetime import datetime
@@ -185,7 +186,7 @@ for module in modules:
     try:
 
         exit_code = os.system(
-            f"python {module}"
+            f"{sys.executable} {module}"
         )
 
         # =========================

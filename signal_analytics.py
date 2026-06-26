@@ -1,12 +1,20 @@
 import pandas as pd
+import sqlite3
 
 # =========================
 # LOAD MEMORY
 # =========================
 
-df = pd.read_csv(
-    "signal_memory.csv"
+conn = sqlite3.connect(
+    "trading_system.db"
 )
+
+df = pd.read_sql_query(
+    "SELECT * FROM signal_memory",
+    conn
+)
+
+conn.close()
 
 # =========================
 # BASIC STATS
