@@ -197,3 +197,111 @@ Migration should occur gradually through validation and dual-write phases.
 
 Big-bang governance refactors increase operational risk.
 
+============================================================
+INCIDENT ID: 2026-06-25-001
+============================================================
+
+Title
+
+Unsupervised Runtime Termination
+
+------------------------------------------------------------
+
+Severity
+
+HIGH
+
+------------------------------------------------------------
+
+Summary
+
+Morpho ceased execution during unattended operation.
+
+No operating system failures were detected.
+
+No application crash evidence was found.
+
+The runtime had been executed as an unsupervised long-running process.
+
+------------------------------------------------------------
+
+Root Cause
+
+Absence of a production supervision layer.
+
+The supervisor process ceased execution without observable termination signals or logging instrumentation.
+
+This incident does not indicate functional instability of the trading system.
+
+It revealed a production infrastructure gap.
+
+------------------------------------------------------------
+
+Evidence
+
+Confirmed:
+
+✓ No OOM
+✓ No kernel panic
+✓ No segmentation fault
+✓ No reboot
+✓ No Kill Switch activation
+✓ Trading logic operational
+
+------------------------------------------------------------
+
+Corrective Actions
+
+Implemented:
+
+✓ systemd service
+
+✓ Restart=always
+
+✓ Persistent journald logging
+
+✓ Runtime executed through project virtual environment
+
+✓ SQLite compatibility fixes
+
+✓ Execution schema alignment
+
+------------------------------------------------------------
+
+Validation
+
+Runtime successfully validated.
+
+15 / 15 modules operational.
+
+Runtime Status:
+
+HEALTHY
+
+Safe Runner Exit Code:
+
+0
+
+------------------------------------------------------------
+
+Follow-up
+
+Production Burn-in Period initiated.
+
+Daily verification:
+
+- systemctl status morpho.service
+
+- systemctl show morpho.service -p NRestarts
+
+- journalctl -u morpho.service
+
+Duration:
+
+Approximately 10 days.
+
+------------------------------------------------------------
+
+Status
+
+CLOSED

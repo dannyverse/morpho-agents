@@ -141,3 +141,36 @@ Keep a Changelog
 * SQLite operational database
 * basic orchestration runtime
 
+============================================================
+2026-06-26
+Production Hardening Session
+============================================================
+
+Added
+
+- Migrated runtime supervision from tmux to systemd.
+- Enabled automatic service restart.
+- Enabled persistent journald logging.
+- Standardized runtime on project virtual environment.
+- Updated safe_runner to execute modules using the project Python interpreter.
+- Migrated signal_analytics.py from legacy CSV to SQLite.
+- Migrated adaptive_scoring.py from legacy CSV to SQLite.
+- Extended executions schema with:
+  - entry_price
+  - position_size
+  - cycle_id
+
+Fixed
+
+- Resolved "python: not found" failures under systemd.
+- Resolved execution persistence schema mismatch.
+- Eliminated legacy CSV dependency for signal analytics.
+- Restored full runtime execution.
+
+Validation
+
+- Runtime supervision operational.
+- 15/15 modules completed successfully.
+- Safe Runner Exit Code = 0.
+- Runtime Status = HEALTHY.
+- Production Burn-in Period initiated.

@@ -1,136 +1,93 @@
-# MORPHO AGENTS — NEXT SESSION
+# NEXT SESSION
 
-June 2026
+Date:
+2026-06-26
 
----
+Status:
+Production Burn-in Period
 
-# CURRENT PHASE
+============================================================
 
-PRE-DEPLOYMENT STABILIZATION
+PRIMARY OBJECTIVE
 
-Contract Enforcement
+Observe production stability.
 
----
+No architectural development unless a production-critical issue is discovered.
 
-# SESSION OBJECTIVE
+============================================================
 
-Deployment Contract — Item 5
+DAILY CHECKLIST
 
-Basic Realized PnL
+□ systemctl status morpho.service
 
-Goal:
+□ systemctl show morpho.service -p NRestarts
 
-Implement and validate the minimum realized PnL workflow required before deployment.
+□ journalctl -u morpho.service -n 100 --no-pager
 
-Method:
+□ Verify Runtime Status = HEALTHY
 
-Observe
+□ Verify Safe Runner Exit Code = 0
 
-↓
+□ Verify Successful Modules = 15
 
-Understand
+□ Verify Failed Modules = 0
 
-↓
+============================================================
 
-Implement
+EXPECTED STATE
 
-↓
+Morpho should:
 
-Validate
+• remain continuously running
 
-↓
+• complete one cycle every minute
 
-Document
+• restart automatically if required
 
----
+• produce persistent journald logs
 
-# CURRENT CONTRACT STATUS
+• maintain HEALTHY runtime status
 
-✅ Item 1
+============================================================
 
-positions Source of Truth
+DO NOT START
 
-COMPLETED
+- New architecture
 
----
+- Meta Intelligence work
 
-✅ Item 2
+- Opportunity lifecycle
 
-portfolio_state derived snapshot
+- Registry work
 
-COMPLETED
+- Strategy improvements
 
----
+- Refactors
 
-✅ Item 3
+- Optimizations
 
-Duplicate Prevention
+Unless a production-critical issue is discovered.
 
-COMPLETED
+============================================================
 
-Validated through Defence in Depth.
+BURN-IN EXIT CRITERIA
 
----
+- Stable runtime over approximately 10 days
 
-✅ Item 4
+- Zero unexpected service restarts
 
-Minimal Stop Loss
+- No silent process termination
 
-COMPLETED
+- Healthy runtime maintained
 
-Current operational mechanism:
+- Daily operational verification completed
 
-unrealized_pnl <= -5%
+============================================================
 
-No additional Stop Loss work before deployment.
+NEXT MAJOR MILESTONE
 
----
+Resume Pre-Deployment Stabilization after successful burn-in validation.
 
-⏳ Item 5
+Deployment target remains:
 
-Basic Realized PnL
-
-NEXT OBJECTIVE
-
----
-
-⏳ Item 6
-
-Kill Switch Validation
-
-Pending.
-
----
-
-⏳ Item 7
-
-Read-Only Exchange Visibility
-
-Pending.
-
----
-
-# SESSION RULES
-
-No scope expansion.
-
-No architecture redesign.
-
-No "while we're here."
-
-Discovery is not authorization.
-
-Reality remains the final authority.
-
----
-
-# SUCCESS CONDITION
-
-Basic Realized PnL implemented and validated.
-
-Deployment Contract progresses without introducing new architectural work.
-
-Finite audits.
-
-Infinite learning.
-
+August 1, 2026.
