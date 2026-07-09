@@ -109,7 +109,7 @@ decision_health = "NORMAL"
 if len(ai_df) > 0:
 
     market_bias = ai_df["market_bias"].iloc[-1]
-    decision_health = ai_df["decision_health"].iloc[-1]
+    decision_health = ai_df["risk_level"].iloc[-1]
 
 else:
 
