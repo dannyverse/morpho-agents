@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 import random
 import json
+import uuid
 
 from datetime import datetime
 from market_data_manager import (
@@ -12,7 +13,49 @@ from market_data_manager import (
     get_market_data_status
 )
 from telegram_test import send_alert
+def create_position(
+    conn,
+    asset,
+    direction,
+    entry_price,
+    position_size,
+    cycle_id
+):
+    now = str(datetime.now())
 
+    conn.execute(
+        """
+        INSERT INTO positions (
+            position_id,
+            asset,
+            direction,
+            entry_price,
+            current_price,
+            position_size,
+            opened_at,
+            updated_at,
+            status,
+            unrealized_pnl,
+            realized_pnl,
+            cycle_opened
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            str(uuid.uuid4()),
+            asset,
+            direction,
+            entry_price,
+            entry_price,
+            position_size,
+            now,
+            now,
+            "OPEN",
+            0.0,
+            0.0,
+            cycle_id
+        )
+    )
 # =========================
 # DATABASE
 # =========================
@@ -342,6 +385,15 @@ for _, row in signals_df.iterrows():
         status = "EXECUTED"
 
         approved += 1
+
+        create_position(
+            conn,
+            row["asset"],
+            row["direction"],
+            get_price(row["asset"]),
+            2.5,
+            cycle_id
+        )
 
         print(
             f"\n✅ EXECUTED: {row['asset']}"
