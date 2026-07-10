@@ -213,3 +213,78 @@ from a wallet address using read-only exchange queries.
 
 Nothing more.
 
+================================================================================
+PRE-DEPLOYMENT EVIDENCE
+================================================================================
+
+The following work was completed during burn-in.
+
+These are not new features.
+
+They are production stabilization corrections justified by observed production evidence.
+
+COMPLETED
+
+✅ Execution Agent latest signal selection corrected
+
+✅ Consecutive persistence implemented
+
+✅ Continuous Score (binary 0/2/4 replaced)
+
+✅ Continuous Confidence
+
+✅ Continuous Signal Strength
+
+OPEN INCIDENTS
+
+⏳ INC-001
+
+Telegram alerts stop around 14:00.
+
+Status:
+OPEN
+
+Root Cause:
+UNKNOWN
+
+Evidence:
+Observed during extended burn-in.
+Not yet reproduced after recent fixes.
+
+Priority:
+HIGH
+
+----------------------------------------
+
+⏳ INC-002
+
+Trend remains UNKNOWN.
+
+Status:
+OPEN
+
+Root Cause:
+UNKNOWN
+
+Priority:
+MEDIUM
+
+----------------------------------------
+
+⏳ INC-003
+
+RSI currently uses placeholder value (50).
+
+Status:
+OPEN
+
+Decision Required:
+
+Implement real RSI before deployment
+
+or
+
+Explicitly exclude RSI from MVP scoring.
+
+Priority:
+MEDIUM

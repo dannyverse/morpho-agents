@@ -52,15 +52,31 @@ cycle_id = cycle_df[
 
 signals_query = """
 
-SELECT *
+SELECT sm.*
 
-FROM signal_memory
+FROM signal_memory sm
 
-ORDER BY ROWID DESC
+INNER JOIN (
 
-LIMIT 30
+    SELECT
+
+        asset,
+
+        MAX(rowid) AS max_rowid
+
+    FROM signal_memory
+
+    GROUP BY asset
+
+) latest
+
+ON sm.rowid = latest.max_rowid
+
+ORDER BY sm.score DESC,
+         sm.persistence DESC
 
 """
+
 
 signals_df = pd.read_sql_query(
 
@@ -198,20 +214,27 @@ rejected = 0
 
 for _, row in signals_df.iterrows():
 
+    effective_persistence = min(
+        row["persistence"],
+        10
+    )
+
     confidence = round(
         min(
             95,
-            60 + row["score"] * 5 + row["persistence"]
+            60 + (row["score"] / 8.0) * 35
         ),
         2
     )
-
     signal_strength = round(
         min(
             1.0,
             max(
                 0.5,
-                (row["score"] + row["persistence"]) / 10
+                (
+                    row["score"]
+                    + effective_persistence
+                ) / 18.0
             )
         ),
         2

@@ -40,27 +40,38 @@ for asset in df["asset"].unique():
         2
     )
 
-    persistence = len(
+    # =========================
+    # CONSECUTIVE PERSISTENCE
+    # =========================
 
-        asset_df[
-            abs(asset_df["funding_apr"]) > 10
-        ]
-    )
+    MAX_PERSISTENCE_WINDOW = 20
+
+    persistence = 0
+
+    recent_funding = asset_df["funding_apr"].tolist()[-MAX_PERSISTENCE_WINDOW:]
+
+    for funding in reversed(recent_funding):
+
+        if abs(funding) > 10:
+
+            persistence += 1
+
+        else:
+
+            break
 
     # =========================
     # SCORE
     # =========================
 
-    score = 0
+    funding_score = min(abs(avg_funding) / 10, 4.0)
 
-    if persistence >= 3:
+    persistence_score = min(persistence / 5, 4.0)
 
-        score += 2
-
-    if abs(avg_funding) > 10:
-
-        score += 2
-
+    score = round(
+        funding_score + persistence_score,
+        2
+    )
     # =========================
     # DIRECTION
     # =========================
@@ -96,6 +107,7 @@ for asset in df["asset"].unique():
         "direction": direction,
 
         "pnl": 0
+
     })
 
 # =========================
