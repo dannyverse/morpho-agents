@@ -245,6 +245,12 @@ elif decision_health == "HIGH_RISK":
 
     MIN_SIGNAL_STRENGTH = 0.85
 
+print(
+    f"DEBUG -> decision_health={decision_health}, "
+    f"MIN_CONFIDENCE={MIN_CONFIDENCE}, "
+    f"market_bias={market_bias}"
+)
+
 # =========================
 # EXECUTION LOOP
 # =========================

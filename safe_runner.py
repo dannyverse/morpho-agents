@@ -34,11 +34,11 @@ modules = [
 
     # "portfolio_manager.py",
 
+    "positions.py",
+
     "execution_agent.py",
 
     "meta_intelligence.py",
-
-    "positions.py",
 
     "portfolio_state.py",
 

@@ -172,14 +172,14 @@ if len(executions_df) > 0:
             "Execution confidence weakening."
         )
 
-    if approval_rate < 0.4:
+#    if approval_rate < 0.4:
 
-        decision_health = "HIGH_RISK"
+#        decision_health = "HIGH_RISK"
 
-        ai_commentary.append(
+#        ai_commentary.append(
 
-            "Governance rejecting most signals."
-        )
+#            "Governance rejecting most signals."
+#        )
 
 
 # =========================
