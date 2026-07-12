@@ -50,7 +50,7 @@ modules = [
 
     # "position_manager.py",
 
-    "strategy_analytics.py",
+    # "strategy_analytics.py",
 
     "logger.py"
 ]

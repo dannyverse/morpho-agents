@@ -12,7 +12,7 @@ from market_data_manager import (
     get_market_data_age,
     get_market_data_status
 )
-from telegram_test import send_alert
+from notifier import send_alert
 def create_position(
     conn,
     asset,
@@ -442,7 +442,7 @@ for _, row in signals_df.iterrows():
 
         "direction": row["direction"],
 
-        "score": row["pnl"],
+        "score": row["score"],
 
         "confidence": confidence,
 

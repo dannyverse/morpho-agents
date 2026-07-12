@@ -4,7 +4,7 @@ import pandas as pd
 
 from datetime import datetime
 
-from telegram_test import send_alert
+from notifier import send_alert
 
 # =========================
 # HYPERLIQUID API
