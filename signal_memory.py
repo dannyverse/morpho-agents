@@ -13,7 +13,19 @@ query = """
 
 SELECT *
 
-FROM signal_memory
+FROM (
+
+    SELECT *
+
+    FROM signal_memory
+
+    ORDER BY rowid DESC
+
+    LIMIT 20
+
+)
+
+ORDER BY rowid ASC
 
 """
 
@@ -34,7 +46,7 @@ df = df.dropna()
 # RECENT SIGNALS
 # =========================
 
-recent = df.tail(20)
+recent = df
 
 # =========================
 # PERFORMANCE

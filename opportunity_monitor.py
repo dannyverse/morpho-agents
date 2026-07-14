@@ -1,29 +1,41 @@
 import pandas as pd
 import json
 from datetime import datetime
+import time
 
 # =========================
-# LOAD SIGNAL MEMORY
+# LOAD ACTIVE SHORTS
 # =========================
 
-df = pd.read_sql_query(
+t0 = time.perf_counter()
 
-    "SELECT * FROM signal_memory",
+active = pd.read_sql_query(
+
+    """
+    SELECT
+        sm.asset,
+        sm.score,
+        sm.persistence
+    FROM signal_memory sm
+    JOIN (
+        SELECT
+            asset,
+            MAX(rowid) AS last_rowid
+        FROM signal_memory
+        WHERE direction = 'SHORT'
+          AND persistence >= 10
+        GROUP BY asset
+    ) latest
+    ON sm.rowid = latest.last_rowid
+    """,
 
     __import__("sqlite3").connect(
         "trading_system.db"
     )
 )
 
-# =========================
-# FILTER ACTIVE SHORTS
-# =========================
-active = df[
-
-    (df["direction"] == "SHORT") &
-    (df["persistence"] >= 10)
-
-]
+print(f"SQL: {time.perf_counter() - t0:.3f}s")
+t1 = time.perf_counter()
 
 # =========================
 # LOAD PREVIOUS STATE
@@ -144,6 +156,9 @@ for key, previous in previous_state.items():
 # SAVE STATE
 # =========================
 
+print(f"Processing: {time.perf_counter() - t1:.3f}s")
+t2 = time.perf_counter()
+
 with open(
 
     "opportunity_state.json",
@@ -160,6 +175,8 @@ with open(
 
         indent=4
     )
+
+print(f"JSON: {time.perf_counter() - t2:.3f}s")
 
 # =========================
 # OUTPUT
