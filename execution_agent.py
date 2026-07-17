@@ -416,14 +416,6 @@ for _, row in signals_df.iterrows():
             asset=row["asset"],
             direction=row["direction"],
             position_size=2.5,
-            stop_loss=calculate_stop_loss(
-                row["entry_price"],
-                row["direction"]
-            ),
-            take_profit=calculate_take_profit(
-                row["entry_price"],
-                row["direction"]
-            )
         )
 
         if not execution_result.success:

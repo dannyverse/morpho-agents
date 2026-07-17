@@ -20,6 +20,10 @@ from hyperliquid_poc.config import (
     ACCOUNT_ADDRESS,
 )
 
+from positions import (
+    calculate_stop_loss,
+    calculate_take_profit,
+)
 
 exchange = Exchange(
     wallet=API_WALLET,
@@ -107,9 +111,8 @@ def execute(
     asset: str,
     direction: str,
     position_size: float,
-    stop_loss: float,
-    take_profit: float,
 ) -> ExecutionResult:
+
     """
     Ejecuta una operación completa en Hyperliquid.
 
@@ -138,6 +141,18 @@ def execute(
         print(result)
 
         filled = result["response"]["data"]["statuses"][0]["filled"]
+        entry_price = float(filled["avgPx"])
+
+
+        stop_loss = calculate_stop_loss(
+            entry_price,
+            direction,
+        )
+
+        take_profit = calculate_take_profit(
+            entry_price,
+            direction,
+        )
 
         sl_result = _place_stop_loss(
             asset=asset,
@@ -166,7 +181,7 @@ def execute(
             exchange_order_id=str(filled["oid"]),
             stop_loss_order_id=stop_loss_order_id,
             take_profit_order_id=take_profit_order_id,
-            entry_price=float(filled["avgPx"]),
+            entry_price=entry_price,
         )
 
     except Exception as e:
