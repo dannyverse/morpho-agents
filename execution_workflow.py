@@ -31,27 +31,98 @@ exchange = Exchange(
 class ExecutionResult:
     success: bool
     exchange_order_id: str | None = None
+    stop_loss_order_id: str | None = None
+    take_profit_order_id: str | None = None
     entry_price: float | None = None
     error: str | None = None
 
+def _place_stop_loss(
+    asset: str,
+    is_buy: bool,
+    position_size: float,
+    stop_price: float,
+):
+    """
+    Crea un Stop Loss nativo en Hyperliquid.
+    """
+
+    close_side = not is_buy
+
+    return exchange.order(
+        name=asset,
+        is_buy=close_side,
+        sz=position_size,
+        limit_px=stop_price,
+        reduce_only=True,
+        order_type={
+            "trigger": {
+                "triggerPx": stop_price,
+                "isMarket": True,
+                "tpsl": "sl",
+            }
+        },
+    )
+
+def _place_take_profit(
+    asset: str,
+    is_buy: bool,
+    position_size: float,
+    take_profit_price: float,
+):
+    """
+    Crea un Take Profit nativo en Hyperliquid.
+    """
+
+    close_side = not is_buy
+
+    return exchange.order(
+        name=asset,
+        is_buy=close_side,
+        sz=position_size,
+        limit_px=take_profit_price,
+        reduce_only=True,
+        order_type={
+            "trigger": {
+                "triggerPx": take_profit_price,
+                "isMarket": True,
+                "tpsl": "tp",
+            }
+        },
+    )
+
+def _extract_resting_order_id(response) -> str | None:
+
+    try:
+        statuses = response["response"]["data"]["statuses"]
+
+        if statuses and "resting" in statuses[0]:
+            return str(statuses[0]["resting"]["oid"])
+
+    except Exception:
+        pass
+
+    return None    
 
 def execute(
     asset: str,
     direction: str,
     position_size: float,
+    stop_loss: float,
+    take_profit: float,
 ) -> ExecutionResult:
     """
-    Ejecuta una orden de mercado en Hyperliquid.
+    Ejecuta una operación completa en Hyperliquid.
 
-    De momento únicamente abre la posición y devuelve
-    la información básica de ejecución.
+    Flujo previsto:
 
-    En siguientes iteraciones añadiremos:
+    1. Abrir posición.
+    2. Crear Stop Loss nativo.
+    3. Crear Take Profit nativo.
+    4. Verificar la ejecución.
+    5. Devolver ExecutionResult.
 
-    - Esperar confirmación
-    - Stop Loss nativo
-    - Take Profit nativo
-    - Verificación final
+    No realiza persistencia en SQLite.
+    No envía notificaciones.
     """
 
     try:
@@ -68,9 +139,33 @@ def execute(
 
         filled = result["response"]["data"]["statuses"][0]["filled"]
 
+        sl_result = _place_stop_loss(
+            asset=asset,
+            is_buy=is_buy,
+            position_size=position_size,
+            stop_price=stop_loss,
+        )
+
+        print(sl_result)
+
+        stop_loss_order_id = _extract_resting_order_id(sl_result)
+
+        tp_result = _place_take_profit(
+            asset=asset,
+            is_buy=is_buy,
+            position_size=position_size,
+            take_profit_price=take_profit,
+        )
+
+        print(tp_result)
+
+        take_profit_order_id = _extract_resting_order_id(tp_result)
+
         return ExecutionResult(
             success=True,
             exchange_order_id=str(filled["oid"]),
+            stop_loss_order_id=stop_loss_order_id,
+            take_profit_order_id=take_profit_order_id,
             entry_price=float(filled["avgPx"]),
         )
 

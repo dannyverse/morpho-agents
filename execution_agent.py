@@ -12,14 +12,28 @@ from market_data_manager import (
     get_market_data_age,
     get_market_data_status
 )
-from notifier import send_alert
+from notifier import (
+    send_alert,
+    send_execution_approved
+)
+
+from execution_workflow import execute
+
+from positions import (
+    calculate_stop_loss,
+    calculate_take_profit
+)
+
 def create_position(
     conn,
     asset,
     direction,
     entry_price,
     position_size,
-    cycle_id
+    cycle_id,
+    exchange_order_id=None,
+    stop_loss_order_id=None,
+    take_profit_order_id=None
 ):
     now = str(datetime.now())
 
@@ -37,9 +51,12 @@ def create_position(
             status,
             unrealized_pnl,
             realized_pnl,
-            cycle_opened
+            cycle_opened,
+            exchange_order_id,
+            stop_loss_order_id,
+            take_profit_order_id
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             str(uuid.uuid4()),
@@ -53,7 +70,10 @@ def create_position(
             "OPEN",
             0.0,
             0.0,
-            cycle_id
+            cycle_id,
+            exchange_order_id,
+            stop_loss_order_id,
+            take_profit_order_id
         )
     )
 # =========================
@@ -392,30 +412,58 @@ for _, row in signals_df.iterrows():
 
         approved += 1
 
+        execution_result = execute(
+            asset=row["asset"],
+            direction=row["direction"],
+            position_size=2.5,
+            stop_loss=calculate_stop_loss(
+                row["entry_price"],
+                row["direction"]
+            ),
+            take_profit=calculate_take_profit(
+                row["entry_price"],
+                row["direction"]
+            )
+        )
+
+        if not execution_result.success:
+
+            print(
+                f"\n❌ EXCHANGE EXECUTION FAILED: {row['asset']}"
+            )
+
+            rejected += 1
+
+            continue
+
         create_position(
             conn,
             row["asset"],
             row["direction"],
-            get_price(row["asset"]),
+            execution_result.entry_price,
             2.5,
-            cycle_id
+            cycle_id,
+            execution_result.exchange_order_id,
+            execution_result.stop_loss_order_id,
+            execution_result.take_profit_order_id
         )
 
         print(
             f"\n✅ EXECUTED: {row['asset']}"
         )
 
-        telegram_message = (
-            f"✅ EXECUTED {row['asset']}\n\n"
-            f"Confidence: {confidence}\n"
-            f"Signal Strength: {signal_strength}\n"
-            f"AI Bias: {market_bias}\n"
-            f"Decision Health: {decision_health}\n"
-            f"Rationale: {rationale}"
-        )
-
-        send_alert(
-            telegram_message
+        send_execution_approved(
+            asset=row["asset"],
+            direction=row["direction"],
+            entry_price=get_price(
+                row["asset"]
+            ),
+            score=row["score"],
+            confidence=confidence,
+            signal_strength=signal_strength,
+            rationale=rationale,
+            market_bias=market_bias,
+            decision_health=decision_health
         )
 
     else:

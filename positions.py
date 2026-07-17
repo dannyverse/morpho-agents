@@ -16,6 +16,20 @@ conn = sqlite3.connect(
     "trading_system.db"
 )
 
+def calculate_stop_loss(entry_price, direction):
+
+    if direction == "LONG":
+        return entry_price * 0.98
+
+    return entry_price * 1.02
+
+def calculate_take_profit(entry_price, direction):
+
+    if direction == "LONG":
+        return entry_price * 1.04
+
+    return entry_price * 0.96
+
 # =========================
 # CREATE TABLE
 # =========================
@@ -132,13 +146,10 @@ for _, row in portfolio_df.iterrows():
 
         continue
 
-    if row["direction"] == "LONG":
-
-        stop_loss_price = row["entry_price"] * 0.98
-
-    else:
-
-        stop_loss_price = row["entry_price"] * 1.02
+    stop_loss_price = calculate_stop_loss(
+        row["entry_price"],
+        row["direction"]
+    )
 
     position = {
 

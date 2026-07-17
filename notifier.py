@@ -53,3 +53,35 @@ def send_alert(message):
         print(
             f"Telegram Error: {e}"
         )
+
+# =========================
+# EXECUTION APPROVED
+# =========================
+
+def send_execution_approved(
+    asset,
+    direction,
+    entry_price,
+    score,
+    confidence,
+    signal_strength,
+    rationale,
+    market_bias,
+    decision_health
+):
+
+    message = (
+        "🟢 EXECUTION APPROVED\n"
+        "━━━━━━━━━━━━━━━━━━\n\n"
+        f"{asset} • {direction}\n\n"
+        f"Score: {score}\n"
+        f"Confidence: {confidence}%\n"
+        f"Signal Strength: {signal_strength}\n\n"
+        f"Entry: {entry_price}\n\n"
+        f"Reason:\n"
+        f"{rationale}\n\n"
+        f"AI Bias: {market_bias}\n"
+        f"Decision Health: {decision_health}"
+    )
+
+    return send_alert(message)        
