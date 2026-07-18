@@ -4,20 +4,28 @@ Exchange Reconciler
 Responsabilidad:
 
 - Comparar el estado de Morpho con Hyperliquid.
-- Nunca abrir operaciones.
-- Nunca cerrar operaciones.
-- Nunca modificar SQLite (v1).
+- Detectar inconsistencias.
+- Clasificar diferencias.
+- Delegar acciones de reconciliación a positions.py.
 
-Solo detectar diferencias.
+Nunca:
+
+- Abrir operaciones.
+- Modificar SQLite directamente.
+- Ejecutar SQL de ciclo de vida.
+
+Toda modificación del estado operacional debe realizarse
+exclusivamente mediante la API pública de positions.py.
 """
 
 import sqlite3
+
+from positions import close_position
 
 from hyperliquid_client import (
     get_account_state,
     get_order,
 )
-
 
 def reconcile(conn: sqlite3.Connection) -> bool:
 
@@ -121,5 +129,21 @@ def reconcile(conn: sqlite3.Connection) -> bool:
             f"{diff['direction']:6}"
             f" size={diff['size']}"
         )
+
+    # Execute reconciliation actions
+
+    for diff in differences:
+
+        if diff["reconcile_status"] == "LEGACY":
+
+            close_position(
+                conn,
+                diff["position_id"],
+                0,
+            )
+
+            print(
+                f"[RECONCILER] Closed LEGACY position {diff['asset']}"
+            )
 
     return False
