@@ -30,6 +30,23 @@ def calculate_take_profit(entry_price, direction):
 
     return entry_price * 0.96
 
+def close_position(conn, position_id, realized_pnl):
+    conn.execute(
+        """
+        UPDATE positions
+        SET
+            status='CLOSED',
+            realized_pnl=?,
+            updated_at=?
+        WHERE position_id=?
+        """,
+        (
+            realized_pnl,
+            str(datetime.now()),
+            position_id,
+        ),
+    )
+
 # =========================
 # CREATE TABLE
 # =========================
@@ -280,34 +297,10 @@ for _, row in positions_df.iterrows():
 
     if unrealized_pnl >= 10:
 
-        conn.execute(
-
-            """
-
-            UPDATE positions
-
-            SET
-
-                status='CLOSED',
-
-                realized_pnl=?,
-
-                updated_at=?
-
-            WHERE position_id=?
-
-            """,
-
-            (
-
-                unrealized_pnl,
-
-                str(datetime.now()),
-
-                row["position_id"]
-
-            )
-
+        close_position(
+            conn,
+            row["position_id"],
+            unrealized_pnl,
         )
 
         updated_positions += 1
@@ -320,34 +313,10 @@ for _, row in positions_df.iterrows():
 
     if unrealized_pnl <= -5:
 
-        conn.execute(
-
-            """
-
-            UPDATE positions
-
-            SET
-
-                status='CLOSED',
-
-                realized_pnl=?,
-
-                updated_at=?
-
-            WHERE position_id=?
-
-            """,
-
-            (
-
-                unrealized_pnl,
-
-                str(datetime.now()),
-
-                row["position_id"]
-
-            )
-
+        close_position(
+            conn,
+            row["position_id"],
+            unrealized_pnl,
         )
 
         updated_positions += 1
