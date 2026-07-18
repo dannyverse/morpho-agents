@@ -28,7 +28,10 @@ def reconcile(conn: sqlite3.Connection) -> bool:
             position_id,
             asset,
             direction,
+            entry_price,
+            current_price,
             position_size,
+            opened_at,
             exchange_order_id,
             stop_loss_order_id,
             take_profit_order_id
@@ -55,7 +58,10 @@ def reconcile(conn: sqlite3.Connection) -> bool:
         position_id,
         asset,
         direction,
+        entry_price,
+        current_price,
         size,
+        opened_at,
         exchange_order_id,
         stop_loss_order_id,
         take_profit_order_id,
@@ -75,7 +81,10 @@ def reconcile(conn: sqlite3.Connection) -> bool:
         }
 
         # Posición legacy
-        if exchange_order_id is None:
+        if (
+            exchange_order_id is None
+            and entry_price == 0
+        ):
             difference["reconcile_status"] = "LEGACY"
 
         # Nueva arquitectura
