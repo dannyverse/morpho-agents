@@ -299,7 +299,8 @@ if len(governance_flags) >= 2:
 
 if len(governance_flags) >= 3:
 
-    risk_status = "HIGH_RISK"
+    risk_status = "CRITICAL"
+
 if len(governance_flags) > 0:
 
     logger.warning(

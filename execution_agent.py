@@ -281,6 +281,8 @@ approved = 0
 
 rejected = 0
 
+exchange_rate_limited = False
+
 for _, row in signals_df.iterrows():
 
     effective_persistence = min(
@@ -406,17 +408,35 @@ for _, row in signals_df.iterrows():
     # STATUS
     # =========================
 
-    if execution_decision == "APPROVED":
+    if exchange_rate_limited:
+
+        status = "FAILED"
+
+        execution_decision = "EXCHANGE_FAILED"
+
+        rejection_reason = "Exchange rate limit already reached this cycle"
+
+        rejected += 1
+
+    elif execution_decision == "APPROVED":
 
         status = "EXECUTED"
 
         approved += 1
 
+        POSITION_NOTIONAL_USD = 25.0
+
+        price = get_price(row["asset"])
+
+        position_size = POSITION_NOTIONAL_USD / price
+
         execution_result = execute(
             asset=row["asset"],
             direction=row["direction"],
-            position_size=2.5,
+            position_size=position_size,
         )
+
+        print(execution_result)
 
         if not execution_result.success:
 
@@ -424,39 +444,48 @@ for _, row in signals_df.iterrows():
                 f"\n❌ EXCHANGE EXECUTION FAILED: {row['asset']}"
             )
 
+            status = "FAILED"
+
+            execution_decision = "EXCHANGE_FAILED"
+
+            rejection_reason = execution_result.error
+
+            if "Too many cumulative requests" in execution_result.error:
+                exchange_rate_limited = True
+
             rejected += 1
 
-            continue
+        else:
 
-        create_position(
-            conn,
-            row["asset"],
-            row["direction"],
-            execution_result.entry_price,
-            2.5,
-            cycle_id,
-            execution_result.exchange_order_id,
-            execution_result.stop_loss_order_id,
-            execution_result.take_profit_order_id
-        )
+            create_position(
+                conn,
+                row["asset"],
+                row["direction"],
+                execution_result.entry_price,
+                2.5,
+                cycle_id,
+                execution_result.exchange_order_id,
+                execution_result.stop_loss_order_id,
+                execution_result.take_profit_order_id
+            )
 
-        print(
-            f"\n✅ EXECUTED: {row['asset']}"
-        )
+            print(
+                f"\n✅ EXECUTED: {row['asset']}"
+            )
 
-        send_execution_approved(
-            asset=row["asset"],
-            direction=row["direction"],
-            entry_price=get_price(
-                row["asset"]
-            ),
-            score=row["score"],
-            confidence=confidence,
-            signal_strength=signal_strength,
-            rationale=rationale,
-            market_bias=market_bias,
-            decision_health=decision_health
-        )
+            send_execution_approved(
+                asset=row["asset"],
+                direction=row["direction"],
+                entry_price=get_price(
+                    row["asset"]
+                ),
+                score=row["score"],
+                confidence=confidence,
+                signal_strength=signal_strength,
+                rationale=rationale,
+                market_bias=market_bias,
+                decision_health=decision_health
+            )
 
     else:
 

@@ -13,23 +13,15 @@ Devuelve únicamente un ExecutionResult.
 
 from dataclasses import dataclass
 
-from hyperliquid.exchange import Exchange
+from hyperliquid_client import get_exchange
 
-from hyperliquid_poc.config import (
-    API_WALLET,
-    ACCOUNT_ADDRESS,
-)
 
 from positions import (
     calculate_stop_loss,
     calculate_take_profit,
 )
 
-exchange = Exchange(
-    wallet=API_WALLET,
-    account_address=ACCOUNT_ADDRESS,
-)
-
+exchange = get_exchange()
 
 @dataclass
 class ExecutionResult:
@@ -132,17 +124,50 @@ def execute(
 
         is_buy = direction.upper() == "LONG"
 
+        from hyperliquid_client import get_info
+
+        info = get_info()
+
+        decimals = next(
+            item["szDecimals"]
+            for item in info.meta()["universe"]
+            if item["name"] == asset
+        )
+
+        position_size = round(position_size, decimals)
+
+        print(f"ASSET={asset} SIZE={position_size} DECIMALS={decimals}")
+
         result = exchange.market_open(
             name=asset,
             is_buy=is_buy,
             sz=position_size,
         )
 
-        print(result)
+        import pprint
+        pprint.pp(result, sort_dicts=False)
 
-        filled = result["response"]["data"]["statuses"][0]["filled"]
+        if result.get("status") != "ok":
+            return ExecutionResult(
+                success=False,
+                error=str(result.get("response")),
+            )
+
+        status = result["response"]["data"]["statuses"][0]
+
+        if "error" in status:
+            return ExecutionResult(
+                success=False,
+                error=status["error"],
+            )
+
+        filled = status["filled"]
         entry_price = float(filled["avgPx"])
 
+        stop_loss = calculate_stop_loss(
+            entry_price,
+            direction,
+        )
 
         stop_loss = calculate_stop_loss(
             entry_price,
