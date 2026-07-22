@@ -291,38 +291,6 @@ for _, row in positions_df.iterrows():
         unrealized_pnl = 0
 
 
-    # =========================
-    # MINIMAL TAKE PROFIT
-    # =========================
-
-    if unrealized_pnl >= 10:
-
-        close_position(
-            conn,
-            row["position_id"],
-            unrealized_pnl,
-        )
-
-        updated_positions += 1
-
-        continue
-
-    # =========================
-    # MINIMAL STOP LOSS
-    # =========================
-
-    if unrealized_pnl <= -5:
-
-        close_position(
-            conn,
-            row["position_id"],
-            unrealized_pnl,
-        )
-
-        updated_positions += 1
-
-        continue
-
     conn.execute(
 
         """
