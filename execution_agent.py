@@ -436,26 +436,13 @@ for _, row in signals_df.iterrows():
             position_size=position_size,
         )
 
-        print(execution_result)
+        print("SUCCESS:", execution_result.success)
+        print("ORDER:", execution_result.exchange_order_id)
+        print("SL:", execution_result.stop_loss_order_id)
+        print("TP:", execution_result.take_profit_order_id)
 
-        if not execution_result.success:
 
-            print(
-                f"\n❌ EXCHANGE EXECUTION FAILED: {row['asset']}"
-            )
-
-            status = "FAILED"
-
-            execution_decision = "EXCHANGE_FAILED"
-
-            rejection_reason = execution_result.error
-
-            if "Too many cumulative requests" in execution_result.error:
-                exchange_rate_limited = True
-
-            rejected += 1
-
-        else:
+        if execution_result.success:
 
             create_position(
                 conn,
@@ -486,6 +473,61 @@ for _, row in signals_df.iterrows():
                 market_bias=market_bias,
                 decision_health=decision_health
             )
+
+        elif execution_result.position_open:
+
+            create_position(
+                conn,
+                row["asset"],
+                row["direction"],
+                execution_result.entry_price,
+                2.5,
+                cycle_id,
+                execution_result.exchange_order_id,
+                execution_result.stop_loss_order_id,
+                execution_result.take_profit_order_id
+            )
+
+            status = "FAILED"
+
+            execution_decision = "EXCHANGE_FAILED"
+
+            rejection_reason = execution_result.error
+
+            rejected += 1
+
+            send_alert(
+                "🚨 CRITICAL: Position remains OPEN after rollback failure.\n"
+                f"Asset: {row['asset']}\n"
+                f"Direction: {row['direction']}\n"
+                f"Entry: {execution_result.entry_price}\n"
+                f"Reason: {execution_result.error}"
+            )
+
+            print(
+                f"\n🚨 EMERGENCY POSITION PERSISTED: {row['asset']}"
+            )
+
+        else:
+
+            print(
+                f"\n❌ EXCHANGE EXECUTION FAILED: {row['asset']}"
+            )
+
+            status = "FAILED"
+
+            execution_decision = "EXCHANGE_FAILED"
+
+            rejection_reason = execution_result.error
+
+            if (
+                execution_result.error
+                and
+                "Too many cumulative requests" in execution_result.error
+            ):
+                exchange_rate_limited = True
+
+            rejected += 1
 
     else:
 
