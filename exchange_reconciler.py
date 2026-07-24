@@ -14,6 +14,7 @@ Este módulo no abre posiciones ni ejecuta órdenes.
 """
 
 import sqlite3
+from datetime import datetime, timezone
 
 from hyperliquid_client import get_account_state, get_info
 from hyperliquid_poc.config import ACCOUNT_ADDRESS
@@ -52,6 +53,7 @@ def _is_close_fill(fill, asset):
 def _find_close_fill(
     fills,
     asset,
+    opened_at,
     stop_loss_order_id,
     take_profit_order_id,
 ):
@@ -86,10 +88,23 @@ def _find_close_fill(
         take_profit_order_id
     )
 
+    try:
+        opened_at_dt = datetime.fromisoformat(str(opened_at))
+        if opened_at_dt.tzinfo is None:
+            opened_at_dt = opened_at_dt.replace(
+                tzinfo=timezone.utc
+            )
+        opened_at_ms = int(opened_at_dt.timestamp() * 1000)
+    except (TypeError, ValueError):
+        return None, "INVALID_OPENED_AT"
+
     close_fills = [
         fill
         for fill in fills
-        if _is_close_fill(fill, asset)
+        if (
+            _is_close_fill(fill, asset)
+            and int(fill.get("time", 0)) >= opened_at_ms
+        )
     ]
 
     if not close_fills:
@@ -228,6 +243,7 @@ def reconcile(conn: sqlite3.Connection) -> bool:
         close_fill, close_reason = _find_close_fill(
             fills=fills,
             asset=asset,
+            opened_at=opened_at,
             stop_loss_order_id=stop_loss_order_id,
             take_profit_order_id=take_profit_order_id,
         )
