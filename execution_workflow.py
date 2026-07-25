@@ -178,6 +178,62 @@ def _place_stop_loss(
 
     return response
 
+def ensure_stop_loss(
+    asset: str,
+    direction: str,
+    position_size: float,
+    entry_price: float,
+) -> tuple[str | None, float, str | None]:
+    """
+    Garantiza la existencia de un Stop Loss nativo.
+
+    Devuelve:
+        (
+            stop_loss_order_id,
+            stop_loss_price,
+            error
+        )
+    """
+
+    normalized_direction = direction.upper()
+
+    if normalized_direction not in {"LONG", "SHORT"}:
+        return (
+            None,
+            0.0,
+            f"Unsupported direction: {direction}"
+        )
+
+    is_buy = normalized_direction == "LONG"
+
+    stop_loss_price = calculate_stop_loss(
+        entry_price,
+        normalized_direction,
+    )
+
+    response = _place_stop_loss(
+        asset=asset,
+        is_buy=is_buy,
+        position_size=position_size,
+        stop_price=stop_loss_price,
+    )
+
+    stop_loss_order_id = _extract_resting_order_id(
+        response
+    )
+
+    if stop_loss_order_id is None:
+        return (
+            None,
+            stop_loss_price,
+            _response_error(response),
+        )
+
+    return (
+        stop_loss_order_id,
+        stop_loss_price,
+        None,
+    )
 
 def _place_take_profit(
     asset: str,
@@ -503,26 +559,19 @@ def execute(
         entry_opened = True
 
         print("FILLED:", filled)
-
-        stop_loss = calculate_stop_loss(
-            entry_price,
-            normalized_direction,
-        )
-
         take_profit = calculate_take_profit(
             entry_price,
             normalized_direction,
         )
-
-        sl_response = _place_stop_loss(
+        (
+            stop_loss_order_id,
+            stop_loss,
+            stop_loss_error,
+        ) = ensure_stop_loss(
             asset=asset,
-            is_buy=is_buy,
+            direction=normalized_direction,
             position_size=position_size,
-            stop_price=stop_loss,
-        )
-
-        stop_loss_order_id = _extract_resting_order_id(
-            sl_response
+            entry_price=entry_price,
         )
 
         if stop_loss_order_id is None:
@@ -534,7 +583,7 @@ def execute(
                 take_profit_order_id=None,
                 reason=(
                     "Stop Loss was not confirmed as resting: "
-                    f"{_response_error(sl_response)}"
+                    f"{stop_loss_error}"
                 ),
             )
 

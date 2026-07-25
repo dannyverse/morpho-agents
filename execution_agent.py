@@ -19,11 +19,6 @@ from notifier import (
 
 from execution_workflow import execute
 
-from positions import (
-    calculate_stop_loss,
-    calculate_take_profit
-)
-
 def create_position(
     conn,
     asset,
