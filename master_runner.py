@@ -5,11 +5,16 @@ import sqlite3
 from datetime import datetime
 import uuid
 from core.logger import logger
-
+from notifier import notify
 
 # =========================
 # AUTONOMOUS SYSTEM LOOP
 # =========================
+notify(
+    level="INFO",
+    title="SYSTEM STARTUP",
+    body="Morpho has started successfully.",
+)
 
 while True:
 
@@ -216,6 +221,12 @@ while True:
         print("\n")
 
         print(str(e))
+
+        notify(
+            level="ERROR",
+            title="MASTER LOOP ERROR",
+            body=str(e),
+        )
 
         print("\n")
 

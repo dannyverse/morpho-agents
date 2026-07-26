@@ -13,7 +13,7 @@ from kill_switch_manager import (
 )
 
 from core.logger import logger
-from notifier import send_alert
+from notifier import notify
 
 # =========================
 # SYSTEM MODULES
@@ -142,6 +142,15 @@ if kill_switch_state.get(
     print("\n")
     print(
         "🛑 Safe runner aborted"
+    )
+
+    notify(
+        level="CRITICAL",
+        title="KILL SWITCH ACTIVE",
+        body="Safe runner aborted.",
+        details={
+            "reason": kill_switch_state.get("reason"),
+        },
     )
 
     exit()
@@ -383,17 +392,17 @@ print("🚀 Safe runner completed")
 
 if failed > 0:
 
-    send_alert(
-
-        f"🚨 MORPHO RUNTIME ALERT\n\n"
-
-        f"Failed Modules: {failed}\n"
-
-        f"Runtime Status: {system_status}\n\n"
-
-        f"Review Required"
-
+    notify(
+        level="ERROR",
+        title="MORPHO RUNTIME ALERT",
+        body="One or more runtime modules failed.",
+        details={
+            "failed_modules": failed,
+            "runtime_status": system_status,
+            "action": "Review required",
+        },
     )
+
 logger.info(
     "safe_runner_completed",
     cycle_id=cycle_id,
