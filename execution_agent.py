@@ -12,8 +12,9 @@ from market_data_manager import (
     get_market_data_age,
     get_market_data_status
 )
+
 from notifier import (
-    send_alert,
+    notify,
     send_execution_approved
 )
 
@@ -491,12 +492,16 @@ for _, row in signals_df.iterrows():
 
             rejected += 1
 
-            send_alert(
-                "🚨 CRITICAL: Position remains OPEN after rollback failure.\n"
-                f"Asset: {row['asset']}\n"
-                f"Direction: {row['direction']}\n"
-                f"Entry: {execution_result.entry_price}\n"
-                f"Reason: {execution_result.error}"
+            notify(
+                level="CRITICAL",
+                title="ROLLBACK FAILED — POSITION OPEN",
+                body="The exchange position remains open after rollback failure.",
+                details={
+                    "Asset": row["asset"],
+                    "Direction": row["direction"],
+                    "Entry": execution_result.entry_price,
+                    "Reason": execution_result.error,
+                },
             )
 
             print(

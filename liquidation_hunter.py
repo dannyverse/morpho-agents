@@ -4,7 +4,7 @@ import pandas as pd
 
 from datetime import datetime
 
-from notifier import send_alert
+from notifier import notify
 
 # =========================
 # HYPERLIQUID API
@@ -241,23 +241,16 @@ conn.close()
 
 for _, row in active_df.iterrows():
 
-    telegram_message = (
-
-        f"⚠️ LIQUIDATION HUNTER\n\n"
-
-        f"Asset: {row['asset']}\n"
-
-        f"Squeeze Risk: {row['squeeze_risk']}\n"
-
-        f"Funding: {row['funding']}\n"
-
-        f"Volume: {round(row['volume'], 2)}\n\n"
-
-        f"{row['commentary']}"
-    )
-
-    send_alert(
-        telegram_message
+    notify(
+        level="WARNING",
+        title="LIQUIDATION HUNTER",
+        body=row["commentary"],
+        details={
+            "Asset": row["asset"],
+            "Squeeze Risk": row["squeeze_risk"],
+            "Funding": row["funding"],
+            "Volume": round(row["volume"], 2),
+        },
     )
 
 # =========================

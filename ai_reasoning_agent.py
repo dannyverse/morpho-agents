@@ -4,7 +4,7 @@ import os
 
 from datetime import datetime
 
-from notifier import send_alert
+from notifier import notify
 
 # =========================
 # DATABASE
@@ -277,21 +277,15 @@ conn.close()
 # TELEGRAM
 # =========================
 
-telegram_message = (
-
-    f"🧠 AI MARKET REASONING\n\n"
-
-    f"Market Bias: {market_bias}\n"
-
-    f"Decision Health: {decision_health}\n"
-
-    f"Halt Recommendation: {halt_recommendation}\n\n"
-
-    f"{summary}"
-)
-
-send_alert(
-    telegram_message
+notify(
+    level="INFO",
+    title="AI MARKET REASONING",
+    body=summary,
+    details={
+        "Market Bias": market_bias,
+        "Decision Health": decision_health,
+        "Halt Recommendation": halt_recommendation,
+    },
 )
 
 # =========================

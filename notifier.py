@@ -4,7 +4,7 @@ from typing import Any
 
 import requests
 from dotenv import load_dotenv
-
+from notification_state import should_send
 
 # =========================
 # LOAD ENV
@@ -130,6 +130,22 @@ def notify(
     Send a uniformly formatted Morpho operational notification.
     """
 
+    payload = {
+        "level": level,
+        "title": title,
+        "body": body,
+        "details": details or {},
+    }
+
+    always_send = {
+        "SYSTEM STARTUP",
+        "EXECUTION APPROVED",
+    }
+
+    if title.upper() not in always_send:
+        if not should_send(title.upper(), payload):
+            return None
+
     message = build_message(
         level=level,
         title=title,
@@ -138,7 +154,6 @@ def notify(
     )
 
     return send_alert(message)
-
 
 # =========================
 # EXECUTION APPROVED

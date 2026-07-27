@@ -2,7 +2,8 @@ import json
 import os
 import tempfile
 from datetime import datetime
-from notifier import send_alert
+from notifier import notify
+from notification_state import clear
 
 # =========================
 # CONFIG
@@ -98,14 +99,14 @@ def activate_kill_switch(
     write_kill_switch_state(
         state
     )
-    send_alert(
 
-        f"🚨 MORPHO KILL SWITCH ACTIVATED\n\n"
-
-        f"Reason: {reason}\n"
-
-        f"Activated By: {activated_by}"
-
+    notify(
+        level="CRITICAL",
+        title="KILL SWITCH ACTIVE",
+        body=reason,
+        details={
+            "Activated By": activated_by,
+        },
     )
 
 # =========================
@@ -144,7 +145,8 @@ def deactivate_kill_switch(
     write_kill_switch_state(
         current_state
     )
-
+    clear("KILL SWITCH ACTIVE")
+    
 # =========================
 # READ STATE
 # =========================
