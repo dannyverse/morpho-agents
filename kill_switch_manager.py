@@ -77,6 +77,11 @@ def activate_kill_switch(
     activated_by="risk_manager"
 ):
 
+    current_state = get_kill_switch_state()
+
+    if current_state.get("kill_switch_active"):
+        return
+
     state = {
 
         "kill_switch_active": True,
@@ -124,6 +129,9 @@ def deactivate_kill_switch(
         get_kill_switch_state()
     )
 
+    if not current_state.get("kill_switch_active"):
+        return
+
     current_state[
         "kill_switch_active"
     ] = False
@@ -145,6 +153,16 @@ def deactivate_kill_switch(
     write_kill_switch_state(
         current_state
     )
+
+    notify(
+        level="SUCCESS",
+        title="KILL SWITCH INACTIVE",
+        body=deactivation_reason,
+        details={
+            "Deactivated By": deactivated_by,
+        },
+    )
+
     clear("KILL SWITCH ACTIVE")
     
 # =========================
