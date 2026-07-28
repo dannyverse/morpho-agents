@@ -36,18 +36,20 @@ def _normalize_order_id(order_id):
     except (TypeError, ValueError):
         return None
 
-
 def _is_close_fill(fill, asset):
     """
-    Determina si un fill corresponde al cierre de una posición
-    del activo indicado.
+    Determina si un fill corresponde al cierre total o parcial
+    de una posición del activo indicado.
     """
     if fill.get("coin") != asset:
         return False
 
-    direction = str(fill.get("dir", ""))
+    direction = str(fill.get("dir", "")).strip()
 
-    return direction.startswith("Close ")
+    return (
+        direction.startswith("Close ")
+        or " > " in direction
+    )
 
 
 def _find_close_fill(
@@ -179,12 +181,29 @@ def reconcile(conn: sqlite3.Connection) -> bool:
         [],
     )
 
-    exchange_assets = {
-        position_data["position"]["coin"]
-        for position_data in exchange_positions
-        if position_data.get("position")
-        and position_data["position"].get("coin")
-    }
+    exchange_positions_set = set()
+
+    for position_data in exchange_positions:
+        position = position_data.get("position")
+
+        if not position:
+            continue
+
+        asset = position.get("coin")
+
+        if not asset:
+            continue
+
+        try:
+            size = float(position.get("szi", 0))
+        except (TypeError, ValueError):
+            continue
+
+        direction = "LONG" if size > 0 else "SHORT"
+
+        exchange_positions_set.add(
+            (asset, direction)
+        )
 
     info = get_info()
     fills = info.user_fills(ACCOUNT_ADDRESS)
@@ -215,7 +234,7 @@ def reconcile(conn: sqlite3.Connection) -> bool:
             take_profit_order_id,
         ) = row
 
-        if asset in exchange_assets:
+        if (asset, direction) in exchange_positions_set:
             continue
 
         difference = {

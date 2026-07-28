@@ -33,6 +33,12 @@ def create_position(
 ):
     now = str(datetime.now())
 
+    if not exchange_order_id:
+        raise ValueError(
+            f"Refusing to persist position without exchange_order_id: "
+            f"{asset} {direction}"
+        )
+
     conn.execute(
         """
         INSERT INTO positions (

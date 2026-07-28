@@ -7,7 +7,8 @@ from state_manager import (
 )
 
 from kill_switch_manager import (
-    activate_kill_switch
+    activate_kill_switch,
+    deactivate_kill_switch
 )
 
 from core.logger import logger
@@ -339,14 +340,14 @@ if risk_status == "CRITICAL":
 # =========================
 
 if risk_status != "CRITICAL":
+    if os.path.exists("HALT_TRADING.txt"):
+        os.remove("HALT_TRADING.txt")
 
-    if os.path.exists(
-        "HALT_TRADING.txt"
-    ):
+    deactivate_kill_switch(
+        deactivation_reason="RISK_STATUS_RECOVERED",
+        deactivated_by="risk_manager"
+    )
 
-        os.remove(
-            "HALT_TRADING.txt"
-        )
 
 # =========================
 # OUTPUT

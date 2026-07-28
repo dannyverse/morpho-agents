@@ -144,14 +144,6 @@ if kill_switch_state.get(
         "🛑 Safe runner aborted"
     )
 
-    notify(
-        level="CRITICAL",
-        title="KILL SWITCH ACTIVE",
-        body="Safe runner aborted.",
-        details={
-            "reason": kill_switch_state.get("reason"),
-        },
-    )
 
     exit()
 # =========================

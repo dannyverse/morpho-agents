@@ -143,7 +143,9 @@ def notify(
     }
 
     if title.upper() not in always_send:
-        if not should_send(title.upper(), payload):
+        decision = should_send(title.upper(), payload)
+
+        if not decision:
             return None
 
     message = build_message(
