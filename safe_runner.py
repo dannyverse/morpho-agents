@@ -144,8 +144,8 @@ if kill_switch_state.get(
         "🛑 Safe runner aborted"
     )
 
+    sys.exit(10)
 
-    exit()
 # =========================
 # INITIAL RUNTIME STATE
 # =========================

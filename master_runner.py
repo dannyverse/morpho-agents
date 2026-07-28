@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 import time
 import sqlite3
@@ -150,9 +151,11 @@ while True:
             "🛡️ Running safe runner..."
         )
 
-        exit_code = os.system(
-            f"{sys.executable} safe_runner.py"
+        result = subprocess.run(
+            [sys.executable, "safe_runner.py"]
         )
+
+        exit_code = result.returncode
 
         # =========================
         # SAFE RUNNER STATUS
@@ -164,6 +167,37 @@ while True:
             f"🧾 Safe Runner Exit Code: "
             f"{exit_code}"
         )
+
+        if exit_code == 0:
+
+            print(
+                "✅ SYSTEM CYCLE COMPLETE"
+            )
+
+            logger.info(
+                "system_cycle_completed"
+            )
+
+        elif exit_code == 10:
+
+            print(
+                "🛑 SYSTEM CYCLE ABORTED (Kill Switch)"
+            )
+
+            logger.info(
+                "system_cycle_aborted"
+            )
+
+        else:
+
+            print(
+                f"❌ SYSTEM CYCLE FAILED ({exit_code})"
+            )
+
+            logger.error(
+                "system_cycle_failed",
+                exit_code=exit_code
+            )
 
         # =========================
         # CYCLE COMPLETE
@@ -182,11 +216,6 @@ while True:
 
         print("\n")
 
-        print(
-            "✅ SYSTEM CYCLE COMPLETE"
-        )
-
-        print("\n")
 
         print(
             f"⏱️ Cycle Duration: "
@@ -202,7 +231,7 @@ while True:
         # =========================
         # SLEEP
         # =========================
-        logger.info("system_cycle_completed")
+
         time.sleep(60)
 
     # =========================
