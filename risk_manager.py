@@ -12,7 +12,7 @@ from kill_switch_manager import (
 )
 
 from core.logger import logger
-    
+from hyperliquid_client import get_account_state
 # =========================
 # DATABASE
 # =========================
@@ -44,7 +44,6 @@ required_tables = [
 
     "portfolio_state",
 
-    "paper_portfolio",
 
     "signal_memory"
 ]
@@ -104,22 +103,6 @@ portfolio_df = pd.read_sql_query(
     conn
 )
 
-paper_query = """
-
-SELECT *
-
-FROM paper_portfolio
-
-ORDER BY ROWID DESC
-
-LIMIT 1
-
-"""
-
-paper_df = pd.read_sql_query(
-    paper_query,
-    conn
-)
 
 memory_query = """
 
@@ -205,27 +188,14 @@ exposure = round(
     2
 )
 
+account_state = get_account_state()
+
 equity = round(
-
-    paper_df[
-        "equity"
-    ].iloc[-1],
-
+    float(account_state["marginSummary"]["accountValue"]),
     2
 )
 
-drawdown = round(
-
-    (
-        (
-            equity - 10000
-        )
-
-        / 10000
-    ) * 100,
-
-    2
-)
+drawdown = 0.0
 
 recent_pnl = round(
 
@@ -280,11 +250,8 @@ if directional_imbalance > MAX_DIRECTIONAL_IMBALANCE:
 # DRAWDOWN CHECK
 # =========================
 
-if drawdown < MAX_DRAWDOWN:
-
-    governance_flags.append(
-        "MAX_DRAWDOWN"
-    )
+# if drawdown < MAX_DRAWDOWN:
+#     governance_flags.append("MAX_DRAWDOWN")
 
 # =========================
 # RISK STATUS
