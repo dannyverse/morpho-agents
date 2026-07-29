@@ -121,30 +121,106 @@ logger.info(
 # KILL SWITCH CHECK
 # =========================
 
-kill_switch_state = (
-    get_kill_switch_state()
-)
+kill_switch_state = get_kill_switch_state()
 
 if kill_switch_state.get(
     "kill_switch_active",
     False
 ):
 
+    kill_switch_reason = (
+        kill_switch_state.get("reason")
+    )
+
     print("🚨 KILL SWITCH ACTIVE")
     print("=" * 50)
+    print(f"\nReason: {kill_switch_reason}")
+    print("\n🔄 Starting controlled recovery")
 
-    print("\n")
-    print(
-        f"Reason: "
-        f"{kill_switch_state.get('reason')}"
+    logger.warning(
+        "kill_switch_recovery_started",
+        cycle_id=cycle_id,
+        reason=kill_switch_reason
     )
 
-    print("\n")
-    print(
-        "🛑 Safe runner aborted"
+    recovery_modules = [
+        "positions.py",
+        "portfolio_state.py",
+        "risk_manager.py"
+    ]
+
+    for recovery_module in recovery_modules:
+
+        print(
+            f"\n🔄 Recovery module: "
+            f"{recovery_module}"
+        )
+
+        recovery_exit_code = os.system(
+            f"{sys.executable} "
+            f"{recovery_module}"
+        )
+
+        if recovery_exit_code != 0:
+
+            logger.error(
+                "kill_switch_recovery_failed",
+                cycle_id=cycle_id,
+                module=recovery_module,
+                exit_code=recovery_exit_code
+            )
+
+            print(
+                f"\n❌ Recovery failed: "
+                f"{recovery_module}"
+            )
+
+            print(
+                "\n🛑 Safe runner aborted"
+            )
+
+            sys.exit(10)
+
+    kill_switch_state = (
+        get_kill_switch_state()
     )
 
-    sys.exit(10)
+    if kill_switch_state.get(
+        "kill_switch_active",
+        False
+    ):
+
+        logger.warning(
+            "kill_switch_remains_active",
+            cycle_id=cycle_id,
+            reason=kill_switch_state.get(
+                "reason"
+            )
+        )
+
+        print(
+            "\n🛑 Kill Switch remains active"
+        )
+
+        print(
+            f"Reason: "
+            f"{kill_switch_state.get('reason')}"
+        )
+
+        sys.exit(10)
+
+    logger.info(
+        "kill_switch_recovery_completed",
+        cycle_id=cycle_id
+    )
+
+    print(
+        "\n✅ Risk status recovered"
+    )
+
+    print(
+        "✅ Normal cycle will continue"
+    )
 
 # =========================
 # INITIAL RUNTIME STATE
