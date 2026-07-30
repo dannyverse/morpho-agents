@@ -1,0 +1,595 @@
+{
+  "account_value": "109.147427",
+  "captured_at_utc": "2026-07-25T06:09:28.063297+00:00",
+  "git_commit": "9b4507101d45a740567f8d930a1bf255c1745e70",
+  "hyperliquid_only": [
+    "ADA",
+    "BTC",
+    "JUP",
+    "VIRTUAL",
+    "XRP",
+    "kBONK"
+  ],
+  "hyperliquid_open": {
+    "ADA": {
+      "entry_price": "0.1645",
+      "margin_used": "0.863582",
+      "position_value": "8.63582",
+      "size": "-53.0",
+      "unrealized_pnl": "0.08268"
+    },
+    "AERO": {
+      "entry_price": "0.4484",
+      "margin_used": "1.26897",
+      "position_value": "3.80691",
+      "size": "-9.0",
+      "unrealized_pnl": "0.22869"
+    },
+    "ARB": {
+      "entry_price": "0.08828",
+      "margin_used": "2.335833",
+      "position_value": "23.358336",
+      "size": "-283.2",
+      "unrealized_pnl": "1.64256"
+    },
+    "AVAX": {
+      "entry_price": "6.5959",
+      "margin_used": "1.566275",
+      "position_value": "15.66275",
+      "size": "-2.5",
+      "unrealized_pnl": "0.827"
+    },
+    "BIO": {
+      "entry_price": "0.026921",
+      "margin_used": "0.400575",
+      "position_value": "1.201725",
+      "size": "-45.0",
+      "unrealized_pnl": "0.009762"
+    },
+    "BTC": {
+      "entry_price": "63167.3",
+      "margin_used": "1.632484",
+      "position_value": "32.64969",
+      "size": "0.00051",
+      "unrealized_pnl": "0.43436"
+    },
+    "CASHCAT": {
+      "entry_price": "0.06068",
+      "margin_used": "2.143063",
+      "position_value": "5.16906",
+      "size": "-90.0",
+      "unrealized_pnl": "0.292176"
+    },
+    "CHIP": {
+      "entry_price": "0.03014",
+      "margin_used": "2.06276",
+      "position_value": "6.18828",
+      "size": "-210.0",
+      "unrealized_pnl": "0.14112"
+    },
+    "DOGE": {
+      "entry_price": "0.072326",
+      "margin_used": "0.104032",
+      "position_value": "1.040325",
+      "size": "-15.0",
+      "unrealized_pnl": "0.044565"
+    },
+    "DYDX": {
+      "entry_price": "0.12087",
+      "margin_used": "0.243797",
+      "position_value": "1.218987",
+      "size": "9.9",
+      "unrealized_pnl": "0.022374"
+    },
+    "ENA": {
+      "entry_price": "0.08651",
+      "margin_used": "2.987705",
+      "position_value": "29.877056",
+      "size": "-341.0",
+      "unrealized_pnl": "-0.376947"
+    },
+    "ETHFI": {
+      "entry_price": "0.44178",
+      "margin_used": "0.248928",
+      "position_value": "1.24464",
+      "size": "-3.0",
+      "unrealized_pnl": "0.080704"
+    },
+    "FARTCOIN": {
+      "entry_price": "0.12721",
+      "margin_used": "0.550167",
+      "position_value": "5.501676",
+      "size": "-44.7",
+      "unrealized_pnl": "0.185038"
+    },
+    "GRAM": {
+      "entry_price": "1.4483",
+      "margin_used": "1.17456",
+      "position_value": "5.8728",
+      "size": "-4.0",
+      "unrealized_pnl": "-0.0796"
+    },
+    "GRASS": {
+      "entry_price": "0.33686",
+      "margin_used": "2.117426",
+      "position_value": "6.352278",
+      "size": "-19.1",
+      "unrealized_pnl": "0.081918"
+    },
+    "HMSTR": {
+      "entry_price": "0.000181",
+      "margin_used": "19.175716",
+      "position_value": "57.527148",
+      "size": "314356.0",
+      "unrealized_pnl": "0.466804"
+    },
+    "HYPE": {
+      "entry_price": "59.1365",
+      "margin_used": "14.331347",
+      "position_value": "143.31347",
+      "size": "-2.51",
+      "unrealized_pnl": "5.11916"
+    },
+    "JTO": {
+      "entry_price": "0.585908",
+      "margin_used": "1.067562",
+      "position_value": "5.33781",
+      "size": "-9.0",
+      "unrealized_pnl": "-0.06463"
+    },
+    "JUP": {
+      "entry_price": "0.19143",
+      "margin_used": "0.03707",
+      "position_value": "0.3707",
+      "size": "-2.0",
+      "unrealized_pnl": "0.01216"
+    },
+    "KAITO": {
+      "entry_price": "0.96724",
+      "margin_used": "1.736496",
+      "position_value": "8.68248",
+      "size": "-9.0",
+      "unrealized_pnl": "0.02268"
+    },
+    "LDO": {
+      "entry_price": "0.36648",
+      "margin_used": "0.438248",
+      "position_value": "2.19124",
+      "size": "-5.8",
+      "unrealized_pnl": "-0.06561"
+    },
+    "LINK": {
+      "entry_price": "8.25432",
+      "margin_used": "2.413728",
+      "position_value": "24.13728",
+      "size": "-2.9",
+      "unrealized_pnl": "-0.19973"
+    },
+    "LIT": {
+      "entry_price": "2.183246",
+      "margin_used": "5.19974",
+      "position_value": "25.9987",
+      "size": "-13.0",
+      "unrealized_pnl": "2.3835"
+    },
+    "MANTA": {
+      "entry_price": "0.06497",
+      "margin_used": "8.09573",
+      "position_value": "24.28719",
+      "size": "384.9",
+      "unrealized_pnl": "-0.719763"
+    },
+    "MON": {
+      "entry_price": "0.02146",
+      "margin_used": "5.290701",
+      "position_value": "26.453508",
+      "size": "-1252.0",
+      "unrealized_pnl": "0.41496"
+    },
+    "MORPHO": {
+      "entry_price": "1.9153",
+      "margin_used": "0.268618",
+      "position_value": "1.34309",
+      "size": "0.7",
+      "unrealized_pnl": "0.00238"
+    },
+    "NEAR": {
+      "entry_price": "1.92071",
+      "margin_used": "2.532261",
+      "position_value": "25.322613",
+      "size": "-14.1",
+      "unrealized_pnl": "1.759407"
+    },
+    "ONDO": {
+      "entry_price": "0.349985",
+      "margin_used": "2.732755",
+      "position_value": "27.32755",
+      "size": "-73.0",
+      "unrealized_pnl": "-1.7786"
+    },
+    "PUMP": {
+      "entry_price": "0.001903",
+      "margin_used": "2.487716",
+      "position_value": "24.87716",
+      "size": "-13790.0",
+      "unrealized_pnl": "1.373536"
+    },
+    "PYTH": {
+      "entry_price": "0.048595",
+      "margin_used": "0.052819",
+      "position_value": "0.264096",
+      "size": "6.0",
+      "unrealized_pnl": "-0.027474"
+    },
+    "SPX": {
+      "entry_price": "0.33526",
+      "margin_used": "0.856648",
+      "position_value": "4.28324",
+      "size": "-13.0",
+      "unrealized_pnl": "0.075203"
+    },
+    "SUI": {
+      "entry_price": "0.74362",
+      "margin_used": "2.488395",
+      "position_value": "24.88395",
+      "size": "-35.0",
+      "unrealized_pnl": "1.142764"
+    },
+    "TIA": {
+      "entry_price": "0.35976",
+      "margin_used": "0.013578",
+      "position_value": "0.067892",
+      "size": "-0.2",
+      "unrealized_pnl": "0.00406"
+    },
+    "UNI": {
+      "entry_price": "3.7838",
+      "margin_used": "0.294112",
+      "position_value": "2.94112",
+      "size": "-0.8",
+      "unrealized_pnl": "0.08592"
+    },
+    "VIRTUAL": {
+      "entry_price": "0.6102",
+      "margin_used": "0.081239",
+      "position_value": "0.406196",
+      "size": "0.7",
+      "unrealized_pnl": "-0.020944"
+    },
+    "VVV": {
+      "entry_price": "11.6397",
+      "margin_used": "10.51512",
+      "position_value": "31.54536",
+      "size": "-2.52",
+      "unrealized_pnl": "-2.2131"
+    },
+    "WLD": {
+      "entry_price": "0.37622",
+      "margin_used": "2.385617",
+      "position_value": "23.856171",
+      "size": "-69.9",
+      "unrealized_pnl": "2.441955"
+    },
+    "WLFI": {
+      "entry_price": "0.056926",
+      "margin_used": "0.352439",
+      "position_value": "1.762195",
+      "size": "-31.0",
+      "unrealized_pnl": "0.002511"
+    },
+    "XLM": {
+      "entry_price": "0.18509",
+      "margin_used": "0.53184",
+      "position_value": "2.6592",
+      "size": "-15.0",
+      "unrealized_pnl": "0.11716"
+    },
+    "XPL": {
+      "entry_price": "0.082198",
+      "margin_used": "2.663199",
+      "position_value": "26.631996",
+      "size": "-323.0",
+      "unrealized_pnl": "-0.081894"
+    },
+    "XRP": {
+      "entry_price": "1.0939",
+      "margin_used": "0.163645",
+      "position_value": "3.272907",
+      "size": "-3.0",
+      "unrealized_pnl": "0.008793"
+    },
+    "ZRO": {
+      "entry_price": "0.8128",
+      "margin_used": "0.017212",
+      "position_value": "0.086061",
+      "size": "-0.1",
+      "unrealized_pnl": "-0.004781"
+    },
+    "kBONK": {
+      "entry_price": "0.002804",
+      "margin_used": "0.144206",
+      "position_value": "1.442061",
+      "size": "489.0",
+      "unrealized_pnl": "0.070905"
+    },
+    "kPEPE": {
+      "entry_price": "0.002695",
+      "margin_used": "0.224429",
+      "position_value": "2.244294",
+      "size": "-834.0",
+      "unrealized_pnl": "0.0035"
+    }
+  },
+  "margin_used": "106.292343",
+  "service_state": "inactive",
+  "sqlite_only": [],
+  "sqlite_open": {
+    "AERO": {
+      "direction": "SHORT",
+      "entry_price": 0.4484,
+      "opened_at": "2026-07-19 13:08:55.516935",
+      "position_id": "db06278f-32fe-4e74-b7b7-6a6d792f8624",
+      "position_size": 2.5
+    },
+    "ARB": {
+      "direction": "SHORT",
+      "entry_price": 0.08828,
+      "opened_at": "2026-07-19 06:37:41.677840",
+      "position_id": "ef1f3f2a-57f5-49ab-b44e-52b4752e4f42",
+      "position_size": 2.5
+    },
+    "AVAX": {
+      "direction": "SHORT",
+      "entry_price": 6.5959,
+      "opened_at": "2026-07-18 07:22:34.846622",
+      "position_id": "b52d8861-96aa-43c0-93fb-d74ce0b37e1a",
+      "position_size": 2.5
+    },
+    "BIO": {
+      "direction": "SHORT",
+      "entry_price": 0.026954,
+      "opened_at": "2026-07-24 21:53:38.080827",
+      "position_id": "84fc580e-0727-4bbb-bbf3-95a1a23a83c8",
+      "position_size": 2.5
+    },
+    "CASHCAT": {
+      "direction": "SHORT",
+      "entry_price": 0.054645,
+      "opened_at": "2026-07-24 13:06:28.703670",
+      "position_id": "1a5f36ae-fe90-4a8b-bdca-35b2bcfe5086",
+      "position_size": 2.5
+    },
+    "CHIP": {
+      "direction": "SHORT",
+      "entry_price": 0.03014,
+      "opened_at": "2026-07-19 17:01:38.253561",
+      "position_id": "0e391406-f128-42f1-8e14-ad26af998b58",
+      "position_size": 2.5
+    },
+    "DOGE": {
+      "direction": "SHORT",
+      "entry_price": 0.072326,
+      "opened_at": "2026-07-19 16:56:24.469497",
+      "position_id": "4df79825-47ea-46a3-ac70-ba3290877e4f",
+      "position_size": 2.5
+    },
+    "DYDX": {
+      "direction": "LONG",
+      "entry_price": 0.12087,
+      "opened_at": "2026-07-19 12:07:03.287754",
+      "position_id": "75538cf5-ca52-4035-b5d0-356f33622dbf",
+      "position_size": 2.5
+    },
+    "ENA": {
+      "direction": "SHORT",
+      "entry_price": 0.087793,
+      "opened_at": "2026-07-25 05:47:33.718454",
+      "position_id": "b3f045b9-e8f9-4426-8e09-136b707ad049",
+      "position_size": 2.5
+    },
+    "ETHFI": {
+      "direction": "SHORT",
+      "entry_price": 0.43522,
+      "opened_at": "2026-07-24 21:10:42.699047",
+      "position_id": "85d31ac0-c66a-42c1-b690-7cd64554c9b0",
+      "position_size": 2.5
+    },
+    "FARTCOIN": {
+      "direction": "SHORT",
+      "entry_price": 0.12482,
+      "opened_at": "2026-07-24 21:21:56.239632",
+      "position_id": "d52882d8-aedf-4232-ac31-9d24216d003e",
+      "position_size": 2.5
+    },
+    "GRAM": {
+      "direction": "SHORT",
+      "entry_price": 1.4451,
+      "opened_at": "2026-07-24 14:20:37.236806",
+      "position_id": "f519c0c4-0eae-4318-8ac6-cdef60ad92c2",
+      "position_size": 2.5
+    },
+    "GRASS": {
+      "direction": "SHORT",
+      "entry_price": 0.33184,
+      "opened_at": "2026-07-24 21:57:27.809110",
+      "position_id": "7157a8b6-805b-4269-b5eb-520d6cc77c7c",
+      "position_size": 2.5
+    },
+    "HMSTR": {
+      "direction": "LONG",
+      "entry_price": 0.000178,
+      "opened_at": "2026-07-24 13:08:25.139889",
+      "position_id": "41f1bb35-0845-4b62-8e3c-a444f5994f50",
+      "position_size": 2.5
+    },
+    "HYPE": {
+      "direction": "SHORT",
+      "entry_price": 57.263,
+      "opened_at": "2026-07-25 05:35:59.302258",
+      "position_id": "f3734db2-e7bd-47df-bb4b-591192f07bbe",
+      "position_size": 2.5
+    },
+    "JTO": {
+      "direction": "SHORT",
+      "entry_price": 0.60392,
+      "opened_at": "2026-07-25 02:51:32.183540",
+      "position_id": "a5e273a5-2f1c-4fd7-b22f-984f695088cf",
+      "position_size": 2.5
+    },
+    "KAITO": {
+      "direction": "SHORT",
+      "entry_price": 0.96724,
+      "opened_at": "2026-07-19 16:54:37.176979",
+      "position_id": "19cac39f-299c-4e1c-a14b-9812abd79049",
+      "position_size": 2.5
+    },
+    "LDO": {
+      "direction": "SHORT",
+      "entry_price": 0.37375,
+      "opened_at": "2026-07-25 02:12:23.993665",
+      "position_id": "2686db53-3fdc-4338-aa99-2b7b726a5709",
+      "position_size": 2.5
+    },
+    "LINK": {
+      "direction": "SHORT",
+      "entry_price": 8.3145,
+      "opened_at": "2026-07-25 02:18:12.165565",
+      "position_id": "df4cffb2-85f5-4840-888d-db234cc377bd",
+      "position_size": 2.5
+    },
+    "LIT": {
+      "direction": "SHORT",
+      "entry_price": 2.0207,
+      "opened_at": "2026-07-24 21:55:31.640577",
+      "position_id": "4da8c9c2-ace0-4a0d-b0a5-c6923c56be66",
+      "position_size": 2.5
+    },
+    "MANTA": {
+      "direction": "LONG",
+      "entry_price": 0.06497,
+      "opened_at": "2026-07-19 06:40:23.303924",
+      "position_id": "94a30752-02a1-444c-9744-26d51428b39e",
+      "position_size": 2.5
+    },
+    "MON": {
+      "direction": "SHORT",
+      "entry_price": 0.021854,
+      "opened_at": "2026-07-24 21:40:24.903189",
+      "position_id": "ed52ad0b-b824-4cc2-8218-a5e1a29c5f45",
+      "position_size": 2.5
+    },
+    "MORPHO": {
+      "direction": "LONG",
+      "entry_price": 1.9153,
+      "opened_at": "2026-07-25 05:45:35.860036",
+      "position_id": "f773179d-3277-4d3e-8728-08f18e81edad",
+      "position_size": 2.5
+    },
+    "NEAR": {
+      "direction": "SHORT",
+      "entry_price": 1.8101,
+      "opened_at": "2026-07-24 21:46:04.514184",
+      "position_id": "a439e0e8-6839-4e55-87c2-9fdcdc965ff9",
+      "position_size": 2.5
+    },
+    "ONDO": {
+      "direction": "SHORT",
+      "entry_price": 0.37839,
+      "opened_at": "2026-07-25 02:14:18.343202",
+      "position_id": "8d63e4be-3a61-48a6-938d-10bb84ded889",
+      "position_size": 2.5
+    },
+    "PUMP": {
+      "direction": "SHORT",
+      "entry_price": 0.001823,
+      "opened_at": "2026-07-24 21:59:24.129637",
+      "position_id": "812a46ac-ea63-42c3-bd76-abfd1c5332f6",
+      "position_size": 2.5
+    },
+    "PYTH": {
+      "direction": "LONG",
+      "entry_price": 0.048595,
+      "opened_at": "2026-07-19 06:41:49.509370",
+      "position_id": "b59a6559-8ad1-4643-8d3d-01e28ceea75e",
+      "position_size": 2.5
+    },
+    "SPX": {
+      "direction": "SHORT",
+      "entry_price": 0.33454,
+      "opened_at": "2026-07-24 21:12:40.466669",
+      "position_id": "1d70db82-b2ff-4779-bdd4-291e243abdcf",
+      "position_size": 2.5
+    },
+    "SUI": {
+      "direction": "SHORT",
+      "entry_price": 0.74339,
+      "opened_at": "2026-07-19 06:48:25.558467",
+      "position_id": "11595d96-8e33-4e8b-9f6d-96e120929e8a",
+      "position_size": 2.5
+    },
+    "TIA": {
+      "direction": "SHORT",
+      "entry_price": 0.35976,
+      "opened_at": "2026-07-19 06:42:11.579227",
+      "position_id": "ebb065ea-2ac0-4be7-907c-5304492434e7",
+      "position_size": 2.5
+    },
+    "UNI": {
+      "direction": "SHORT",
+      "entry_price": 3.7838,
+      "opened_at": "2026-07-24 21:42:17.966497",
+      "position_id": "5c1e2e76-7966-44f8-9432-69de0d92fc66",
+      "position_size": 2.5
+    },
+    "VVV": {
+      "direction": "SHORT",
+      "entry_price": 11.738,
+      "opened_at": "2026-07-24 13:13:58.962687",
+      "position_id": "2ddc51ba-5aa3-4515-9cf6-62c07e0d141f",
+      "position_size": 2.5
+    },
+    "WLD": {
+      "direction": "SHORT",
+      "entry_price": 0.34187,
+      "opened_at": "2026-07-25 05:37:54.491946",
+      "position_id": "117efcc8-157f-4ce5-83a4-ac2200c89190",
+      "position_size": 2.5
+    },
+    "WLFI": {
+      "direction": "SHORT",
+      "entry_price": 0.056926,
+      "opened_at": "2026-07-25 02:16:15.673314",
+      "position_id": "b9a39373-d1fc-4931-b261-77697c69d0ef",
+      "position_size": 2.5
+    },
+    "XLM": {
+      "direction": "SHORT",
+      "entry_price": 0.17775,
+      "opened_at": "2026-07-25 05:39:47.885435",
+      "position_id": "3bcb0af4-07b8-4a4c-b750-20548d59db96",
+      "position_size": 2.5
+    },
+    "XPL": {
+      "direction": "SHORT",
+      "entry_price": 0.085629,
+      "opened_at": "2026-07-24 21:47:59.893628",
+      "position_id": "e1790459-4b65-47ea-9db3-caaa91aaacf2",
+      "position_size": 2.5
+    },
+    "ZRO": {
+      "direction": "SHORT",
+      "entry_price": 0.8128,
+      "opened_at": "2026-07-19 06:57:19.310424",
+      "position_id": "d4b641c3-2da7-4282-b167-d61c54c79faf",
+      "position_size": 2.5
+    },
+    "kPEPE": {
+      "direction": "SHORT",
+      "entry_price": 0.002691,
+      "opened_at": "2026-07-25 05:43:37.460871",
+      "position_id": "69c247df-c6d1-4ba4-8fad-91addde150a2",
+      "position_size": 2.5
+    }
+  },
+  "withdrawable": "1.058954"
+}
