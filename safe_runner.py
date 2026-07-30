@@ -36,6 +36,8 @@ modules = [
 
     "positions.py",
 
+    "exchange_reconciler.py",
+
     "execution_agent.py",
 
     "meta_intelligence.py",

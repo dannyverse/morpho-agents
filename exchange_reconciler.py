@@ -335,3 +335,22 @@ def reconcile(conn: sqlite3.Connection) -> bool:
     conn.commit()
 
     return not unresolved
+
+if __name__ == "__main__":
+
+    conn = sqlite3.connect(
+        "trading_system.db"
+    )
+
+    result = reconcile(conn)
+
+    conn.close()
+
+    if result:
+        print(
+            "✅ Exchange reconciliation completed"
+        )
+    else:
+        print(
+            "⚠️ Exchange reconciliation has unresolved differences"
+        )    
