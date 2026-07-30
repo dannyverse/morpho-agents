@@ -1,6 +1,5 @@
 import sqlite3
 import pandas as pd
-import uuid
 
 from datetime import datetime
 
@@ -90,43 +89,6 @@ conn.execute(
 )
 
 # =========================
-# LOAD PORTFOLIO STATE
-# =========================
-
-portfolio_query = """
-
-SELECT ps.*
-
-FROM portfolio_state ps
-
-INNER JOIN (
-
-    SELECT
-
-        asset,
-
-        direction,
-
-        MAX(rowid) AS max_rowid
-
-    FROM portfolio_state
-
-    WHERE status='OPEN'
-
-    GROUP BY asset, direction
-
-) latest
-
-ON ps.rowid = latest.max_rowid
-
-"""
-
-portfolio_df = pd.read_sql_query(
-    portfolio_query,
-    conn
-)
-
-# =========================
 # LOAD POSITIONS
 # =========================
 
@@ -136,84 +98,6 @@ positions_df = pd.read_sql_query(
 
     conn
 )
-
-# =========================
-# BOOTSTRAP POSITIONS
-# =========================
-
-created_positions = 0
-
-for _, row in portfolio_df.iterrows():
-
-    existing = positions_df[
-
-        (positions_df["asset"] == row["asset"])
-
-        &
-
-        (positions_df["direction"] == row["direction"])
-
-        &
-
-        (positions_df["status"] == "OPEN")
-
-    ]
-
-    if len(existing) > 0:
-
-        continue
-
-    stop_loss_price = calculate_stop_loss(
-        row["entry_price"],
-        row["direction"]
-    )
-
-    position = {
-
-        "position_id": str(
-            uuid.uuid4()
-        ),
-
-        "asset": row["asset"],
-
-        "direction": row["direction"],
-
-        "entry_price": row["entry_price"],
-
-        "current_price": row["current_price"],
-
-        "stop_loss_price": stop_loss_price,
-
-        "position_size": row["position_size"],
-
-        "opened_at": row["timestamp"],
-
-        "updated_at": row["timestamp"],
-
-        "status": "OPEN",
-
-        "unrealized_pnl": row["unrealized_pnl"],
-
-        "realized_pnl": row["realized_pnl"],
-
-        "cycle_opened": "BOOTSTRAP"
-
-    }
-
-    pd.DataFrame(
-        [position]
-    ).to_sql(
-
-        "positions",
-
-        conn,
-
-        if_exists="append",
-
-        index=False
-    )
-
-    created_positions += 1
 
 # =========================
 # REFRESH MARKET DATA
@@ -366,10 +250,6 @@ print("=" * 50)
 
 print("\n")
 
-print(
-    f"New Positions Created: "
-    f"{created_positions}"
-)
 
 print(
     f"Updated Positions: "

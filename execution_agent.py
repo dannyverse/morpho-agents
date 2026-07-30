@@ -407,6 +407,31 @@ for _, row in signals_df.iterrows():
         rejection_reason = "WEAK_SIGNAL"
 
     # =========================
+    # POSITION LIMIT
+    # =========================
+
+    if execution_decision == "APPROVED":
+
+        open_positions_df = pd.read_sql_query(
+            """
+            SELECT COUNT(*) AS count
+            FROM positions
+            WHERE status='OPEN'
+            """,
+            conn
+        )
+
+        open_positions = int(
+            open_positions_df["count"].iloc[0]
+        )
+
+        if open_positions >= 25:
+
+            execution_decision = "REJECTED"
+
+            rejection_reason = "POSITION_LIMIT"
+
+    # =========================
     # STATUS
     # =========================
 
@@ -542,7 +567,7 @@ for _, row in signals_df.iterrows():
         rejected += 1
 
         print(
-            f"\n❌ REJECTED: {row['asset']}"
+            f"\n❌ REJECTED: {row['asset']} ({rejection_reason})"
         )
 
     # =========================
