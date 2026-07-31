@@ -457,13 +457,6 @@ for _, row in signals_df.iterrows():
 
         position_size = POSITION_NOTIONAL_USD / price
 
-        LIVE_EXECUTION_ENABLED = False
-
-        if not LIVE_EXECUTION_ENABLED:
-            print(
-                "🛑 LIVE EXECUTION BLOCKED: authorization required"
-            )
-            continue
 
         execution_result = execute(
             asset=row["asset"],
