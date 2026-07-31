@@ -4,6 +4,7 @@ import random
 import json
 import uuid
 
+from execution_workflow import execute
 from datetime import datetime
 from market_data_manager import (
     refresh_market_data,
@@ -18,7 +19,6 @@ from notifier import (
     send_execution_approved
 )
 
-from execution_workflow import execute
 
 def create_position(
     conn,
@@ -334,6 +334,46 @@ for _, row in signals_df.iterrows():
     rejection_reason = "NONE"
 
     # =========================
+    # RECENT EXECUTION COOLDOWN
+    # =========================
+
+    cooldown_query = """
+
+    SELECT COUNT(*)
+
+    FROM executions
+
+    WHERE asset=?
+
+    AND direction=?
+
+    AND execution_decision='APPROVED'
+
+    AND status='EXECUTED'
+
+    AND timestamp > datetime(
+        'now',
+        '-24 hours'
+    )
+
+    """
+
+    cooldown_df = pd.read_sql_query(
+        cooldown_query,
+        conn,
+        params=(
+            row["asset"],
+            row["direction"]
+        )
+    )
+
+    if int(cooldown_df["COUNT(*)"].iloc[0]) > 0:
+
+        execution_decision = "REJECTED"
+
+        rejection_reason = "RECENT_EXECUTION_COOLDOWN"
+
+    # =========================
     # DUPLICATE PREVENTION
     # =========================
 
@@ -457,6 +497,17 @@ for _, row in signals_df.iterrows():
 
         position_size = POSITION_NOTIONAL_USD / price
 
+        if not can_execute_live():
+
+            execution_decision = "REJECTED"
+
+            rejection_reason = "LIVE_EXECUTION_NOT_AUTHORIZED"
+
+            status = "BLOCKED"
+
+            rejected += 1
+
+            continue
 
         execution_result = execute(
             asset=row["asset"],
