@@ -21,6 +21,7 @@ from positions import (
     calculate_take_profit,
 )
 
+from execution_authority import can_execute_live
 
 exchange = get_exchange()
 
@@ -513,6 +514,13 @@ def execute(
         print(f"direction={normalized_direction}")
         print(f"position_size={position_size}")
         print("=" * 80)
+
+        if not can_execute_live():
+            return ExecutionResult(
+                success=False,
+                position_open=False,
+                error="Live execution not authorized",
+            )
 
         open_response = exchange.market_open(
             name=asset,
