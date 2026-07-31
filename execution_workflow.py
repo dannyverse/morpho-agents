@@ -508,19 +508,19 @@ def execute(
             f"DECIMALS={decimals}"
         )
 
-        print("\n" + "=" * 80)
-        print("AUDIT: market_open()")
-        print(f"asset={asset}")
-        print(f"direction={normalized_direction}")
-        print(f"position_size={position_size}")
-        print("=" * 80)
-
         if not can_execute_live():
             return ExecutionResult(
                 success=False,
                 position_open=False,
                 error="Live execution not authorized",
             )
+
+        print("\n" + "=" * 80)
+        print("AUDIT: market_open()")
+        print(f"asset={asset}")
+        print(f"direction={normalized_direction}")
+        print(f"position_size={position_size}")
+        print("=" * 80)
 
         open_response = exchange.market_open(
             name=asset,
