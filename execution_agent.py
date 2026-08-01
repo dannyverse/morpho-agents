@@ -5,6 +5,7 @@ import json
 import uuid
 
 from execution_workflow import execute
+from execution_authority import can_execute_live
 from datetime import datetime
 from market_data_manager import (
     refresh_market_data,
@@ -487,10 +488,6 @@ for _, row in signals_df.iterrows():
 
     elif execution_decision == "APPROVED":
 
-        status = "EXECUTED"
-
-        approved += 1
-
         POSITION_NOTIONAL_USD = 25.0
 
         price = get_price(row["asset"])
@@ -507,110 +504,104 @@ for _, row in signals_df.iterrows():
 
             rejected += 1
 
-            continue
-
-        execution_result = execute(
-            asset=row["asset"],
-            direction=row["direction"],
-            position_size=position_size,
-        )
-
-        print("SUCCESS:", execution_result.success)
-        print("ORDER:", execution_result.exchange_order_id)
-        print("SL:", execution_result.stop_loss_order_id)
-        print("TP:", execution_result.take_profit_order_id)
-
-
-        if execution_result.success:
-
-            create_position(
-                conn,
-                row["asset"],
-                row["direction"],
-                execution_result.entry_price,
-                2.5,
-                cycle_id,
-                execution_result.exchange_order_id,
-                execution_result.stop_loss_order_id,
-                execution_result.take_profit_order_id
-            )
-
-            print(
-                f"\n✅ EXECUTED: {row['asset']}"
-            )
-
-            send_execution_approved(
-                asset=row["asset"],
-                direction=row["direction"],
-                entry_price=get_price(
-                    row["asset"]
-                ),
-                score=row["score"],
-                confidence=confidence,
-                signal_strength=signal_strength,
-                rationale=rationale,
-                market_bias=market_bias,
-                decision_health=decision_health
-            )
-
-        elif execution_result.position_open:
-
-            create_position(
-                conn,
-                row["asset"],
-                row["direction"],
-                execution_result.entry_price,
-                2.5,
-                cycle_id,
-                execution_result.exchange_order_id,
-                execution_result.stop_loss_order_id,
-                execution_result.take_profit_order_id
-            )
-
-            status = "FAILED"
-
-            execution_decision = "EXCHANGE_FAILED"
-
-            rejection_reason = execution_result.error
-
-            rejected += 1
-
-            notify(
-                level="CRITICAL",
-                title="ROLLBACK FAILED — POSITION OPEN",
-                body="The exchange position remains open after rollback failure.",
-                details={
-                    "Asset": row["asset"],
-                    "Direction": row["direction"],
-                    "Entry": execution_result.entry_price,
-                    "Reason": execution_result.error,
-                },
-            )
-
-            print(
-                f"\n🚨 EMERGENCY POSITION PERSISTED: {row['asset']}"
-            )
-
         else:
 
-            print(
-                f"\n❌ EXCHANGE EXECUTION FAILED: {row['asset']}"
+            status = "EXECUTED"
+
+            approved += 1
+
+            execution_result = execute(
+                asset=row["asset"],
+                direction=row["direction"],
+                position_size=position_size,
             )
 
-            status = "FAILED"
+            print("SUCCESS:", execution_result.success)
+            print("ORDER:", execution_result.exchange_order_id)
+            print("SL:", execution_result.stop_loss_order_id)
+            print("TP:", execution_result.take_profit_order_id)
 
-            execution_decision = "EXCHANGE_FAILED"
+            if execution_result.success:
 
-            rejection_reason = execution_result.error
+                create_position(
+                    conn,
+                    row["asset"],
+                    row["direction"],
+                    execution_result.entry_price,
+                    2.5,
+                    cycle_id,
+                    execution_result.exchange_order_id,
+                    execution_result.stop_loss_order_id,
+                    execution_result.take_profit_order_id
+                )
 
-            if (
-                execution_result.error
-                and
-                "Too many cumulative requests" in execution_result.error
-            ):
-                exchange_rate_limited = True
+                print(
+                    f"\n✅ EXECUTED: {row['asset']}"
+                )
 
-            rejected += 1
+                send_execution_approved(
+                    asset=row["asset"],
+                    direction=row["direction"],
+                    entry_price=get_price(row["asset"]),
+                    score=row["score"],
+                    confidence=confidence,
+                    signal_strength=signal_strength,
+                    rationale=rationale,
+                    market_bias=market_bias,
+                    decision_health=decision_health
+                )
+
+            elif execution_result.position_open:
+
+                create_position(
+                    conn,
+                    row["asset"],
+                    row["direction"],
+                    execution_result.entry_price,
+                    2.5,
+                    cycle_id,
+                    execution_result.exchange_order_id,
+                    execution_result.stop_loss_order_id,
+                    execution_result.take_profit_order_id
+                )
+
+                status = "FAILED"
+
+                execution_decision = "EXCHANGE_FAILED"
+
+                rejection_reason = execution_result.error
+
+                rejected += 1
+
+                notify(
+                    level="CRITICAL",
+                    title="ROLLBACK FAILED — POSITION OPEN",
+                    body="The exchange position remains open after rollback failure.",
+                    details={
+                        "Asset": row["asset"],
+                        "Direction": row["direction"],
+                        "Entry": execution_result.entry_price,
+                        "Reason": execution_result.error,
+                    },
+                )
+
+                print(
+                    f"\n🚨 EMERGENCY POSITION PERSISTED: {row['asset']}"
+                )
+
+            else:
+
+                print(
+                    f"\n❌ EXCHANGE EXECUTION FAILED: {row['asset']}"
+                )
+
+                status = "FAILED"
+
+                execution_decision = "EXCHANGE_FAILED"
+
+                rejection_reason = execution_result.error
+
+                rejected += 1
 
     else:
 
