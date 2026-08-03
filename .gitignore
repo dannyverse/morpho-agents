@@ -18,3 +18,7 @@ backups/
 
 # Runtime state
 notification_state.json
+opportunity_state.json
+runtime_state.json
+kill_switch_state.json
+portfolio_health_state.json
