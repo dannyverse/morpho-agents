@@ -170,6 +170,7 @@ for _, row in top_df.head(5).iterrows():
 # SEND TELEGRAM
 # =========================
 
-send_telegram(message)
+if SEND_TELEGRAM_ALERTS:
+    send_telegram(message)
 
 print("Quality funding snapshot saved")

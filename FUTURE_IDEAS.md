@@ -172,3 +172,119 @@ In governable intelligence systems:
 survivability.
 
 A system that cannot be clearly observed eventually becomes impossible to safely evolve.
+
+
+---
+
+# FUTURE IDEA
+
+Exchange Capacity Admission Policy
+
+Observation
+
+During burn-in, Morpho successfully approves opportunities and reaches
+execution_workflow.
+
+Hyperliquid occasionally rejects the order with:
+
+"Insufficient margin"
+
+No local execution failure or state inconsistency was found.
+
+Current architecture has no owner responsible for validating real exchange
+capacity before order submission.
+
+Current ownership
+
+execution_agent:
+Approves opportunities.
+
+execution_workflow:
+Submits orders.
+
+risk_manager:
+Evaluates internal portfolio risk.
+
+portfolio_state:
+Represents derived internal state.
+
+No module currently owns exchange-capacity admission.
+
+Potential future capability
+
+Introduce a dedicated Exchange Capacity Admission Policy that evaluates
+real account capacity (available margin, withdrawable balance or equivalent)
+before attempting execution.
+
+This capability should determine whether an order is admissible before
+sending it to the exchange.
+
+Deployment decision
+
+Not implemented.
+
+Reason:
+
+Outside the Deployment Contract scope.
+
+Discovery does not constitute authorization.
+
+
+---
+
+# FUTURE IDEA
+
+## Master Runner Kill Switch Awareness
+
+### Observation
+
+During kill switch validation, `safe_runner` correctly aborted execution when the kill switch was active.
+
+However, `master_runner` continued reporting:
+
+```
+Safe Runner Exit Code: 0
+✅ SYSTEM CYCLE COMPLETE
+```
+
+This is operationally misleading because the system did not complete a normal cycle; it intentionally halted execution.
+
+### Current Behaviour
+
+Risk Manager
+→ activates kill switch
+
+Safe Runner
+→ detects kill switch
+→ aborts execution
+
+Master Runner
+→ reports successful cycle completion
+
+### Proposed Improvement
+
+Allow `safe_runner` to return a dedicated termination status when execution is intentionally halted by the kill switch.
+
+`master_runner` should detect this state and report something similar to:
+
+```
+🚨 SYSTEM HALTED BY KILL SWITCH
+```
+
+instead of:
+
+```
+✅ SYSTEM CYCLE COMPLETE
+```
+
+### Scope
+
+Observability only.
+
+No changes to trading logic or risk management.
+
+### Deployment Decision
+
+Not required before deployment.
+
+Improves operational visibility but does not affect system safety.

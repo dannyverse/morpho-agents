@@ -492,7 +492,21 @@ for _, row in signals_df.iterrows():
 
         price = get_price(row["asset"])
 
-        position_size = POSITION_NOTIONAL_USD / price
+        if price <= 0:
+
+            execution_decision = "REJECTED"
+
+            rejection_reason = "INVALID_MARKET_DATA"
+
+            status = "BLOCKED"
+
+            rejected += 1
+
+            position_size = 0
+
+        else:
+
+            position_size = POSITION_NOTIONAL_USD / price
 
         if not can_execute_live():
 

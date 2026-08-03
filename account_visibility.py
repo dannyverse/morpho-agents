@@ -1,58 +1,99 @@
-import json
+import os
 import requests
+
+from dotenv import load_dotenv
+
 
 # =========================
 # LOAD WALLET
 # =========================
 
-with open(
-    "morpho_wallet.json",
-    "r"
-) as file:
+load_dotenv(dotenv_path=".env")
 
-    wallet_config = json.load(
-        file
+wallet_address = os.getenv(
+    "HL_ACCOUNT_ADDRESS"
+)
+
+if not wallet_address:
+    raise RuntimeError(
+        "HL_ACCOUNT_ADDRESS not configured"
     )
 
-wallet_address = (
-    wallet_config[
-        "wallet_address"
-    ]
+
+HL_INFO_URL = "https://api.hyperliquid.xyz/info"
+
+
+def post_info(payload):
+
+    response = requests.post(
+        HL_INFO_URL,
+        json=payload,
+        timeout=10
+    )
+
+    response.raise_for_status()
+
+    return response.json()
+
+
+# =========================
+# SPOT BALANCE
+# =========================
+
+spot_data = post_info(
+    {
+        "type": "spotClearinghouseState",
+        "user": wallet_address
+    }
 )
 
+
+usdc_balance = 0.0
+
+for balance in spot_data.get(
+    "balances",
+    []
+):
+
+    if balance.get("coin") == "USDC":
+
+        usdc_balance = float(
+            balance.get("total", 0)
+        )
+
+
 # =========================
-# ACCOUNT STATE
+# PERPS ACCOUNT
 # =========================
 
-account_response = requests.post(
-    "https://api.hyperliquid.xyz/info",
-    json={
+perps_data = post_info(
+    {
         "type": "clearinghouseState",
         "user": wallet_address
-    },
-    timeout=10
+    }
 )
 
-account_data = (
-    account_response.json()
+
+perps_equity = float(
+    perps_data["marginSummary"]["accountValue"]
 )
+
+withdrawable_perps = float(
+    perps_data["withdrawable"]
+)
+
 
 # =========================
 # OPEN ORDERS
 # =========================
 
-orders_response = requests.post(
-    "https://api.hyperliquid.xyz/info",
-    json={
+orders_data = post_info(
+    {
         "type": "openOrders",
         "user": wallet_address
-    },
-    timeout=10
+    }
 )
 
-orders_data = (
-    orders_response.json()
-)
 
 # =========================
 # OUTPUT
@@ -65,34 +106,44 @@ print(
 
 print("=" * 50)
 
-print("\n")
+print("\nWallet:")
+print(wallet_address)
+
+
+print("\nSPOT BALANCE")
 print(
-    f"Wallet: {wallet_address}"
+    f"USDC: {usdc_balance}"
 )
 
-print("\n")
+
+print("\nPERPS ACCOUNT")
+
 print(
-    f"Account Value: "
-    f"{account_data['marginSummary']['accountValue']}"
+    f"Equity: {perps_equity}"
 )
 
 print(
-    f"Withdrawable: "
-    f"{account_data['withdrawable']}"
+    f"Withdrawable: {withdrawable_perps}"
 )
 
-print("\n")
 print(
     f"Open Positions: "
-    f"{len(account_data['assetPositions'])}"
+    f"{len(perps_data.get('assetPositions', []))}"
 )
 
+
+print("\nOPEN ORDERS")
+
 print(
-    f"Open Orders: "
-    f"{len(orders_data)}"
+    len(orders_data)
 )
 
-print("\n")
+
+print("\nTOTAL ACCOUNT VALUE")
+
 print(
-    "✅ Account visibility completed"
+    f"USDC: {usdc_balance + perps_equity}"
 )
+
+
+print("\n✅ Account visibility completed")

@@ -4,7 +4,7 @@ from hyperliquid_client import get_info
 
 from hyperliquid_poc.config import ACCOUNT_ADDRESS
 
-OID = 498039820656
+OID = 498039824878
 
 info = get_info()
 
