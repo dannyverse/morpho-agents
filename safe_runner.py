@@ -58,6 +58,15 @@ modules = [
 ]
 
 # =========================
+# CRITICAL EXECUTION GATES
+# =========================
+
+CRITICAL_PRE_EXECUTION_MODULES = {
+    "positions.py",
+    "exchange_reconciler.py",
+}
+
+# =========================
 # TRACKING
 # =========================
 
@@ -70,6 +79,8 @@ results = []
 failed_modules = []
 
 active_modules = []
+
+execution_blocked = False
 
 cycle_id = int(
     datetime.now().timestamp()
@@ -262,6 +273,32 @@ for module in modules:
         cycle_id=cycle_id
     )
 
+    if module == "execution_agent.py" and execution_blocked:
+
+        status = "BLOCKED"
+
+        failed_modules.append(
+            module
+        )
+
+        results.append({
+
+            "timestamp": str(
+                datetime.now()
+            ),
+
+            "module": module,
+
+            "status": status
+
+        })
+
+        print(
+            "🛑 execution_agent blocked due to critical module failure"
+        )
+
+        continue
+
     try:
 
         exit_code = os.system(
@@ -298,6 +335,10 @@ for module in modules:
             failed_modules.append(
                 module
             )
+
+            if module in CRITICAL_PRE_EXECUTION_MODULES:
+
+                execution_blocked = True
 
             logger.error(
                 "module_failed",
@@ -479,3 +520,13 @@ logger.info(
     successful_modules=success,
     failed_modules=failed
 )
+
+# =========================
+# EXIT STATUS
+# =========================
+
+if failed > 0:
+
+    sys.exit(20)
+
+sys.exit(0)

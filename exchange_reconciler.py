@@ -13,7 +13,9 @@ Responsabilidad:
 Este módulo no abre posiciones ni ejecuta órdenes.
 """
 
+
 import sqlite3
+import sys
 from datetime import datetime, timezone
 
 from hyperliquid_client import get_account_state, get_info
@@ -347,10 +349,17 @@ if __name__ == "__main__":
     conn.close()
 
     if result:
+
         print(
             "✅ Exchange reconciliation completed"
         )
+
+        sys.exit(0)
+
     else:
+
         print(
             "⚠️ Exchange reconciliation has unresolved differences"
-        )    
+        )
+
+        sys.exit(20)
