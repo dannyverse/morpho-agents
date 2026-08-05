@@ -3,10 +3,22 @@ import pandas as pd
 import random
 import json
 import uuid
+from decimal import Decimal
 
 from execution_workflow import execute
 from execution_authority import can_execute_live
-from datetime import datetime
+from datetime import datetime, timezone
+from account_snapshot import get_account_snapshot
+
+from margin_admission import (
+    CandidateOrderV1,
+    CandidateSizeStatus,
+    CycleContextV1,
+    AdmissionPolicyV1,
+    MarginMode,
+    AdmissionDecision,
+    evaluate_margin_admission,
+)
 from market_data_manager import (
     refresh_market_data,
     get_price,
@@ -495,7 +507,6 @@ for _, row in signals_df.iterrows():
         if price <= 0:
 
             execution_decision = "REJECTED"
-
             rejection_reason = "INVALID_MARKET_DATA"
 
             status = "BLOCKED"
@@ -507,6 +518,61 @@ for _, row in signals_df.iterrows():
         else:
 
             position_size = POSITION_NOTIONAL_USD / price
+
+            snapshot = get_account_snapshot()
+
+            candidate = CandidateOrderV1(
+                schema_version="1.0",
+                candidate_id=str(uuid.uuid4()),
+                cycle_id=cycle_id,
+                created_at=datetime.now(timezone.utc),
+                asset=row["asset"],
+                direction=row["direction"],
+                requested_size=position_size,
+                reference_price=price,
+                reference_price_timestamp=datetime.now(timezone.utc),
+                requested_notional=Decimal(str(POSITION_NOTIONAL_USD)),
+                margin_mode=MarginMode.CROSS,
+                reduce_only=False,
+                size_normalization_status=CandidateSizeStatus.NORMALIZED,
+            )
+
+            cycle_context = CycleContextV1(
+                schema_version="1.0",
+                cycle_id=cycle_id,
+                account_snapshot_id=snapshot.snapshot_id,
+                account_refresh_sequence=1,
+                reserved_capacity=Decimal("0"),
+                evaluated_candidates=0,
+                pending_candidate_ids=(),
+                execution_blocked=False,
+                block_reason=None,
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc),
+            )
+
+            policy = AdmissionPolicyV1(
+                schema_version="1.0",
+                max_snapshot_age_seconds=Decimal("60"),
+                absolute_reserve=Decimal("20"),
+                safety_buffer=Decimal("5"),
+                supported_margin_mode=MarginMode.CROSS,
+                notional_tolerance=Decimal("0.000001"),
+            )
+
+            admission_result = evaluate_margin_admission(
+                account_snapshot=snapshot,
+                candidate_order=candidate,
+                cycle_context=cycle_context,
+                policy=policy,
+            )
+
+            if admission_result.decision != AdmissionDecision.ADMITTED:
+
+                execution_decision = "REJECTED"
+                rejection_reason = (
+                    admission_result.reason_code.value
+                )
 
         if not can_execute_live():
 
