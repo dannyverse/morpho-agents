@@ -608,7 +608,7 @@ for _, row in signals_df.iterrows():
                     row["asset"],
                     row["direction"],
                     execution_result.entry_price,
-                    2.5,
+                    position_size,
                     cycle_id,
                     execution_result.exchange_order_id,
                     execution_result.stop_loss_order_id,
@@ -638,7 +638,7 @@ for _, row in signals_df.iterrows():
                     row["asset"],
                     row["direction"],
                     execution_result.entry_price,
-                    2.5,
+                    position_size,
                     cycle_id,
                     execution_result.exchange_order_id,
                     execution_result.stop_loss_order_id,
@@ -715,7 +715,7 @@ for _, row in signals_df.iterrows():
             row["asset"]
         ),
 
-        "position_size": 2.5,
+        "position_size": position_size,
 
         "signal_strength": signal_strength,
 
