@@ -124,7 +124,7 @@ top_df = df.sort_values(
 # BUILD TELEGRAM MESSAGE
 # =========================
 
-message = "⚡ QUALITY FUNDING SIGNALS\n\n"
+message = "Material funding signals were detected in liquid markets.\n\n"
 
 for _, row in top_df.head(5).iterrows():
 
@@ -135,11 +135,10 @@ for _, row in top_df.head(5).iterrows():
     )
 
     message += (
-        f"🪙 {row['asset']}\n"
-        f"📈 APR: {round(row['funding_apr'],2)}%\n"
-        f"📊 {direction}\n"
-        f"💰 OI: ${round(row['open_interest']/1_000_000,2)}M\n"
-        f"🔄 Volume: ${round(row['volume']/1_000_000,2)}M\n\n"
+        f"{row['asset']}   {round(row['funding_apr'], 2)}% APR   "
+        f"{direction}\n"
+        f"OI ${round(row['open_interest'] / 1_000_000, 2)}M   "
+        f"Volume ${round(row['volume'] / 1_000_000, 2)}M\n\n"
     )
 
 # =========================
@@ -148,8 +147,11 @@ for _, row in top_df.head(5).iterrows():
 
 notify(
     level="INFO",
-    title="QUALITY FUNDING SIGNAL",
-    body=message
+    title="MARKET · FUNDING SIGNAL",
+    body=message.rstrip(),
+    details={
+        "Signals": len(top_df.head(5)),
+    }
 )
 
 print("Quality funding snapshot saved")

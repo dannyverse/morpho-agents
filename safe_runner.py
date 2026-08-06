@@ -505,12 +505,13 @@ if failed > 0:
 
     notify(
         level="ERROR",
-        title="MORPHO RUNTIME ALERT",
-        body="One or more runtime modules failed.",
+        title="SYSTEM · RUNTIME FAILURE",
+        body="One or more runtime modules failed during the cycle.",
         details={
-            "failed_modules": failed,
-            "runtime_status": system_status,
-            "action": "Review required",
+            "Failed Modules": failed,
+            "Runtime Status": system_status,
+            "Morpho Action": "Cycle marked as failed",
+            "Operator Action": "Review runtime logs",
         },
     )
 

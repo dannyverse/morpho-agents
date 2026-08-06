@@ -279,7 +279,7 @@ conn.close()
 
 notify(
     level="INFO",
-    title="AI MARKET REASONING",
+    title="OPPORTUNITY · AI REASONING",
     body=summary,
     details={
         "Market Bias": market_bias,

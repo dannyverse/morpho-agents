@@ -107,10 +107,17 @@ def activate_kill_switch(
 
     notify(
         level="CRITICAL",
-        title="KILL SWITCH ACTIVE",
-        body=reason,
+        title="RISK · KILL SWITCH ACTIVE",
+        body=(
+            "The kill switch was activated and automated execution "
+            "is restricted."
+        ),
         details={
+            "Reason": reason,
             "Activated By": activated_by,
+            "Impact": "New automated exposure is restricted",
+            "Morpho Action": "Kill switch state persisted",
+            "Operator Action": "Review the activation reason",
         },
     )
 
@@ -156,14 +163,15 @@ def deactivate_kill_switch(
 
     notify(
         level="SUCCESS",
-        title="KILL SWITCH INACTIVE",
-        body=deactivation_reason,
+        title="RISK · KILL SWITCH INACTIVE",
+        body="The kill switch was deactivated.",
         details={
+            "Reason": deactivation_reason,
             "Deactivated By": deactivated_by,
         },
     )
 
-    clear("KILL SWITCH ACTIVE")
+    clear("RISK · KILL SWITCH ACTIVE")
     
 # =========================
 # READ STATE
@@ -217,4 +225,3 @@ if __name__ == "__main__":
         state,
         indent=4
     ))
-

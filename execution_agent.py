@@ -655,13 +655,18 @@ for _, row in signals_df.iterrows():
 
                 notify(
                     level="CRITICAL",
-                    title="ROLLBACK FAILED — POSITION OPEN",
-                    body="The exchange position remains open after rollback failure.",
+                    title=f"EXECUTION · ROLLBACK FAILED · {row['asset']}",
+                    body="The exchange position remains open after rollback failed.",
                     details={
                         "Asset": row["asset"],
                         "Direction": row["direction"],
                         "Entry": execution_result.entry_price,
                         "Reason": execution_result.error,
+                        "Impact": "Uncontrolled exchange exposure may remain open",
+                        "Morpho Action": (
+                            "Position recorded in the current database transaction"
+                        ),
+                        "Operator Action": "Verify the exchange position and protections",
                     },
                 )
 

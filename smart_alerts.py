@@ -90,8 +90,8 @@ if not os.path.exists(HISTORY_FILE):
 
     notify(
         level="INFO",
-        title="YIELD MONITOR INITIALIZED",
-        body="🚀 Yield agent initialized successfully"
+        title="OPPORTUNITY · YIELD MONITOR INITIALIZED",
+        body="The initial yield snapshot was created successfully."
     )
 
     print("First snapshot created")
@@ -138,17 +138,19 @@ for _, row in new_df.iterrows():
 
     direction = "increased" if new_apy > old_apy else "dropped"
 
-    message = (
-        f"⚠️ {project.upper()} {symbol} APY "
-        f"{direction} from "
-        f"{round(old_apy,2)}% "
-        f"to {round(new_apy,2)}%"
-    )
+    message = "The monitored APY changed beyond the configured threshold."
 
     notify(
         level="WARNING",
-        title="YIELD APY CHANGE",
-        body=message
+        title=f"OPPORTUNITY · APY CHANGE · {project} · {symbol}",
+        body=message,
+        details={
+            "Protocol": project,
+            "Asset": symbol,
+            "Direction": direction,
+            "Previous APY": f"{round(old_apy, 2)}%",
+            "Current APY": f"{round(new_apy, 2)}%",
+        }
     )
 
     print(message)

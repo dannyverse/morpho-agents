@@ -93,35 +93,65 @@ if not old.empty:
 
             if diff > 0.5:
 
-                alerts.append(
-                    f"🚀 APY UPGRADE\n\n"
-                    f"Protocol: {row['project']}\n"
-                    f"Asset: {row['symbol']}\n"
-                    f"Old APY: {round(old_apy,2)}%\n"
-                    f"New APY: {round(row['apy'],2)}%"
-                )
+                alerts.append({
+                    "level": "INFO",
+                    "title": (
+                        f"OPPORTUNITY · APY UPGRADE · "
+                        f"{row['project']} · {row['symbol']}"
+                    ),
+                    "body": (
+                        "The monitored APY increased beyond the "
+                        "configured change threshold."
+                    ),
+                    "details": {
+                        "Protocol": row["project"],
+                        "Asset": row["symbol"],
+                        "Previous APY": f"{round(old_apy, 2)}%",
+                        "Current APY": f"{round(row['apy'], 2)}%",
+                    },
+                })
 
             if diff < -0.5:
 
-                alerts.append(
-                    f"⚠️ APY DROP\n\n"
-                    f"Protocol: {row['project']}\n"
-                    f"Asset: {row['symbol']}\n"
-                    f"Old APY: {round(old_apy,2)}%\n"
-                    f"New APY: {round(row['apy'],2)}%"
-                )
+                alerts.append({
+                    "level": "WARNING",
+                    "title": (
+                        f"OPPORTUNITY · APY DROP · "
+                        f"{row['project']} · {row['symbol']}"
+                    ),
+                    "body": (
+                        "The monitored APY decreased beyond the "
+                        "configured change threshold."
+                    ),
+                    "details": {
+                        "Protocol": row["project"],
+                        "Asset": row["symbol"],
+                        "Previous APY": f"{round(old_apy, 2)}%",
+                        "Current APY": f"{round(row['apy'], 2)}%",
+                    },
+                })
 
         # NEW OPPORTUNITY
         else:
 
-            alerts.append(
-                f"🔥 NEW OPPORTUNITY\n\n"
-                f"Protocol: {row['project']}\n"
-                f"Asset: {row['symbol']}\n"
-                f"Chain: Ethereum\n"
-                f"APY: {round(row['apy'],2)}%\n"
-                f"TVL: ${round(row['tvlUsd']/1_000_000,2)}M"
-            )
+            alerts.append({
+                "level": "INFO",
+                "title": (
+                    f"OPPORTUNITY · NEW YIELD · "
+                    f"{row['project']} · {row['symbol']}"
+                ),
+                "body": (
+                    "A new yield opportunity passed the configured "
+                    "monitoring filters."
+                ),
+                "details": {
+                    "Protocol": row["project"],
+                    "Asset": row["symbol"],
+                    "Chain": "Ethereum",
+                    "APY": f"{round(row['apy'], 2)}%",
+                    "TVL": f"${round(row['tvlUsd'] / 1_000_000, 2)}M",
+                },
+            })
 
 # =========================
 # SEND ALERTS
@@ -131,8 +161,8 @@ if len(alerts) == 0:
 
     notify(
         level="INFO",
-        title="YIELD MONITOR STATUS",
-        body="✅ No important Ethereum stable yield changes"
+        title="OPPORTUNITY · YIELD MONITOR STATUS",
+        body="No important Ethereum stable-yield changes were detected."
     )
 
 else:
@@ -140,9 +170,10 @@ else:
     for alert in alerts:
 
         notify(
-            level="INFO",
-            title="YIELD ALERT",
-            body=alert
+            level=alert["level"],
+            title=alert["title"],
+            body=alert["body"],
+            details=alert["details"]
         )
 
 # =========================

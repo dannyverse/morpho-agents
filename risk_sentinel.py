@@ -72,31 +72,34 @@ for _, row in df.iterrows():
         # =========================
 
         if risk_score >= 7:
-            risk_level = "🔴 EXTREME"
+            risk_level = "EXTREME"
 
         elif risk_score >= 5:
-            risk_level = "🟠 HIGH"
+            risk_level = "HIGH"
 
         else:
-            risk_level = "🟡 MODERATE"
+            risk_level = "MODERATE"
 
         # =========================
         # BUILD ALERT
         # =========================
 
-        alert = (
-            f"{risk_level} RISK YIELD\n\n"
-            f"Protocol: {project}\n"
-            f"Chain: {chain}\n"
-            f"Asset: {symbol}\n"
-            f"APY: {round(apy,2)}%\n"
-            f"TVL: ${round(tvl/1_000_000,2)}M\n"
-            f"Risk Score: {risk_score}/10"
-        )
-
         alerts.append({
             "score": risk_score,
-            "message": alert
+            "title": f"RISK · YIELD RISK · {project} · {symbol}",
+            "message": (
+                "The yield opportunity exceeded the configured "
+                "risk threshold."
+            ),
+            "details": {
+                "Protocol": project,
+                "Chain": chain,
+                "Asset": symbol,
+                "APY": f"{round(apy, 2)}%",
+                "TVL": f"${round(tvl / 1_000_000, 2)}M",
+                "Risk Score": f"{risk_score}/10",
+                "Risk Classification": risk_level,
+            },
         })
 
     except:
@@ -126,11 +129,9 @@ else:
 
         notify(
             level="CRITICAL" if alert["score"] >= 7 else "WARNING",
-            title="YIELD RISK ALERT",
+            title=alert["title"],
             body=alert["message"],
-            details={
-                "score": alert["score"]
-            }
+            details=alert["details"]
         )
 
         print(alert["message"])

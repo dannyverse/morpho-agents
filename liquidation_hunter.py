@@ -243,7 +243,7 @@ for _, row in active_df.iterrows():
 
     notify(
         level="WARNING",
-        title="LIQUIDATION HUNTER",
+        title=f"MARKET · LIQUIDATION SIGNAL · {row['asset']}",
         body=row["commentary"],
         details={
             "Asset": row["asset"],

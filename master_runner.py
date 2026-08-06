@@ -14,7 +14,7 @@ from notifier import notify
 notify(
     level="INFO",
     title="SYSTEM STARTUP",
-    body="Morpho has started successfully.",
+    body="Morpho started and entered the autonomous runtime loop.",
 )
 
 while True:
@@ -253,8 +253,13 @@ while True:
 
         notify(
             level="ERROR",
-            title="MASTER LOOP ERROR",
-            body=str(e),
+            title="SYSTEM · MASTER LOOP ERROR",
+            body="The master runtime loop raised an exception.",
+            details={
+                "Reason": str(e),
+                "Impact": "Current cycle interrupted",
+                "Morpho Action": "Restart scheduled in 60 seconds",
+            },
         )
 
         print("\n")
