@@ -1,32 +1,8 @@
 import requests
 import pandas as pd
 import os
-from dotenv import load_dotenv
 from datetime import datetime
-
-# =========================
-# LOAD ENV VARIABLES
-# =========================
-
-load_dotenv()
-
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-# =========================
-# TELEGRAM FUNCTION
-# =========================
-
-def send_telegram(message):
-
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-
-    payload = {
-        "chat_id": CHAT_ID,
-        "text": message
-    }
-
-    requests.post(url, json=payload)
+from notifier import notify
 
 # =========================
 # HYPERLIQUID API REQUEST
@@ -170,7 +146,10 @@ for _, row in top_df.head(5).iterrows():
 # SEND TELEGRAM
 # =========================
 
-if SEND_TELEGRAM_ALERTS:
-    send_telegram(message)
+notify(
+    level="INFO",
+    title="QUALITY FUNDING SIGNAL",
+    body=message
+)
 
 print("Quality funding snapshot saved")

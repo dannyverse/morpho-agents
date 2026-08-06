@@ -1,31 +1,7 @@
 import requests
 import pandas as pd
-from dotenv import load_dotenv
 import os
-
-# =========================
-# LOAD ENV
-# =========================
-
-load_dotenv(dotenv_path=".env")
-
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-# =========================
-# TELEGRAM FUNCTION
-# =========================
-
-def send_telegram(message):
-
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-
-    payload = {
-        "chat_id": CHAT_ID,
-        "text": message
-    }
-
-    requests.post(url, data=payload)
+from notifier import notify
 
 # =========================
 # TRUSTED PROTOCOLS
@@ -153,13 +129,21 @@ if not old.empty:
 
 if len(alerts) == 0:
 
-    send_telegram("✅ No important Ethereum stable yield changes")
+    notify(
+        level="INFO",
+        title="YIELD MONITOR STATUS",
+        body="✅ No important Ethereum stable yield changes"
+    )
 
 else:
 
     for alert in alerts:
 
-        send_telegram(alert)
+        notify(
+            level="INFO",
+            title="YIELD ALERT",
+            body=alert
+        )
 
 # =========================
 # SAVE SNAPSHOT

@@ -1,25 +1,7 @@
 import pandas as pd
 import requests
 import os
-
-# =========================
-# TELEGRAM
-# =========================
-
-BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
-
-
-def send_telegram(message):
-
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-
-    payload = {
-        "chat_id": CHAT_ID,
-        "text": message
-    }
-
-    requests.post(url, json=payload)
+from notifier import notify
 
 
 # =========================
@@ -106,7 +88,11 @@ if not os.path.exists(HISTORY_FILE):
 
     new_df.to_csv(HISTORY_FILE, index=False)
 
-    send_telegram("🚀 Yield agent initialized successfully")
+    notify(
+        level="INFO",
+        title="YIELD MONITOR INITIALIZED",
+        body="🚀 Yield agent initialized successfully"
+    )
 
     print("First snapshot created")
 
@@ -159,7 +145,11 @@ for _, row in new_df.iterrows():
         f"to {round(new_apy,2)}%"
     )
 
-    send_telegram(message)
+    notify(
+        level="WARNING",
+        title="YIELD APY CHANGE",
+        body=message
+    )
 
     print(message)
 
