@@ -1,9 +1,11 @@
+import os
 import requests
+from dotenv import load_dotenv
 
-TOKEN = "8872667197:AAFsK5fNGqdLhConzEZLkJHgRMLmwWo6aFg"
+load_dotenv()
 
-CHAT_ID = "1615611027"
-
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 def send_alert(message):
 
