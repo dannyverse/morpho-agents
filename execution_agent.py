@@ -33,6 +33,29 @@ from notifier import (
 )
 
 
+def _attempt_live_execution(
+    *,
+    execution_decision,
+    admission_result,
+    authority,
+    workflow,
+    workflow_kwargs,
+):
+    if execution_decision != "APPROVED":
+        return "SKIPPED", None
+
+    if (
+        admission_result is None
+        or admission_result.decision != AdmissionDecision.ADMITTED
+    ):
+        return "SKIPPED", None
+
+    if not authority():
+        return "NOT_AUTHORIZED", None
+
+    return "EXECUTION_ATTEMPTED", workflow(**workflow_kwargs)
+
+
 def create_position(
     conn,
     asset,
@@ -519,6 +542,8 @@ for _, row in signals_df.iterrows():
 
             position_size = POSITION_NOTIONAL_USD / price
 
+            admission_result = None
+
             snapshot = get_account_snapshot()
 
             candidate = CandidateOrderV1(
@@ -574,7 +599,25 @@ for _, row in signals_df.iterrows():
                     admission_result.reason_code.value
                 )
 
-        if not can_execute_live():
+                status = "BLOCKED"
+
+                rejected += 1
+
+        live_gate_status, execution_result = _attempt_live_execution(
+            execution_decision=execution_decision,
+            admission_result=(
+                admission_result if price > 0 else None
+            ),
+            authority=can_execute_live,
+            workflow=execute,
+            workflow_kwargs={
+                "asset": row["asset"],
+                "direction": row["direction"],
+                "position_size": position_size,
+            },
+        )
+
+        if live_gate_status == "NOT_AUTHORIZED":
 
             execution_decision = "REJECTED"
 
@@ -584,17 +627,11 @@ for _, row in signals_df.iterrows():
 
             rejected += 1
 
-        else:
+        elif live_gate_status == "EXECUTION_ATTEMPTED":
 
             status = "EXECUTED"
 
             approved += 1
-
-            execution_result = execute(
-                asset=row["asset"],
-                direction=row["direction"],
-                position_size=position_size,
-            )
 
             print("SUCCESS:", execution_result.success)
             print("ORDER:", execution_result.exchange_order_id)

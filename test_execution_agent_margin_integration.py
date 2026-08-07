@@ -1,7 +1,9 @@
+import ast
 import unittest
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+from pathlib import Path
 from unittest.mock import Mock
 
 from execution_size_normalizer import (
@@ -26,6 +28,34 @@ from margin_admission import (
 D = Decimal
 UTC = timezone.utc
 BASE_TIME = datetime(2026, 8, 4, 12, 0, 0, tzinfo=UTC)
+
+
+def _load_production_live_execution_boundary():
+    source_path = Path(__file__).resolve().parent / "execution_agent.py"
+    tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    function_node = next(
+        node
+        for node in tree.body
+        if (
+            isinstance(node, ast.FunctionDef)
+            and node.name == "_attempt_live_execution"
+        )
+    )
+    namespace = {"AdmissionDecision": AdmissionDecision}
+    exec(
+        compile(
+            ast.Module(body=[function_node], type_ignores=[]),
+            filename=str(source_path),
+            mode="exec",
+        ),
+        namespace,
+    )
+    return namespace["_attempt_live_execution"]
+
+
+production_live_execution_boundary = (
+    _load_production_live_execution_boundary()
+)
 
 
 @dataclass(frozen=True)
@@ -409,6 +439,90 @@ class ExecutionAgentMarginIntegrationContractTest(unittest.TestCase):
             call_order,
             ["admission", "authority", "workflow"],
         )
+
+
+class ProductionExecutionAgentControlFlowTest(unittest.TestCase):
+    def setUp(self):
+        self.authority = Mock(return_value=True)
+        self.workflow = Mock(return_value={"success": True})
+        self.workflow_kwargs = {
+            "asset": "BTC",
+            "direction": "LONG",
+            "position_size": D("1"),
+        }
+
+    def attempt(self, *, execution_decision="APPROVED", admission_decision):
+        admission_result = (
+            None
+            if admission_decision is None
+            else Mock(decision=admission_decision)
+        )
+        return production_live_execution_boundary(
+            execution_decision=execution_decision,
+            admission_result=admission_result,
+            authority=self.authority,
+            workflow=self.workflow,
+            workflow_kwargs=self.workflow_kwargs,
+        )
+
+    def test_production_admitted_and_authorized_calls_workflow_once(self):
+        status, result = self.attempt(
+            admission_decision=AdmissionDecision.ADMITTED
+        )
+
+        self.assertEqual(status, "EXECUTION_ATTEMPTED")
+        self.assertEqual(result, {"success": True})
+        self.authority.assert_called_once_with()
+        self.workflow.assert_called_once_with(**self.workflow_kwargs)
+
+    def test_production_insufficient_margin_skips_authority_and_workflow(self):
+        status, result = self.attempt(
+            admission_decision=AdmissionDecision.INSUFFICIENT_MARGIN
+        )
+
+        self.assertEqual(status, "SKIPPED")
+        self.assertIsNone(result)
+        self.authority.assert_not_called()
+        self.workflow.assert_not_called()
+
+    def test_production_unknown_and_stale_skip_authority_and_workflow(self):
+        for decision in (
+            AdmissionDecision.ACCOUNT_UNKNOWN,
+            AdmissionDecision.STALE_DATA,
+        ):
+            with self.subTest(decision=decision):
+                self.authority.reset_mock()
+                self.workflow.reset_mock()
+
+                status, result = self.attempt(admission_decision=decision)
+
+                self.assertEqual(status, "SKIPPED")
+                self.assertIsNone(result)
+                self.authority.assert_not_called()
+                self.workflow.assert_not_called()
+
+    def test_production_invalid_market_data_skips_live_execution(self):
+        status, result = self.attempt(
+            execution_decision="REJECTED",
+            admission_decision=None,
+        )
+
+        self.assertEqual(status, "SKIPPED")
+        self.assertIsNone(result)
+        self.authority.assert_not_called()
+        self.workflow.assert_not_called()
+
+    def test_production_valid_admission_without_authority_skips_workflow(self):
+        self.authority.return_value = False
+
+        status, result = self.attempt(
+            admission_decision=AdmissionDecision.ADMITTED
+        )
+
+        self.assertEqual(status, "NOT_AUTHORIZED")
+        self.assertIsNone(result)
+        self.authority.assert_called_once_with()
+        self.workflow.assert_not_called()
 
 
 if __name__ == "__main__":
