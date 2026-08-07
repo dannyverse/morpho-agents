@@ -3,6 +3,7 @@ import pandas as pd
 import random
 import json
 import uuid
+from dataclasses import replace
 from decimal import Decimal
 
 from execution_workflow import execute
@@ -54,6 +55,111 @@ def _attempt_live_execution(
         return "NOT_AUTHORIZED", None
 
     return "EXECUTION_ATTEMPTED", workflow(**workflow_kwargs)
+
+
+def _refresh_cycle_context(
+    cycle_context,
+    *,
+    cycle_id,
+    snapshot_id,
+    updated_at,
+):
+    if cycle_context is None:
+        return CycleContextV1(
+            schema_version="1.0",
+            cycle_id=cycle_id,
+            account_snapshot_id=snapshot_id,
+            account_refresh_sequence=1,
+            reserved_capacity=Decimal("0"),
+            evaluated_candidates=0,
+            pending_candidate_ids=(),
+            execution_blocked=False,
+            block_reason=None,
+            created_at=updated_at,
+            updated_at=updated_at,
+        )
+
+    return replace(
+        cycle_context,
+        account_snapshot_id=snapshot_id,
+        account_refresh_sequence=(
+            cycle_context.account_refresh_sequence + 1
+        ),
+        updated_at=updated_at,
+    )
+
+
+def _record_admission_result(
+    cycle_context,
+    *,
+    admission_result,
+    candidate_id,
+    updated_at,
+):
+    changes = {
+        "evaluated_candidates": cycle_context.evaluated_candidates + 1,
+        "updated_at": updated_at,
+    }
+
+    if admission_result.decision == AdmissionDecision.ADMITTED:
+        changes["reserved_capacity"] = (
+            cycle_context.reserved_capacity
+            + admission_result.reservation_amount
+        )
+        changes["pending_candidate_ids"] = (
+            cycle_context.pending_candidate_ids + (candidate_id,)
+        )
+
+    return replace(cycle_context, **changes)
+
+
+def _release_candidate_reservation(
+    cycle_context,
+    *,
+    candidate_id,
+    reservation_amount,
+    updated_at,
+):
+    if candidate_id not in cycle_context.pending_candidate_ids:
+        raise ValueError(
+            f"candidate reservation is not pending: {candidate_id}"
+        )
+
+    if (
+        not isinstance(reservation_amount, Decimal)
+        or not reservation_amount.is_finite()
+        or reservation_amount <= 0
+    ):
+        raise ValueError(
+            "reservation_amount must be a positive finite Decimal"
+        )
+
+    if (
+        not isinstance(cycle_context.reserved_capacity, Decimal)
+        or not cycle_context.reserved_capacity.is_finite()
+        or cycle_context.reserved_capacity < 0
+    ):
+        raise ValueError("cycle reserved_capacity is invalid")
+
+    if reservation_amount > cycle_context.reserved_capacity:
+        raise ValueError(
+            "reservation_amount exceeds cycle reserved_capacity"
+        )
+
+    remaining_capacity = (
+        cycle_context.reserved_capacity - reservation_amount
+    )
+
+    return replace(
+        cycle_context,
+        reserved_capacity=remaining_capacity,
+        pending_candidate_ids=tuple(
+            pending_id
+            for pending_id in cycle_context.pending_candidate_ids
+            if pending_id != candidate_id
+        ),
+        updated_at=updated_at,
+    )
 
 
 def create_position(
@@ -321,6 +427,8 @@ rejected = 0
 
 exchange_rate_limited = False
 
+cycle_context = None
+
 for _, row in signals_df.iterrows():
 
     effective_persistence = min(
@@ -546,6 +654,13 @@ for _, row in signals_df.iterrows():
 
             snapshot = get_account_snapshot()
 
+            cycle_context = _refresh_cycle_context(
+                cycle_context,
+                cycle_id=cycle_id,
+                snapshot_id=snapshot.snapshot_id,
+                updated_at=datetime.now(timezone.utc),
+            )
+
             candidate = CandidateOrderV1(
                 schema_version="1.0",
                 candidate_id=str(uuid.uuid4()),
@@ -562,20 +677,6 @@ for _, row in signals_df.iterrows():
                 size_normalization_status=CandidateSizeStatus.NORMALIZED,
             )
 
-            cycle_context = CycleContextV1(
-                schema_version="1.0",
-                cycle_id=cycle_id,
-                account_snapshot_id=snapshot.snapshot_id,
-                account_refresh_sequence=1,
-                reserved_capacity=Decimal("0"),
-                evaluated_candidates=0,
-                pending_candidate_ids=(),
-                execution_blocked=False,
-                block_reason=None,
-                created_at=datetime.now(timezone.utc),
-                updated_at=datetime.now(timezone.utc),
-            )
-
             policy = AdmissionPolicyV1(
                 schema_version="1.0",
                 max_snapshot_age_seconds=Decimal("60"),
@@ -590,6 +691,13 @@ for _, row in signals_df.iterrows():
                 candidate_order=candidate,
                 cycle_context=cycle_context,
                 policy=policy,
+            )
+
+            cycle_context = _record_admission_result(
+                cycle_context,
+                admission_result=admission_result,
+                candidate_id=candidate.candidate_id,
+                updated_at=datetime.now(timezone.utc),
             )
 
             if admission_result.decision != AdmissionDecision.ADMITTED:
@@ -618,6 +726,13 @@ for _, row in signals_df.iterrows():
         )
 
         if live_gate_status == "NOT_AUTHORIZED":
+
+            cycle_context = _release_candidate_reservation(
+                cycle_context,
+                candidate_id=candidate.candidate_id,
+                reservation_amount=admission_result.reservation_amount,
+                updated_at=datetime.now(timezone.utc),
+            )
 
             execution_decision = "REJECTED"
 
@@ -712,6 +827,13 @@ for _, row in signals_df.iterrows():
                 )
 
             else:
+
+                cycle_context = _release_candidate_reservation(
+                    cycle_context,
+                    candidate_id=candidate.candidate_id,
+                    reservation_amount=admission_result.reservation_amount,
+                    updated_at=datetime.now(timezone.utc),
+                )
 
                 print(
                     f"\n❌ EXCHANGE EXECUTION FAILED: {row['asset']}"
