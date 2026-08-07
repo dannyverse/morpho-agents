@@ -700,6 +700,12 @@ def _stale_result(
     )
 
 
+def _evaluation_time(evaluated_at=None) -> datetime:
+    if evaluated_at is not None:
+        return evaluated_at.astimezone(timezone.utc)
+    return datetime.now(timezone.utc)
+
+
 def reconcile(
     conn: sqlite3.Connection,
     *,
@@ -710,20 +716,16 @@ def reconcile(
     size_tolerance=DEFAULT_SIZE_TOLERANCE,
 ) -> ReconciliationResult:
     """Reconcilia, clasifica y persiste evidencia del estado final."""
-    now = (
-        evaluated_at.astimezone(timezone.utc)
-        if evaluated_at is not None
-        else datetime.now(timezone.utc)
-    )
     _ensure_reconciliation_results_table(conn)
 
     try:
         cycle_id = _load_cycle_id(conn)
     except Exception as exc:
         cycle_id = "UNKNOWN"
+        decision_at = _evaluation_time(evaluated_at)
         result = _unknown_result(
             cycle_id=cycle_id,
-            evaluated_at=now,
+            evaluated_at=decision_at,
             blocking_reason="CYCLE_ID_UNAVAILABLE",
             errors=[f"{type(exc).__name__}: {exc}"],
         )
@@ -737,6 +739,7 @@ def reconcile(
             if account_snapshot is not None
             else get_account_snapshot()
         )
+        snapshot_check_at = _evaluation_time(evaluated_at)
 
         if (
             snapshot.normalization_status
@@ -744,7 +747,7 @@ def reconcile(
         ):
             result = _unknown_result(
                 cycle_id=cycle_id,
-                evaluated_at=now,
+                evaluated_at=snapshot_check_at,
                 blocking_reason="SNAPSHOT_INVALID",
                 errors=list(snapshot.normalization_errors),
                 snapshot_id=snapshot.snapshot_id,
@@ -755,7 +758,7 @@ def reconcile(
             return result
 
         snapshot_age_seconds = (
-            now - snapshot.exchange_timestamp
+            snapshot_check_at - snapshot.exchange_timestamp
         ).total_seconds()
         if (
             snapshot_age_seconds < 0
@@ -763,7 +766,7 @@ def reconcile(
         ):
             result = _stale_result(
                 cycle_id=cycle_id,
-                evaluated_at=now,
+                evaluated_at=snapshot_check_at,
                 account_snapshot=snapshot,
                 snapshot_age_seconds=snapshot_age_seconds,
                 max_snapshot_age_seconds=max_snapshot_age_seconds,
@@ -813,6 +816,34 @@ def reconcile(
             )
         )
 
+        decision_at = _evaluation_time(evaluated_at)
+        final_snapshot_age_seconds = (
+            decision_at - snapshot.exchange_timestamp
+        ).total_seconds()
+        if (
+            final_snapshot_age_seconds < 0
+            or final_snapshot_age_seconds > max_snapshot_age_seconds
+        ):
+            result = _stale_result(
+                cycle_id=cycle_id,
+                evaluated_at=decision_at,
+                account_snapshot=snapshot,
+                snapshot_age_seconds=final_snapshot_age_seconds,
+                max_snapshot_age_seconds=max_snapshot_age_seconds,
+            )
+            _persist_reconciliation_result(conn, result)
+            conn.commit()
+            return result
+
+        valid_until = min(
+            decision_at + timedelta(
+                seconds=RECONCILIATION_TTL_SECONDS
+            ),
+            snapshot.exchange_timestamp + timedelta(
+                seconds=max_snapshot_age_seconds
+            ),
+        )
+
         result = ReconciliationResult(
             schema_version=RECONCILIATION_SCHEMA_VERSION,
             reconciliation_id=str(uuid.uuid4()),
@@ -821,8 +852,8 @@ def reconcile(
             capability=capability,
             snapshot_id=snapshot.snapshot_id,
             snapshot_timestamp=snapshot.exchange_timestamp,
-            evaluated_at=now,
-            valid_until=now + timedelta(seconds=RECONCILIATION_TTL_SECONDS),
+            evaluated_at=decision_at,
+            valid_until=valid_until,
             blocking_reason=blocking_reason,
             details=details,
             is_final=True,
@@ -834,9 +865,10 @@ def reconcile(
     except Exception as exc:
         conn.rollback()
         _ensure_reconciliation_results_table(conn)
+        decision_at = _evaluation_time(evaluated_at)
         result = _unknown_result(
             cycle_id=cycle_id,
-            evaluated_at=now,
+            evaluated_at=decision_at,
             blocking_reason="RECONCILIATION_ERROR",
             errors=[f"{type(exc).__name__}: {exc}"],
         )
@@ -845,7 +877,7 @@ def reconcile(
         return result
 
 
-if __name__ == "__main__":
+def main() -> None:
     conn = sqlite3.connect("trading_system.db")
     result = reconcile(conn)
     conn.close()
@@ -858,3 +890,13 @@ if __name__ == "__main__":
         f"snapshot_id={result.snapshot_id} "
         f"blocking_reason={result.blocking_reason}"
     )
+
+    if (
+        result.capability
+        == ReconciliationCapability.NO_AUTOMATED_EXECUTION
+    ):
+        sys.exit(20)
+
+
+if __name__ == "__main__":
+    main()

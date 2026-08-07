@@ -4,6 +4,7 @@ import sqlite3
 import sys
 import types
 import unittest
+from unittest import mock
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
@@ -353,6 +354,240 @@ class ReconciliationResultsTest(unittest.TestCase):
             state="STALE_DATA",
             capability="NO_AUTOMATED_EXECUTION",
         )
+
+    def test_internal_snapshot_uses_time_after_acquisition(self):
+        before = datetime(
+            2026, 8, 7, 5, 12, 41, 198054, tzinfo=UTC
+        )
+        exchange_time = datetime(
+            2026, 8, 7, 5, 12, 43, 294000, tzinfo=UTC
+        )
+        after = datetime(
+            2026, 8, 7, 5, 12, 43, 597536, tzinfo=UTC
+        )
+        snapshot = self.make_snapshot(
+            exchange_timestamp=exchange_time,
+        )
+        acquired = False
+
+        def acquire_snapshot():
+            nonlocal acquired
+            acquired = True
+            return snapshot
+
+        def evaluation_time(_evaluated_at=None):
+            self.assertTrue(acquired)
+            return after
+
+        self.assertLess(
+            (before - exchange_time).total_seconds(),
+            0,
+        )
+
+        with (
+            mock.patch.object(
+                reconciler,
+                "get_account_snapshot",
+                side_effect=acquire_snapshot,
+            ),
+            mock.patch.object(
+                reconciler,
+                "_evaluation_time",
+                side_effect=evaluation_time,
+            ),
+        ):
+            result = reconciler.reconcile(
+                self.conn,
+                fills=[],
+                max_snapshot_age_seconds=10,
+                size_tolerance=Decimal("0"),
+            )
+
+        self.assert_result(
+            result,
+            state="CONFIRMED",
+            capability="OPEN_AND_REDUCE",
+        )
+        self.assertEqual(result.evaluated_at, after)
+        self.assertAlmostEqual(
+            (after - exchange_time).total_seconds(),
+            0.303536,
+        )
+
+    def test_future_snapshot_is_stale(self):
+        result = self.evaluate(
+            self.make_snapshot(
+                exchange_timestamp=NOW + timedelta(microseconds=1),
+            )
+        )
+        self.assert_result(
+            result,
+            state="STALE_DATA",
+            capability="NO_AUTOMATED_EXECUTION",
+        )
+        self.assertLess(result.details["snapshot_age_seconds"], 0)
+        self.assertEqual(result.valid_until, result.evaluated_at)
+
+    def test_snapshot_exactly_ten_seconds_old_is_valid(self):
+        result = self.evaluate(
+            self.make_snapshot(
+                exchange_timestamp=NOW - timedelta(seconds=10),
+            )
+        )
+        self.assert_result(
+            result,
+            state="CONFIRMED",
+            capability="OPEN_AND_REDUCE",
+        )
+
+    def test_snapshot_older_than_ten_seconds_by_one_microsecond_is_stale(self):
+        result = self.evaluate(
+            self.make_snapshot(
+                exchange_timestamp=(
+                    NOW - timedelta(seconds=10, microseconds=1)
+                ),
+            )
+        )
+        self.assert_result(
+            result,
+            state="STALE_DATA",
+            capability="NO_AUTOMATED_EXECUTION",
+        )
+
+    def test_slow_reconciliation_rechecks_freshness_before_result(self):
+        snapshot = self.make_snapshot(exchange_timestamp=NOW)
+
+        with mock.patch.object(
+            reconciler,
+            "_evaluation_time",
+            side_effect=[
+                NOW + timedelta(seconds=1),
+                NOW + timedelta(seconds=11),
+            ],
+        ):
+            result = reconciler.reconcile(
+                self.conn,
+                account_snapshot=snapshot,
+                fills=[],
+                max_snapshot_age_seconds=10,
+                size_tolerance=Decimal("0"),
+            )
+
+        self.assert_result(
+            result,
+            state="STALE_DATA",
+            capability="NO_AUTOMATED_EXECUTION",
+        )
+        self.assertEqual(
+            result.evaluated_at,
+            NOW + timedelta(seconds=11),
+        )
+        self.assertEqual(result.valid_until, result.evaluated_at)
+
+    def test_valid_until_is_limited_by_reconciliation_ttl(self):
+        result = reconciler.reconcile(
+            self.conn,
+            account_snapshot=self.make_snapshot(exchange_timestamp=NOW),
+            fills=[],
+            evaluated_at=NOW,
+            max_snapshot_age_seconds=100,
+            size_tolerance=Decimal("0"),
+        )
+
+        self.assertEqual(
+            result.valid_until,
+            NOW + timedelta(
+                seconds=reconciler.RECONCILIATION_TTL_SECONDS
+            ),
+        )
+
+    def test_valid_until_is_limited_by_snapshot_freshness(self):
+        result = self.evaluate(
+            self.make_snapshot(
+                exchange_timestamp=NOW - timedelta(seconds=8),
+            )
+        )
+
+        self.assertEqual(
+            result.valid_until,
+            NOW + timedelta(seconds=2),
+        )
+
+    def test_invalid_snapshot_expires_at_evaluation_time(self):
+        result = self.evaluate(
+            self.make_snapshot(
+                status=AccountNormalizationStatus.INVALID,
+                errors=("ACCOUNT_STATE_INVALID",),
+            )
+        )
+
+        self.assertEqual(result.state, reconciler.ReconciliationState.UNKNOWN)
+        self.assertEqual(
+            result.capability,
+            reconciler.ReconciliationCapability.NO_AUTOMATED_EXECUTION,
+        )
+        self.assertEqual(result.evaluated_at, NOW)
+        self.assertEqual(result.valid_until, NOW)
+
+    def test_reconciliation_error_is_fail_closed(self):
+        result = reconciler.reconcile(
+            self.conn,
+            account_snapshot=self.make_snapshot(),
+            fills=None,
+            evaluated_at=NOW,
+            max_snapshot_age_seconds=10,
+            size_tolerance=Decimal("0"),
+        )
+
+        self.assertEqual(result.state, reconciler.ReconciliationState.UNKNOWN)
+        self.assertEqual(
+            result.capability,
+            reconciler.ReconciliationCapability.NO_AUTOMATED_EXECUTION,
+        )
+        self.assertEqual(result.blocking_reason, "RECONCILIATION_ERROR")
+        self.assertEqual(result.evaluated_at, NOW)
+        self.assertEqual(result.valid_until, NOW)
+
+    def test_no_automated_execution_exits_20_after_evidence(self):
+        result = reconciler._unknown_result(
+            cycle_id="cycle-1",
+            evaluated_at=NOW,
+            blocking_reason="SNAPSHOT_INVALID",
+            errors=["ACCOUNT_STATE_INVALID"],
+        )
+        events = []
+        connection = mock.Mock()
+        connection.close.side_effect = lambda: events.append("close")
+
+        def record_print(*_args, **_kwargs):
+            events.append("print")
+
+        def exit_process(code):
+            events.append(f"exit:{code}")
+            raise SystemExit(code)
+
+        with (
+            mock.patch.object(
+                reconciler.sqlite3,
+                "connect",
+                return_value=connection,
+            ),
+            mock.patch.object(
+                reconciler,
+                "reconcile",
+                return_value=result,
+            ),
+            mock.patch("builtins.print", side_effect=record_print),
+            mock.patch.object(
+                reconciler.sys,
+                "exit",
+                side_effect=exit_process,
+            ),
+        ):
+            with self.assertRaisesRegex(SystemExit, "20"):
+                reconciler.main()
+
+        self.assertEqual(events, ["close", "print", "exit:20"])
 
 
 if __name__ == "__main__":
