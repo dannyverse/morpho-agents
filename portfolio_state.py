@@ -133,6 +133,8 @@ snapshot_df.to_sql(
     index=False
 )
 
+conn.commit()
+
 # =========================
 # VERIFY
 # =========================
