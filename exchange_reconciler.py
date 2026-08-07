@@ -75,6 +75,21 @@ class LocalExposure:
     position_ids: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class ActiveOrder:
+    oid: int
+    asset: str
+    side: str
+    size: Decimal | None
+    original_size: Decimal | None
+    trigger_price: Decimal | None
+    is_trigger: object
+    reduce_only: object
+
+
+_FRONTEND_ORDERS_UNSET = object()
+
+
 def _normalize_order_id(order_id):
     """
     Convierte un identificador de orden a entero.
@@ -298,6 +313,319 @@ def _load_open_position_rows(conn: sqlite3.Connection):
         WHERE status = 'OPEN'
         """
     ).fetchall()
+
+
+def _local_direction_ambiguities(sqlite_positions):
+    directions_by_asset = {}
+
+    for row in sqlite_positions:
+        asset = row[1]
+        direction = str(row[2]).upper()
+        directions_by_asset.setdefault(asset, set()).add(direction)
+
+    return [
+        {
+            "asset": asset,
+            "directions": sorted(directions),
+        }
+        for asset, directions in sorted(directions_by_asset.items())
+        if "LONG" in directions and "SHORT" in directions
+    ]
+
+
+def _normalize_frontend_open_orders(raw_orders):
+    if not isinstance(raw_orders, list):
+        raise ValueError("PROTECTION_RESPONSE_INVALID")
+
+    orders = {}
+
+    for raw_order in raw_orders:
+        if not isinstance(raw_order, dict):
+            raise ValueError("PROTECTION_RESPONSE_INVALID")
+
+        oid = _normalize_order_id(raw_order.get("oid"))
+        if oid is None:
+            raise ValueError("PROTECTION_RESPONSE_INVALID")
+        if oid in orders:
+            raise ValueError("PROTECTION_OID_AMBIGUOUS")
+
+        asset = raw_order.get("coin")
+        side = raw_order.get("side")
+        if not isinstance(asset, str) or not asset:
+            raise ValueError("PROTECTION_RESPONSE_INVALID")
+        if not isinstance(side, str) or not side:
+            raise ValueError("PROTECTION_RESPONSE_INVALID")
+
+        orders[oid] = ActiveOrder(
+            oid=oid,
+            asset=asset,
+            side=side,
+            size=_decimal(raw_order.get("sz")),
+            original_size=_decimal(raw_order.get("origSz")),
+            trigger_price=_decimal(raw_order.get("triggerPx")),
+            is_trigger=raw_order.get("isTrigger"),
+            reduce_only=raw_order.get("reduceOnly"),
+        )
+
+    return orders
+
+
+def _protection_evidence(expected_oid):
+    return {
+        "expected_oid": (
+            str(expected_oid) if expected_oid is not None else None
+        ),
+        "observed": False,
+        "valid": False,
+        "observed_asset": None,
+        "observed_side": None,
+        "observed_size": None,
+        "observed_orig_size": None,
+        "observed_trigger_price": None,
+        "observed_is_trigger": None,
+        "observed_reduce_only": None,
+        "failure_reason": None,
+    }
+
+
+def _validate_expected_protection(
+    *,
+    expected_oid,
+    missing_id_reason,
+    protection_kind,
+    asset,
+    direction,
+    required_size,
+    exchange_entry_price,
+    active_orders,
+    size_tolerance,
+    ambiguous_expected_oids,
+):
+    evidence = _protection_evidence(expected_oid)
+    normalized_oid = _normalize_order_id(expected_oid)
+
+    if normalized_oid is None:
+        evidence["failure_reason"] = missing_id_reason
+        return evidence
+    if normalized_oid in ambiguous_expected_oids:
+        evidence["failure_reason"] = "PROTECTION_OID_AMBIGUOUS"
+        return evidence
+
+    order = active_orders.get(normalized_oid)
+    if order is None:
+        evidence["failure_reason"] = "PROTECTION_MISSING"
+        return evidence
+
+    evidence.update(
+        {
+            "observed": True,
+            "observed_asset": order.asset,
+            "observed_side": order.side,
+            "observed_size": (
+                str(order.size) if order.size is not None else None
+            ),
+            "observed_orig_size": (
+                str(order.original_size)
+                if order.original_size is not None
+                else None
+            ),
+            "observed_trigger_price": (
+                str(order.trigger_price)
+                if order.trigger_price is not None
+                else None
+            ),
+            "observed_is_trigger": order.is_trigger,
+            "observed_reduce_only": order.reduce_only,
+        }
+    )
+
+    if order.asset != asset:
+        evidence["failure_reason"] = "PROTECTION_ASSET_MISMATCH"
+    elif order.is_trigger is not True:
+        evidence["failure_reason"] = "PROTECTION_NOT_TRIGGER"
+    elif order.reduce_only is not True:
+        evidence["failure_reason"] = "PROTECTION_NOT_REDUCE_ONLY"
+    else:
+        expected_side = "A" if direction == "LONG" else "B"
+        if order.side != expected_side:
+            evidence["failure_reason"] = "PROTECTION_SIDE_INVALID"
+        elif order.size is None or order.size <= 0:
+            evidence["failure_reason"] = "PROTECTION_SIZE_INSUFFICIENT"
+        elif order.size + size_tolerance < required_size:
+            evidence["failure_reason"] = "PROTECTION_SIZE_INSUFFICIENT"
+        elif order.trigger_price is None or order.trigger_price <= 0:
+            evidence["failure_reason"] = "PROTECTION_TRIGGER_INVALID"
+        elif exchange_entry_price is None or exchange_entry_price <= 0:
+            evidence["failure_reason"] = "PROTECTION_SEMANTICS_INVALID"
+        else:
+            if direction == "LONG":
+                semantics_valid = (
+                    order.trigger_price < exchange_entry_price
+                    if protection_kind == "stop_loss"
+                    else order.trigger_price > exchange_entry_price
+                )
+            else:
+                semantics_valid = (
+                    order.trigger_price > exchange_entry_price
+                    if protection_kind == "stop_loss"
+                    else order.trigger_price < exchange_entry_price
+                )
+
+            if not semantics_valid:
+                evidence["failure_reason"] = "PROTECTION_SEMANTICS_INVALID"
+
+    evidence["valid"] = evidence["failure_reason"] is None
+    return evidence
+
+
+def _validate_protections(
+    *,
+    sqlite_positions,
+    exchange_exposures,
+    raw_frontend_orders,
+    size_tolerance,
+):
+    try:
+        active_orders = _normalize_frontend_open_orders(raw_frontend_orders)
+    except ValueError as exc:
+        reason = str(exc)
+        return False, reason, {
+            "required": True,
+            "status": "UNKNOWN",
+            "expected_count": len(sqlite_positions) * 2,
+            "observed_active_order_count": (
+                len(raw_frontend_orders)
+                if isinstance(raw_frontend_orders, list)
+                else None
+            ),
+            "positions": [],
+            "errors": [reason],
+        }
+
+    expected_oid_counts = {}
+    for row in sqlite_positions:
+        for expected_oid in (row[8], row[9]):
+            normalized_oid = _normalize_order_id(expected_oid)
+            if normalized_oid is not None:
+                expected_oid_counts[normalized_oid] = (
+                    expected_oid_counts.get(normalized_oid, 0) + 1
+                )
+    ambiguous_expected_oids = {
+        oid for oid, count in expected_oid_counts.items() if count > 1
+    }
+
+    position_evidence = []
+    errors = []
+    coverage = {}
+
+    for row in sqlite_positions:
+        (
+            position_id,
+            asset,
+            direction,
+            _entry_price,
+            _current_price,
+            position_size,
+            _opened_at,
+            _exchange_order_id,
+            stop_loss_order_id,
+            take_profit_order_id,
+        ) = row
+        normalized_direction = str(direction).upper()
+        required_size = _decimal(position_size)
+        exchange_position = exchange_exposures.get(asset)
+        exchange_entry_price = (
+            exchange_position.entry_price
+            if exchange_position is not None
+            else None
+        )
+
+        if (
+            normalized_direction not in {"LONG", "SHORT"}
+            or required_size is None
+            or required_size <= 0
+        ):
+            raise ValueError(f"invalid local position for {position_id}")
+
+        sl_evidence = _validate_expected_protection(
+            expected_oid=stop_loss_order_id,
+            missing_id_reason="STOP_LOSS_ID_MISSING",
+            protection_kind="stop_loss",
+            asset=asset,
+            direction=normalized_direction,
+            required_size=required_size,
+            exchange_entry_price=exchange_entry_price,
+            active_orders=active_orders,
+            size_tolerance=size_tolerance,
+            ambiguous_expected_oids=ambiguous_expected_oids,
+        )
+        tp_evidence = _validate_expected_protection(
+            expected_oid=take_profit_order_id,
+            missing_id_reason="TAKE_PROFIT_ID_MISSING",
+            protection_kind="take_profit",
+            asset=asset,
+            direction=normalized_direction,
+            required_size=required_size,
+            exchange_entry_price=exchange_entry_price,
+            active_orders=active_orders,
+            size_tolerance=size_tolerance,
+            ambiguous_expected_oids=ambiguous_expected_oids,
+        )
+
+        for item in (sl_evidence, tp_evidence):
+            if item["failure_reason"] is not None:
+                errors.append(item["failure_reason"])
+
+        asset_coverage = coverage.setdefault(
+            asset,
+            {"stop_loss": Decimal("0"), "take_profit": Decimal("0")},
+        )
+        if sl_evidence["valid"]:
+            asset_coverage["stop_loss"] += active_orders[
+                _normalize_order_id(stop_loss_order_id)
+            ].size
+        if tp_evidence["valid"]:
+            asset_coverage["take_profit"] += active_orders[
+                _normalize_order_id(take_profit_order_id)
+            ].size
+
+        position_evidence.append(
+            {
+                "position_id": str(position_id),
+                "asset": asset,
+                "direction": normalized_direction,
+                "required_size": str(required_size),
+                "stop_loss": sl_evidence,
+                "take_profit": tp_evidence,
+            }
+        )
+
+    for asset, exchange_position in exchange_exposures.items():
+        if asset not in coverage:
+            continue
+        required_exchange_size = abs(exchange_position.signed_size)
+        for protection_kind in ("stop_loss", "take_profit"):
+            if (
+                coverage[asset][protection_kind] + size_tolerance
+                < required_exchange_size
+            ):
+                errors.append("PROTECTION_SIZE_INSUFFICIENT")
+
+    unique_errors = list(dict.fromkeys(errors))
+    valid = not unique_errors
+    details = {
+        "required": True,
+        "status": "CONFIRMED" if valid else "FAILED",
+        "expected_count": len(sqlite_positions) * 2,
+        "observed_active_order_count": len(active_orders),
+        "positions": position_evidence,
+        "errors": unique_errors,
+    }
+    return (
+        valid,
+        None if valid else unique_errors[0],
+        details,
+    )
 
 
 def _exchange_direction(signed_size: Decimal) -> str:
@@ -711,6 +1039,7 @@ def reconcile(
     *,
     account_snapshot=None,
     fills=None,
+    frontend_orders=_FRONTEND_ORDERS_UNSET,
     evaluated_at=None,
     max_snapshot_age_seconds=DEFAULT_MAX_SNAPSHOT_AGE_SECONDS,
     size_tolerance=DEFAULT_SIZE_TOLERANCE,
@@ -804,6 +1133,10 @@ def reconcile(
         # Preserve existing close mutations before evaluating final state.
         conn.commit()
 
+        final_sqlite_positions = _load_open_position_rows(conn)
+        local_direction_ambiguities = _local_direction_ambiguities(
+            final_sqlite_positions
+        )
         local_exposures = _load_local_exposures(conn)
         exchange_exposures = _load_exchange_exposures(snapshot)
         state, capability, blocking_reason, details = (
@@ -815,6 +1148,83 @@ def reconcile(
                 unresolved_positions=unresolved_positions,
             )
         )
+
+        if local_direction_ambiguities:
+            state = ReconciliationState.UNKNOWN
+            capability = ReconciliationCapability.NO_AUTOMATED_EXECUTION
+            blocking_reason = "LOCAL_DIRECTION_AMBIGUOUS"
+            details["local_direction_ambiguities"] = (
+                local_direction_ambiguities
+            )
+            details["protection_validation"] = {
+                "required": True,
+                "status": "NOT_EVALUATED",
+                "expected_count": len(final_sqlite_positions) * 2,
+                "observed_active_order_count": None,
+                "positions": [],
+                "errors": ["LOCAL_DIRECTION_AMBIGUOUS"],
+            }
+        elif state == ReconciliationState.CONFIRMED:
+            if final_sqlite_positions:
+                try:
+                    raw_frontend_orders = (
+                        frontend_orders
+                        if frontend_orders is not _FRONTEND_ORDERS_UNSET
+                        else get_info().frontend_open_orders(ACCOUNT_ADDRESS)
+                    )
+                except Exception as exc:
+                    protection_valid = False
+                    protection_reason = "PROTECTION_OBSERVATION_ERROR"
+                    protection_details = {
+                        "required": True,
+                        "status": "UNKNOWN",
+                        "expected_count": len(final_sqlite_positions) * 2,
+                        "observed_active_order_count": None,
+                        "positions": [],
+                        "errors": [
+                            f"{protection_reason}: "
+                            f"{type(exc).__name__}: {exc}"
+                        ],
+                    }
+                else:
+                    (
+                        protection_valid,
+                        protection_reason,
+                        protection_details,
+                    ) = _validate_protections(
+                        sqlite_positions=final_sqlite_positions,
+                        exchange_exposures=exchange_exposures,
+                        raw_frontend_orders=raw_frontend_orders,
+                        size_tolerance=size_tolerance,
+                    )
+
+                details["protection_validation"] = protection_details
+                if not protection_valid:
+                    state = ReconciliationState.UNKNOWN
+                    capability = (
+                        ReconciliationCapability.NO_AUTOMATED_EXECUTION
+                    )
+                    blocking_reason = (
+                        protection_reason or "PROTECTION_UNCONFIRMED"
+                    )
+            else:
+                details["protection_validation"] = {
+                    "required": False,
+                    "status": "NOT_REQUIRED",
+                    "expected_count": 0,
+                    "observed_active_order_count": None,
+                    "positions": [],
+                    "errors": [],
+                }
+        else:
+            details["protection_validation"] = {
+                "required": bool(final_sqlite_positions),
+                "status": "NOT_EVALUATED",
+                "expected_count": len(final_sqlite_positions) * 2,
+                "observed_active_order_count": None,
+                "positions": [],
+                "errors": [],
+            }
 
         decision_at = _evaluation_time(evaluated_at)
         final_snapshot_age_seconds = (
@@ -835,14 +1245,17 @@ def reconcile(
             conn.commit()
             return result
 
-        valid_until = min(
-            decision_at + timedelta(
-                seconds=RECONCILIATION_TTL_SECONDS
-            ),
-            snapshot.exchange_timestamp + timedelta(
-                seconds=max_snapshot_age_seconds
-            ),
-        )
+        if state == ReconciliationState.UNKNOWN:
+            valid_until = decision_at
+        else:
+            valid_until = min(
+                decision_at + timedelta(
+                    seconds=RECONCILIATION_TTL_SECONDS
+                ),
+                snapshot.exchange_timestamp + timedelta(
+                    seconds=max_snapshot_age_seconds
+                ),
+            )
 
         result = ReconciliationResult(
             schema_version=RECONCILIATION_SCHEMA_VERSION,
