@@ -4,7 +4,7 @@ from typing import Any
 
 import requests
 from dotenv import load_dotenv
-from notification_state import should_send
+from notification_state import commit_delivery, is_duplicate
 
 # =========================
 # LOAD ENV
@@ -61,11 +61,17 @@ def send_alert(message: str) -> dict[str, Any] | None:
 
         response.raise_for_status()
 
-        return response.json()
+        result = response.json()
 
-    except requests.RequestException as exc:
-        print(f"Telegram Error: {exc}")
+    except (requests.RequestException, ValueError, TypeError) as exc:
+        print(f"Telegram Error: {type(exc).__name__}")
         return None
+
+    if not isinstance(result, dict) or result.get("ok") is not True:
+        print("Telegram Error: invalid response")
+        return None
+
+    return result
 
 
 # =========================
@@ -143,9 +149,7 @@ def notify(
     }
 
     if title.upper() not in always_send:
-        decision = should_send(title.upper(), payload)
-
-        if not decision:
+        if is_duplicate(title.upper(), payload):
             return None
 
     message = build_message(
@@ -155,7 +159,21 @@ def notify(
         details=details,
     )
 
-    return send_alert(message)
+    result = send_alert(message)
+
+    if result is None:
+        return None
+
+    if title.upper() not in always_send:
+        try:
+            commit_delivery(title.upper(), payload)
+        except Exception as exc:
+            print(
+                "Telegram notification state error: "
+                f"{type(exc).__name__}"
+            )
+
+    return result
 
 # =========================
 # EXECUTION APPROVED

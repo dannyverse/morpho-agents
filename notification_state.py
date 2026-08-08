@@ -26,13 +26,12 @@ def _save_state(state: dict) -> None:
     )
 
 
-def should_send(
-    event_key: str,
+def _fingerprint(
     payload: dict[str, Any] | None = None,
-) -> bool:
+) -> str:
     payload = payload or {}
 
-    fingerprint = hashlib.sha256(
+    return hashlib.sha256(
         json.dumps(
             payload,
             sort_keys=True,
@@ -40,15 +39,22 @@ def should_send(
         ).encode()
     ).hexdigest()
 
+
+def is_duplicate(
+    event_key: str,
+    payload: dict[str, Any] | None = None,
+) -> bool:
     state = _load_state()
+    return state.get(event_key) == _fingerprint(payload)
 
-    if state.get(event_key) == fingerprint:
-        return False
 
-    state[event_key] = fingerprint
+def commit_delivery(
+    event_key: str,
+    payload: dict[str, Any] | None = None,
+) -> None:
+    state = _load_state()
+    state[event_key] = _fingerprint(payload)
     _save_state(state)
-
-    return True
 
 
 def clear(event_key: str) -> None:
