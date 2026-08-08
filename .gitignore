@@ -22,3 +22,6 @@ opportunity_state.json
 runtime_state.json
 kill_switch_state.json
 portfolio_health_state.json
+
+# Sensitive local files
+morpho_wallet.json
