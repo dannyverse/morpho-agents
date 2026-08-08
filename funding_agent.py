@@ -2,7 +2,6 @@ import requests
 import pandas as pd
 import os
 from datetime import datetime
-from notifier import notify
 
 # =========================
 # HYPERLIQUID API REQUEST
@@ -107,51 +106,6 @@ df.to_csv(
     mode="a",
     header=file_empty,
     index=False
-)
-
-# =========================
-# SORT TOP FUNDING
-# =========================
-
-df["abs_funding"] = df["funding_apr"].abs()
-
-top_df = df.sort_values(
-    by="abs_funding",
-    ascending=False
-)
-
-# =========================
-# BUILD TELEGRAM MESSAGE
-# =========================
-
-message = "Material funding signals were detected in liquid markets.\n\n"
-
-for _, row in top_df.head(5).iterrows():
-
-    direction = (
-        "LONGS PAYING"
-        if row["funding_apr"] > 0
-        else "SHORTS PAYING"
-    )
-
-    message += (
-        f"{row['asset']}   {round(row['funding_apr'], 2)}% APR   "
-        f"{direction}\n"
-        f"OI ${round(row['open_interest'] / 1_000_000, 2)}M   "
-        f"Volume ${round(row['volume'] / 1_000_000, 2)}M\n\n"
-    )
-
-# =========================
-# SEND TELEGRAM
-# =========================
-
-notify(
-    level="INFO",
-    title="MARKET · FUNDING SIGNAL",
-    body=message.rstrip(),
-    details={
-        "Signals": len(top_df.head(5)),
-    }
 )
 
 print("Quality funding snapshot saved")
